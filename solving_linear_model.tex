@@ -1,0 +1,221 @@
+\documentclass[a4j, dvipdfmx]{jarticle}
+\usepackage{natbib}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{afterpage}
+\usepackage{tabularx}
+\usepackage{ascmac}
+%\usepackage{boites}
+\usepackage{framed}
+
+\allowdisplaybreaks[1]
+\renewcommand{\tablename}{Table}
+\renewcommand{\figurename}{図}
+\renewcommand{\abstractname}{abstract}
+\renewcommand{\appendixname}{Appendix}
+
+%one-inch margin
+\oddsidemargin 0.0in
+\topmargin 0.0in
+\textwidth 6.26771in
+%�}�[�W���I����
+
+\begin{document}
+\begin{flushright}
+%日付
+November 18, 2016,\\
+February 16, 2018 revised.
+
+%名前
+荒戸 寛樹
+\end{flushright}
+\begin{center}
+\Large{\textbf{
+%\begin{tabular}{c}
+線型動学的確率的一般均衡モデルの解法 \\ (Incomplete. Please do not cite.)\footnote{\citet{mccan2008:abcs} Ch.6 ``Hansen's RBC Model"をベースに作成。}
+%\end{tabular}
+}}
+\end{center}
+%\begin{center}
+%2013年度後期・金曜4時限(14：40〜16：10) @ 経済学部第2講義室
+%\end{center}
+\vspace{10pt}
+%%%%%%%%%%%%%%
+%本文スタート
+%%%%%%%%%%%%%%
+\section{線型動学的確率的一般均衡モデルの状態空間表現}
+前節で設定したような、動学的な一般均衡モデルに確率的なショックを導入したモデルは一般に動学的確率的一般均衡モデル（Dynamic Stochastic General Equilibrium model, DSGE model）と呼ばれる。対数線型化したDSGEモデルは一般に以下のような線型の状態空間表現（Linear State Space Representation）と呼ばれる形で表現できる。
+\begin{align}
+B\begin{bmatrix}x_{t+1}\\E_t y_{t+1}\end{bmatrix} = A\begin{bmatrix}x_t\\y_t\end{bmatrix} + G\epsilon_t\label{ssr}
+\end{align}
+ただし、$x_t$は第$t$期における先決変数のベクトル($n\times 1$)、$y_t$は第$t$期における操作変数のベクトル($m\times 1$)、$\epsilon_t$は第$t$期における平均ゼロの外生的確率ショック($k\times 1$)、$A, B$はともに$((n+m)\times (n+m))$行列、$G$は$((n+m)\times k)$行列である。\\
+
+モデルの解は、所与の$x_0$に対して、全ての$t\ge0$においてこの状態空間表現を満たし、かつ発散しないような列$\{x_t, y_t\}_{t=0}^\infty$である。
+
+\paragraph{例1：Ramsey Model}
+Basicな新古典派成長モデル（Ramsey Model）は、
+\begin{align}
+&C_t^{-\sigma} = \beta C_{t+1}^{-\sigma} (\alpha A K_{t+1}^{\alpha-1} + 1 -\delta)\\
+&K_{t+1} = (1-\delta) K_t + A K_t^\alpha - C_t
+\end{align}
+\begin{align}
+&\exp(-\sigma c_t) = \beta \exp(-\sigma c_{t+1}) \{\alpha A \exp[(\alpha -1) k_{t+1}] + 1 -\delta\}\\
+&\exp(k_{t+1}) = (1-\delta) \exp(k_t) + \exp(\alpha k_t) - \exp(c_t)
+\end{align}
+と書ける。これを定常状態の周りで対数線型近似すると、
+\begin{align}
+-\sigma \exp(-\sigma c) \tilde c_t = 
+\end{align}
+
+
+\paragraph{例2：The Stochastic Robinson Crusoe Economy with Variable Labor}~
+
+労働が可変的なロビンソン=クルーソー経済を対数線形化したモデルは、以下のように表される\footnote{導出はAppendix Aを参照}。
+\begin{align}
+\beta\bar r (1-\theta)\tilde k_{t+1} -\beta\bar r\rho\tilde A_t + E_t\tilde c_{t+1}-\beta\bar r (1-\theta)E_t\tilde h_{t+1} &= \tilde c_t \label{euler2}\\
+\tilde A_t & =  - \theta\tilde k_t + \tilde c_t + \left(\theta+ \frac{\bar h}{1-\bar h}\right)\tilde h_t \\
+\tilde k_{t+1} - \frac{\bar y}{\bar k} \tilde A_t &= \frac{1}{\beta}\tilde k_t - \frac{\bar c}{\bar k} \tilde c_t + \frac{\bar y}{\bar k} (1-\theta) \tilde h_t\\
+\tilde A_t &= \rho \tilde A_{t-1} + \sigma_{\epsilon} \epsilon_t, \quad \epsilon_t \sim \mathcal N(0,1)
+\end{align}
+したがって、このモデルの状態空間表現は、
+\begin{align}
+x_t = \begin{bmatrix}\tilde k_t \\ \tilde A_{t-1}\end{bmatrix}, \quad y_t = \begin{bmatrix}\tilde c_t \\ \tilde h_t\end{bmatrix}
+\end{align}
+\begin{align}
+A = \begin{bmatrix}0 & 0 & 1 & 0 \\ -\theta & 0 & 1 & \theta+\frac{\bar h}{1-\bar h} \\ \frac{1}{\beta} & 0 & -\frac{\bar c}{\bar k} & \frac{\bar y}{\bar k}(1-\theta) \\ 0 & \rho & 0 & 0\end{bmatrix}, \quad B=\begin{bmatrix}\beta \bar r (1-\theta) & -\beta \bar r \rho & 1 & -\beta \bar r (1-\theta) \\ 0 & 1 & 0 & 0 \\ 1 & -\frac{\bar y}{\bar k} & 0 & 0 \\ 0 & 1 & 0 & 0\end{bmatrix}, G=\begin{bmatrix}0 \\ 0 \\ 0 \\ \sigma_{\epsilon}\end{bmatrix}.
+\end{align}
+となる。
+
+\paragraph{練習問題1：New Keynesian Model}~
+
+以下のNew Keynesian Model
+\begin{align}
+\hat{y}_t &= E_t \hat{y}_{t+1} -\frac{1}{\sigma} (i_t - E_t\pi_{t+1} - r^n_t) \\
+\pi_t &= \beta E_t\pi_{t+1} + \kappa \hat{y}_t\\
+i_t &= \rho + \theta_\pi \pi_t + \theta_y \hat{y}_t + \nu_t \\
+r^n_t &= \rho - \sigma (1-\rho_a) \psi_{ya} a_t +(1-\rho_z)z_t\\
+\nu_t &= \rho_\nu \nu_{t-1} + \sigma_\nu \epsilon^\nu_t\\
+a_t &= \rho_a a_{t-1} + \sigma_a \epsilon^a_t\\
+z_t &= \rho_z z_{t-1} + \sigma_z \epsilon^z_t
+\end{align}
+を状態空間表現しなさい。
+
+\paragraph{Answer:}
+\begin{align}
+E_t\hat{y}_{t+1} + \frac{1}{\sigma}E_t\pi_{t+1} &= \hat{y}_t + \frac{1}{\sigma}(i_t - \rho) - \frac{1}{\sigma} (r^n_t - \rho) \\
+\beta E_t\pi_{t+1} &= -\kappa y_t + \pi_t\\
+\nu_t &= (i_t - \rho) - \theta_\pi \pi_t - \theta_y \hat{y}_t\\
+-\sigma(1-\rho_a)\psi_{ya} a_t + (1-\rho_z)z_t &= (r^n_t - \rho)\\
+\nu_t &= \rho_\nu \nu_{t-1} + \sigma_\nu \epsilon^\nu_t\\
+a_t &= \rho_a a_{t-1} + \sigma_a \epsilon^a_t\\
+z_t &= \rho_z z_{t-1} + \sigma_z \epsilon^z_t
+\end{align}
+と書き直せるので、状態空間表現は、
+\begin{align}
+x_t = \begin{bmatrix} \nu_{t-1} \\ a_{t-1} \\ z_{t-1} \end{bmatrix}, \quad y_t = \begin{bmatrix}\hat{y}_t \\ i_t - \rho \\ \pi_t \\ r^n_t - \rho\end{bmatrix}, \quad \epsilon_t = \begin{bmatrix}\epsilon^\nu_t \\ \epsilon^a_t \\ \epsilon^z_t\end{bmatrix}
+\end{align}
+
+\begin{align}
+B = \begin{bmatrix}
+0 & 0 & 0 & 1 & 0 & \frac{1}{\sigma} & 0 \\
+0 & 0 & 0 & 0 & 0 & \beta & 0 \\
+1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & -\sigma(1-\rho_a) \psi_{ya} & 1-\rho_z & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 0 & 0 
+\end{bmatrix},
+A &= \begin{bmatrix}
+0 & 0 & 0 & 1 & \frac{1}{\sigma} & 0 & -\frac{1}{\sigma} \\
+0 & 0 & 0 & -\kappa & 0 & 1 & 0 \\
+0 & 0 & 0 & -\theta_y & 1 & -\theta_\pi & 0 \\
+0 & 0 & 0 & 0 & 0 & 0 & 1 \\
+\rho_\nu & 0 & 0 & 0 & 0 & 0 & 0\\
+0 & \rho_a & 0 & 0 & 0 & 0 & 0 \\
+0 & 0 & \rho_z & 0 & 0 & 0 & 0
+\end{bmatrix},
+G &= \begin{bmatrix}0 & 0 & 0 \\
+0 & 0 & 0 \\
+0 & 0 & 0 \\
+0 & 0 & 0 \\
+\sigma_\nu & 0 & 0 \\
+0 & \sigma_a & 0 \\
+0 & 0 & \sigma_z
+\end{bmatrix}
+\end{align}
+となる。
+
+\section{一般化Schur分解を用いた解法}
+線型DSGEモデルを「解く」とは、モデルの状態空間表現（\eqref{ssr}式）を、適当な行列$C, D, H, J$によって
+\begin{align}
+y_t &= H x_t + J \epsilon_t \\
+x_{t+1} &= C x_t + D \epsilon_t
+\end{align}
+と表現し直すことである。ただし、$C$の固有値は絶対値が1より小さくなくてはならない。行列$H, J, C, D$を求められれば、所与の$x_0$とショックの流列$\{\epsilon_t\}$から内生変数の列$\{x_{t+1}, y_t\}$を$t=0$から順に求めることができる。\\
+
+モデルを解く際には、行列$A, B$を一般化Schur分解する方法がよく使われる\footnote{詳細は\citet{klein2000}を参照。}。一般化Schur分解は以下のように定義される。\\
+
+\begin{itembox}[l]{{\bf 定理：一般化Schur分解 (Generalized Schur decomposition)}}
+任意の2つの正方行列$A,B$に対して、以下の1～4を満たす行列の組$(S,T,Q,Z)$が存在する。
+\begin{enumerate}
+\item $A, B$は以下のように分解可能。
+\begin{align}
+&A = QSZ^\prime\\
+&B = QTZ^\prime
+\end{align}
+\item $Q$と$Z$は直交行列、つまり、 \; $QQ^\prime = Q^\prime Q = I, ZZ^\prime = Z^\prime Z = I$.
+\item $S$と$T$は上三角行列。
+\item このシステムの第$i$固有値$\lambda_{i}$は$S$の第$i$対角成分$s_{ii}$と$T$の第$i$対角成分$t_{ii}$を使って$\lambda_i=\frac{s_{ii}}{t_{ii}}$で求められる。
+\end{enumerate}
+\end{itembox}
+一般化Schur分解は一般に複数存在するが、以下では一般化Schur分解は結果として得られる固有値の絶対値が小さい順に上から並ぶように$S,T,Q,Z$を定めるとする。\footnote{この順序を指定した一般化Schur分解は、{\tt R}では{\tt geigen}パッケージにある{\tt gqz}関数で簡単に計算が可能である。}
+
+一般化Schur分解の結果、状態空間表現\eqref{ssr}は
+\begin{align}
+QTZ^\prime \begin{bmatrix}x_{t+1}\\E_ty_{t+1}\end{bmatrix} = QSZ^\prime \begin{bmatrix}x_t\\y_t\end{bmatrix} + G\epsilon_t
+\end{align}
+と書くことができる。両辺左側から$Q^\prime$をかけると、
+\begin{align}
+\begin{bmatrix}T_{11} & T_{12} \\ 0 & T_{22}\end{bmatrix}\begin{bmatrix}Z^\prime_{11} & Z^\prime_{12} \\ Z^\prime_{21} & Z^\prime_{22}\end{bmatrix}\begin{bmatrix}x_{t+1} \\ E_ty_{t+1}\end{bmatrix}=\begin{bmatrix}S_{11} & S_{12} \\ 0 & S_{22}\end{bmatrix}\begin{bmatrix}Z^\prime_{11} & Z^\prime_{12} \\ Z^\prime_{21} & Z^\prime_{22}\end{bmatrix}\begin{bmatrix}x_t \\ y_t\end{bmatrix} + \begin{bmatrix}Q^\prime_{11} & Q^\prime_{12} \\ Q^\prime_{21} & Q^\prime_{22}\end{bmatrix}\begin{bmatrix}G_{1} \\ G_{2}\end{bmatrix}\epsilon_t
+\end{align}
+発散する固有値は下の行にある\footnote{証明は行わないが、モデルが鞍点安定を示すことは、発散する固有値が操作変数の数と等しいことと同値である。今は、この条件は満たされていると仮定する。}ので、モデルが定常状態に収束するためには、
+\begin{align}
+S_{22}Z^\prime_{21}x_t + S_{22}Z^\prime_{22}y_t + [Q^\prime_{21}G_{1}+Q^\prime_{22}G_2]\epsilon_t=0
+\end{align}
+したがって、操作変数についての解は
+\begin{align}
+y_t &= -(Z^\prime_{22})^{-1}Z^\prime_{21}x_t - (Z^\prime_{22})^{-1}S_{22}^{-1}[Q^\prime_{21}G_{1}+Q^\prime_{22}G_2]\epsilon_t\notag\\
+&\equiv -Nx_t - L\epsilon_t\label{soly}
+\end{align}
+となる。\\
+次に先決変数についての解を求める。\eqref{soly}式より、
+\begin{align}
+E_ty_{t+1} = -Nx_{t+1}
+\end{align}
+これを状態空間表現\eqref{ssr}に代入すると、
+\begin{align}
+\begin{bmatrix}B_{11} & B_{12} \\ B_{21} & B_{22}\end{bmatrix}\begin{bmatrix}I \\ -N\end{bmatrix}x_{t+1} = \begin{bmatrix}A_{11} & A_{12} \\ A_{21} & A_{22}\end{bmatrix}\begin{bmatrix}I \\ -N\end{bmatrix}x_t + \begin{bmatrix}G_1- A_{12}L\\G_2-A_{22}L\end{bmatrix}\epsilon_t
+\end{align}
+上部の発散しない部分に注目すると、
+\begin{align}
+[B_{11} - B_{12}N]x_{t+1} = [A_{11} - A_{12}N]x_t + [G_1-A_{12}L]\epsilon_t
+\end{align}
+つまり、先決変数についての解は
+\begin{align}
+x_{t+1} &= [B_{11} - B_{12}N]^{-1}[A_{11} - A_{12}N]x_t + [B_{11} - B_{12}N]^{-1}[G_1-A_{12}L]\epsilon_t\\
+&\equiv C x_t + D\epsilon_t
+\end{align}
+となり、これでモデルが解けた。
+
+\begin{thebibliography}{xxx}
+\harvarditem[McCandless]{McCandless}{2008}{mccan2008:abcs}
+McCandless, G. (2008) {\it The ABCs of RBCs: An Introduction to Dynamic Macroeconomic Models}, Harvard University Press.
+
+\harvarditem[Klein]{Klein}{2000}{klein2000}
+Klein, P. (2000) ``Using the Generalized Schur Form to Solve a Multivariate Linear Rational Expectations Model,'' {\it Journal of Economic Dynamics and Control}, 24, pp. 1405--23.
+
+%\harvarditem[Stokey et al.]{Stokey et al.}{1989}{stoke1989:recur}
+%Stokey, N., R. Lucas, and E. Prescott (2008) {\it Recursive Methods in Economic Dynamics}, Harvard University Press.
+\end{thebibliography}
+
+\end{document}
