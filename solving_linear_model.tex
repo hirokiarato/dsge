@@ -60,13 +60,23 @@ Basicな新古典派成長モデル（Ramsey Model）は、
 \end{align}
 \begin{align}
 &\exp(-\sigma c_t) = \beta \exp(-\sigma c_{t+1}) \{\alpha A \exp[(\alpha -1) k_{t+1}] + 1 -\delta\}\\
-&\exp(k_{t+1}) = (1-\delta) \exp(k_t) + \exp(\alpha k_t) - \exp(c_t)
+&\exp(k_{t+1}) = (1-\delta) \exp(k_t) + A\exp(\alpha k_t) - \exp(c_t)
 \end{align}
 と書ける。これを定常状態の周りで対数線型近似すると、
 \begin{align}
--\sigma \exp(-\sigma c) \tilde c_t = 
+-\sigma \tilde c_t = -\sigma  \tilde c_{t+1} + \beta \alpha A (\alpha -1) K^{\alpha -1} \tilde k_{t+1}\\
+\tilde k_{t+1} = (1-\delta) \tilde k_t + \alpha A K^{\alpha -1} \tilde k_t - \frac{C}{K} \tilde c_t
 \end{align}
-
+定常状態では、
+\begin{align}
+1 = \beta (\alpha A K^{\alpha -1} + 1 - \delta)\\
+\delta K = AK^\alpha - C
+\end{align}
+が成立するので、
+\begin{align}
+\alpha A K^{\alpha -1} = \frac{1}{\beta} - 1 + \delta \\
+\frac{C}{K} = AK^{\alpha -1} -\delta = \frac{1}{\alpha\beta} - \frac{1}{\alpha} + \frac{\delta}{\alpha} - \delta = \frac{1}{\alpha}\left(\frac{1}{\beta} -1 + (\alpha -1)\delta\right)
+\end{align}
 
 \paragraph{例2：The Stochastic Robinson Crusoe Economy with Variable Labor}~
 
