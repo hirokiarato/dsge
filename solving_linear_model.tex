@@ -24,7 +24,7 @@
 \begin{flushright}
 %日付
 November 18, 2016,\\
-February 16, 2018 revised.
+March 4, 2018 revised.
 
 %名前
 荒戸 寛樹
@@ -52,7 +52,7 @@ B\begin{bmatrix}x_{t+1}\\E_t y_{t+1}\end{bmatrix} = A\begin{bmatrix}x_t\\y_t\end
 
 モデルの解は、所与の$x_0$に対して、全ての$t\ge0$においてこの状態空間表現を満たし、かつ発散しないような列$\{x_t, y_t\}_{t=0}^\infty$である。
 
-\paragraph{例1：Ramsey Model}
+\paragraph{例1：Neoclassical Growth Model}
 Basicな新古典派成長モデル（Ramsey Model）は、
 \begin{align}
 &C_t^{-\sigma} = \beta C_{t+1}^{-\sigma} (\alpha A K_{t+1}^{\alpha-1} + 1 -\delta)\\
@@ -77,12 +77,12 @@ Basicな新古典派成長モデル（Ramsey Model）は、
 \end{align}
 以上より、このモデルは
 \begin{align}
-&\sigma \tilde c_{t+1} - \beta (\alpha - 1) \left(\frac{1}{\beta} - 1 + \delta\right) \tilde k_{t+1} = \sigma \tilde c_t\\
+&-\sigma \tilde c_{t+1} + \left[1 - \beta(1 - \delta)\right] (\alpha - 1) \tilde k_{t+1} = -\sigma \tilde c_t\\
 &\tilde k_{t+1} = \frac{1}{\beta} \tilde k_t - \frac{1-\beta + (1-\alpha)\beta\delta}{\alpha\beta} \tilde c_t
 \end{align}
 したがって、このモデルの正規表現は、
 \begin{align}
-x_t = \tilde k_t, y_t = \tilde c_t, B = \begin{bmatrix}- \beta (\alpha - 1) \left(\frac{1}{\beta} - 1 + \delta\right) & \sigma \\ 1 & 0\end{bmatrix}, A = \begin{bmatrix} 0 & \sigma \\ \frac{1}{\beta} & - \frac{1-\beta + (1-\alpha)\beta\delta}{\alpha\beta}\end{bmatrix}
+x_t = \tilde k_t, y_t = \tilde c_t, B = \begin{bmatrix}[1-\beta(1-\delta)](\alpha-1) & -\sigma \\ 1 & 0\end{bmatrix}, A = \begin{bmatrix} 0 & -\sigma \\ \frac{1}{\beta} & - \frac{1-\beta + (1-\alpha)\beta\delta}{\alpha\beta}\end{bmatrix}
 \end{align}
 \paragraph{例2：The Stochastic Robinson Crusoe Economy with Variable Labor}~
 
