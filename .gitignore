@@ -37,3 +37,4 @@ rsconnect/
 *.aux
 *.log
 *.gz
+R/R.Rproj
