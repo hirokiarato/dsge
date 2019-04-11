@@ -24,7 +24,7 @@
 \begin{flushright}
 %日付
 November 18, 2016,\\
-March 4, 2018 revised.
+April 12, 2019 revised.
 
 %名前
 荒戸 寛樹
@@ -32,7 +32,7 @@ March 4, 2018 revised.
 \begin{center}
 \Large{\textbf{
 %\begin{tabular}{c}
-線型動学的確率的一般均衡モデルの解法 \\ (Incomplete. Please do not cite.)\footnote{\citet{mccan2008:abcs} Ch.6 ``Hansen's RBC Model"をベースに作成。}
+線型確率的動学一般均衡モデルの合理的期待均衡解の求め方 \\ (Incomplete. Please do not cite.)
 %\end{tabular}
 }}
 \end{center}
@@ -43,64 +43,91 @@ March 4, 2018 revised.
 %%%%%%%%%%%%%%
 %本文スタート
 %%%%%%%%%%%%%%
-\section{線型動学的確率的一般均衡モデルの状態空間表現}
-前節で設定したような、動学的な一般均衡モデルに確率的なショックを導入したモデルは一般に動学的確率的一般均衡モデル（Dynamic Stochastic General Equilibrium model, DSGE model）と呼ばれる。対数線型化したDSGEモデルは一般に以下のように線型表現(Canonical Formと呼ばれる)できる。
+線型の確率的動学一般均衡モデルの合理的期待均衡解を求める際の解法を簡単に紹介する．\footnote{ここでの議論は主に\citet{klein2000} に沿っている．ただし，\citet{klein2000}とは記法や行列の命名などが大きく異なっていることに注意しなさい．線型の確率的動学モデルの合理的期待均衡を求める手法については\citet{klein2000}の他にも多数開発されている．例えば\citet{sims2002}等．それぞれに長所と短所があるので，興味があれば参照されたい．}
+\section{線型動学的確率的一般均衡モデルの行列表現}
+動学的な一般均衡モデルに確率的な外生ショックを導入したモデルは動学的確率的一般均衡モデル（Dynamic Stochastic General Equilibrium models, DSGE models）と呼ばれる．対数線型化した離散時間DSGEモデルの多くは以下のような線型差分方程式システムとして表現できる\footnote{\citet{sims2002}は連続時間線型モデルについても解法を提案しているので必要に応じて参照すること．}．
 \begin{align}
-B\begin{bmatrix}x_{t+1}\\E_t y_{t+1}\end{bmatrix} = A\begin{bmatrix}x_t\\y_t\end{bmatrix} + G\epsilon_t\label{ssr}
+\mathop{B}_{(n \times n)} \mathop{E_tx_{t+1}}_{(n \times 1)} = \mathop{A}_{(n\times n)} \mathop{x_t}_{(n\times 1)} + \mathop{C}_{(n \times n_z)} \mathop{z_t}_{(n_z \times 1)} \label{model}
 \end{align}
-ただし、$x_t$は第$t$期における先決変数のベクトル($n\times 1$)、$y_t$は第$t$期における操作変数のベクトル($m\times 1$)、$\epsilon_t$は第$t$期における平均ゼロの外生的確率ショック($k\times 1$)、$A, B$はともに$((n+m)\times (n+m))$行列、$G$は$((n+m)\times k)$行列である。\\
+ただし、$x_t$は第$t$期に観測される内生変数のベクトル、$z_t$は外生的に変化する確率変数のベクトルである．
 
-モデルの解は、所与の$x_0$に対して、全ての$t\ge0$においてこの状態空間表現を満たし、かつ発散しないような列$\{x_t, y_t\}_{t=0}^\infty$である。
+ここで，内生変数$x_t$を後ろ向き変数 (backward-looking variables) とそうでない変数に分ける．後ろ向き変数の定義は以下の通り．\\
 
-\paragraph{例1：Neoclassical Growth Model}
-Basicな新古典派成長モデル（Ramsey Model）は、
-\begin{align}
-&C_t^{-\sigma} = \beta C_{t+1}^{-\sigma} (\alpha A K_{t+1}^{\alpha-1} + 1 -\delta)\\
-&K_{t+1} = (1-\delta) K_t + A K_t^\alpha - C_t
-\end{align}
-と書ける。これを定常状態の周りで対数線型近似すると、
-\begin{align}
--\sigma \tilde c_t = -\sigma  \tilde c_{t+1} + \beta \alpha A (\alpha -1) K^{\alpha -1} \tilde k_{t+1}\\
-\tilde k_{t+1} = (1-\delta) \tilde k_t + \alpha A K^{\alpha -1} \tilde k_t - \frac{C}{K} \tilde c_t
-\end{align}
-ただし、小文字は対応する大文字の変数の対数であり、$\tilde z_t$は$z_t$の定常状態からの乖離を表す。
+\begin{itembox}[l]{\bf{Definition 1: Backward-looking variables}}
+確率過程 $\mathbf{k}$ が後ろ向きであるとは，以下の2つを満たすことを言う．
+\begin{enumerate}
+\item 予測誤差の確率過程 $\boldsymbol{\xi}$ を， $\xi_{t+1} \equiv k_{t+1} - E_tk_{t+1}$と定義すると，予測誤差は外生的な difference martingale processである，つまり，$\boldsymbol{\xi}$は外生であり，かつ$E_t\xi_{t+1} = 0$である．
+\item $k_0$ は外生的に与えられる変数である．
+\end{enumerate}
+\end{itembox}\\
 
-定常状態では
+モデルを式 \eqref{model} の形に表現する際，内生変数ベクトル$x_t$の中の変数は，上に後ろ向き変数を並べるものとする．つまり，$x_t$は下のように後ろ向き変数のベクトル$k_t$とそれ以外の内生変数ベクトル$d_t$に分けられる．
 \begin{align}
-1 = \beta (\alpha A K^{\alpha -1} + 1 - \delta)\\
-\delta K = AK^\alpha - C
+x_t = \begin{bmatrix}k_t \\ d_t\end{bmatrix}\label{xkd}
 \end{align}
-が成立するので、
-\begin{align}
-\alpha A K^{\alpha -1} = \frac{1}{\beta} - 1 + \delta \\
-\frac{C}{K} = AK^{\alpha -1} -\delta = \frac{1-\beta + (1-\alpha)\beta\delta}{\alpha\beta}
-\end{align}
-以上より、このモデルは
-\begin{align}
-&-\sigma \tilde c_{t+1} + \left[1 - \beta(1 - \delta)\right] (\alpha - 1) \tilde k_{t+1} = -\sigma \tilde c_t\\
-&\tilde k_{t+1} = \frac{1}{\beta} \tilde k_t - \frac{1-\beta + (1-\alpha)\beta\delta}{\alpha\beta} \tilde c_t
-\end{align}
-したがって、このモデルの正規表現は、
-\begin{align}
-x_t = \tilde k_t, y_t = \tilde c_t, B = \begin{bmatrix}[1-\beta(1-\delta)](\alpha-1) & -\sigma \\ 1 & 0\end{bmatrix}, A = \begin{bmatrix} 0 & -\sigma \\ \frac{1}{\beta} & - \frac{1-\beta + (1-\alpha)\beta\delta}{\alpha\beta}\end{bmatrix}
-\end{align}
-\paragraph{例2：The Stochastic Robinson Crusoe Economy with Variable Labor}~
+後ろ向き変数の数を$n_k$とする．つまり，$k_t$は$(n_k \times 1)$の列ベクトル，$d_t$は$((n-n_k)\times 1)$の列ベクトルである． 
 
-労働が可変的なロビンソン=クルーソー経済を対数線形化したモデルは、以下のように表される\footnote{導出はAppendix Aを参照}。
+\subsection{Example 1: A Stochastic Neoclassical Growth Model with an AR(1) productivity shock}
+Basicな新古典派成長モデル（Ramsey Model）に定常なAR(1)過程に従う生産性ショックを導入したモデルは、対数線形近似すると
 \begin{align}
-\beta\bar r (1-\theta)\tilde k_{t+1} -\beta\bar r\rho\tilde A_t + E_t\tilde c_{t+1}-\beta\bar r (1-\theta)E_t\tilde h_{t+1} &= \tilde c_t \label{euler2}\\
-\tilde A_t & =  - \theta\tilde k_t + \tilde c_t + \left(\theta+ \frac{\bar h}{1-\bar h}\right)\tilde h_t \\
-\tilde k_{t+1} - \frac{\bar y}{\bar k} \tilde A_t &= \frac{1}{\beta}\tilde k_t - \frac{\bar c}{\bar k} \tilde c_t + \frac{\bar y}{\bar k} (1-\theta) \tilde h_t\\
-\tilde A_t &= \rho \tilde A_{t-1} + \sigma_{\epsilon} \epsilon_t, \quad \epsilon_t \sim \mathcal N(0,1)
+[1-\beta(1-\delta)](1-\alpha)\tilde k_{t+1}& &+\sigma E_t\tilde c_{t+1}& &=& & & &\sigma \tilde c_t& &+[1-\beta(1-\delta)]\rho \tilde a_t\\
+\tilde k_{t+1}& & & &=& &\frac{1}{\beta}\tilde k_t& &-\frac{1-\beta+(1-\alpha)\beta\delta}{\alpha\beta}\tilde c_t& &+\frac{1-\beta(1-\delta)}{\alpha\beta}\tilde a_t
 \end{align}
-したがって、このモデルの状態空間表現は、
+with
+\begin{align*}
+\tilde a_t = \rho \tilde a_{t-1} + \sigma_\varepsilon \varepsilon_t.
+\end{align*}
+
+と書くことができる．ここで，$\tilde k_0$は外生的に与えられ，かつ ($E_t\tilde k_{t+1} = \tilde k_{t+1}$であるから，) 予測誤差は$\xi^k_{t+1} = 0$．よって$ \boldsymbol{\xi^k}$はexogenous difference martingaleである．したがって，$\boldsymbol{\tilde k}$は後ろ向き変数．よって，
 \begin{align}
-x_t = \begin{bmatrix}\tilde k_t \\ \tilde A_{t-1}\end{bmatrix}, \quad y_t = \begin{bmatrix}\tilde c_t \\ \tilde h_t\end{bmatrix}
+&k_t = \begin{bmatrix}\tilde k_t\end{bmatrix}, d_t = \begin{bmatrix}\tilde c_t\end{bmatrix}, z_t = \begin{bmatrix}\tilde a_t\end{bmatrix},\xi_{t+1} = \begin{bmatrix}0\end{bmatrix},\notag \\
+&B = \begin{bmatrix}[1-\beta(1-\delta)](1-\alpha) & \sigma \\
+1 & 0 \end{bmatrix}, 
+A = \begin{bmatrix}0 & \sigma \\
+\frac{1}{\beta} & -\frac{1-\beta+(1-\alpha)\beta\delta}{\alpha\beta}\end{bmatrix},
+C = \begin{bmatrix}[1-\beta(1-\delta)]\rho \\ \frac{1-\beta(1-\delta)}{\alpha\beta}\end{bmatrix}.
 \end{align}
+
+
+\subsection{Example 2：A Simple Real Business Cycle Model}
+
+例1に弾力的労働供給を加えると、シンプルなRBCモデルとなる．
+
 \begin{align}
-A = \begin{bmatrix}0 & 0 & 1 & 0 \\ -\theta & 0 & 1 & \theta+\frac{\bar h}{1-\bar h} \\ \frac{1}{\beta} & 0 & -\frac{\bar c}{\bar k} & \frac{\bar y}{\bar k}(1-\theta) \\ 0 & \rho & 0 & 0\end{bmatrix}, \quad B=\begin{bmatrix}\beta \bar r (1-\theta) & -\beta \bar r \rho & 1 & -\beta \bar r (1-\theta) \\ 0 & 1 & 0 & 0 \\ 1 & -\frac{\bar y}{\bar k} & 0 & 0 \\ 0 & 1 & 0 & 0\end{bmatrix}, G=\begin{bmatrix}0 \\ 0 \\ 0 \\ \sigma_{\epsilon}\end{bmatrix}.
+\bar K \tilde k_{t+1} &= (1-\delta) \bar K \tilde k_t  + \bar Y \tilde y_t - \bar C \tilde c_t\label{rbc1}\\
+0 &= \alpha \tilde k_t -\alpha \tilde y_t - (1-\alpha) \tilde c_t + \tilde a_t\label{rbc3}\\
+0 &= \tilde k_t - \tilde y_t + \tilde r_t\label{rbc4}\\
+E_t\tilde c_{t+1} - \beta \bar R E_t \tilde r_{t+1} &= \tilde c_t\label{rbc5}
 \end{align}
-となる。
+with
+\begin{align*}
+\tilde a_t &= \rho \tilde a_{t-1} + \sigma_\varepsilon \varepsilon_t\label{rbc2}
+\end{align*}
+と書ける．ここで，1.1節と同様に，$\boldsymbol{\tilde k}$は後ろ向き変数．よって，
+\begin{align}
+&k_t = \begin{bmatrix}\tilde k_t\end{bmatrix}, d_t = \begin{bmatrix}\tilde y_t \\ \tilde c_t \\ \tilde r_t\end{bmatrix}, z_t = \begin{bmatrix}\tilde a_t\end{bmatrix},\notag\\
+&B = \begin{bmatrix}\bar K & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & 0 & 0\\
+0 & 0 & 1 & -\beta \bar R\end{bmatrix},
+A = \begin{bmatrix}(1-\delta) \bar K & \bar Y & -\bar C & 0\\
+\alpha & -\alpha & -(1-\alpha) & 0\\
+1 & -1 & 0 & 1\\
+0 & 0 & 1 & 0\end{bmatrix},
+C = \begin{bmatrix}0 \\ 1 \\ 0 \\ 0\end{bmatrix}.
+\end{align}
+where,
+\begin{align}
+\bar R &= \frac{1}{\beta}-1+\delta\\
+\Big(\frac{\bar K}{\bar Y} &= \frac{\alpha}{R}\Big)\notag\\
+\Big(\frac{\bar C}{\bar Y} &= 1-\delta\cdot\left(\frac{\bar K}{\bar Y}\right)\Big)\notag\\
+\bar H &= \frac{1-\alpha}{\psi\cdot\left(\frac{\bar C}{\bar Y}\right)}\\
+\Big(\frac{\bar K}{\bar H} &= \left[A\cdot\left(\frac{\bar K}{\bar Y}\right)\right]^{\frac{1}{1-\alpha}}\Big)\notag\\
+\bar K &= \left(\frac{\bar K}{\bar H}\right)\cdot \bar H\\
+\bar Y &= \left(\frac{\bar K}{\bar Y}\right)^{-1}\cdot \bar K\\
+\bar C &= \left(\frac{\bar C}{\bar Y}\right) \cdot \bar Y
+\end{align}
+
 
 \paragraph{練習問題1：New Keynesian Model}~
 
@@ -114,7 +141,7 @@ r^n_t &= \rho - \sigma (1-\rho_a) \psi_{ya} a_t +(1-\rho_z)z_t\\
 a_t &= \rho_a a_{t-1} + \sigma_a \epsilon^a_t\\
 z_t &= \rho_z z_{t-1} + \sigma_z \epsilon^z_t
 \end{align}
-を状態空間表現しなさい。
+をCanonical Formで表現しなさい．
 
 \paragraph{Answer:}
 \begin{align}
@@ -126,7 +153,7 @@ E_t\hat{y}_{t+1} + \frac{1}{\sigma}E_t\pi_{t+1} &= \hat{y}_t + \frac{1}{\sigma}(
 a_t &= \rho_a a_{t-1} + \sigma_a \epsilon^a_t\\
 z_t &= \rho_z z_{t-1} + \sigma_z \epsilon^z_t
 \end{align}
-と書き直せるので、状態空間表現は、
+と書き直せるので、Canonical Formは、
 \begin{align}
 x_t = \begin{bmatrix} \nu_{t-1} \\ a_{t-1} \\ z_{t-1} \end{bmatrix}, \quad y_t = \begin{bmatrix}\hat{y}_t \\ i_t - \rho \\ \pi_t \\ r^n_t - \rho\end{bmatrix}, \quad \epsilon_t = \begin{bmatrix}\epsilon^\nu_t \\ \epsilon^a_t \\ \epsilon^z_t\end{bmatrix}
 \end{align}
@@ -159,42 +186,635 @@ G &= \begin{bmatrix}0 & 0 & 0 \\
 0 & 0 & \sigma_z
 \end{bmatrix}
 \end{align}
+となる．
+
+\section{一般化Schur分解 （QZ分解）}
+モデルを式\eqref{model}の形式で書くことができたとする．次のステップは，\eqref{model}内の行列の組$B, A$を一般化Schur分解（QZ分解とも呼ばれる）することである．一般化Schur分解に入る前に，以下のようにペンシルと一般化固有値を定義する．\\
+
+\begin{itembox}[l]{{\bf Definition 2: Matrix Pencil}}
+複素数を定義域に持つ複素数行列値関数$P: \mathbb{C}\to \mathbb{C}^{n\times n}$をペンシルと呼ぶ．\\
+特に，2つの複素数正方行列$B, A$に対して，ペンシル$P(z) = Bz - A$を，ペンシル$(B,A)$と書くことにする．
+\end{itembox}
+\\
+
+\begin{itembox}[l]{{\bf Definition 3: Generalized Eigenvalues}}
+$P$をペンシルとする．このペンシル$P$の一般化固有値の集合 $\lambda(P)$は，以下のように定義される．
+\begin{align*}
+\lambda(P) \equiv \{z\in \mathbb{C}: |P(z)| = 0\}.
+\end{align*}
+つまり，一般化固有値$\lambda \in \lambda(P)$は，行列$P(\lambda)$の行列式をゼロにする複素数である．\\
+特に，ペンシル$(B,A)$の一般化固有値の集合を$\lambda(B,A)$と書く．つまり，
+\begin{align*}
+\lambda(B,A) \equiv \{z\in\mathbb{C}: |Bz-A|=0\}.
+\end{align*}
+\end{itembox}
+\\
+$\lambda \in \lambda(B,A)$に対して，ゼロでないベクトル $x \in \mathbb{C}^n$ が存在して，$Ax = \lambda Bx$を満たす．この事実が，$\lambda\in\lambda(B,A)$が一般化固有値と呼ばれる所以である．\\
+
+次に，ペンシルの正則性（regularity）を定義する．\\
+
+\begin{itembox}[l]{{\bf Definition 4: Regular Matrix Pencil}}
+$P$をペンシルとする．ペンシル $P$ が正則 (regular)であるとは，$|P(z)|\not=0$となるような$z\in\mathbb{C}$が存在することを言う．つまり，$P$が正則であるとは，$\lambda(P)\not=\mathbb{C}$であることを言う．
+\end{itembox}
+\\
+
+以下では，モデル\eqref{model}内の行列$B,A$から作られるペンシル$(B,A)$は正則であると仮定する\footnote{動学的一般均衡モデルにおいて，ほぼ一般的にこの仮定が満たされる．}．\\
+
+\begin{itembox}[l]{{\bf Assumption 1: Regularity}}
+モデル\eqref{model}の行列$B,A$から作られるペンシル$(B,A)$は正則である．つまり，
+\begin{align*}
+\exists z \in \mathbb{C} \; \text{such that} \; |Bz - A| \not= 0.
+\end{align*}
+\end{itembox}
+\\
+
+Assumption 1が満たされていれば，$A$や$B$が逆行列を持たなくても問題はない．これが，一般化Schur分解を使う方法の大きな利点である．以上を踏まえて，一般化Schur分解は，以下のような定理にまとめられる．\\
+
+\begin{itembox}[l]{{\bf Theorem 1： Complex Generalized Schur Decomposition}}
+$A$と$B$はともに$n\times n$の複素数行列であり，ペンシル$(B,A)$はregularである（つまり， $\exists z\in\mathbb{C}$ such that $|Bz-A|\not=0.$）とする．この時，複素数からなる $n\times n$行列 $Q, Z, S, T$が存在して，以下が成り立つ．
+\begin{enumerate}
+\item $Q^{\rm{H}}AZ=S$は上三角行列(an upper triangular matrix)である\footnote{ここで，$X^{\rm{H}}$は$X$のエルミート共軛行列(Hermitian conjugate matrix)，つまり$X$の転置および各成分の複素共軛をとった行列である．}．
+\item $Q^{\rm{H}}BZ=T$は上三角行列(an upper triangular matrix)．
+\item $Q$と$Z$はユニタリー行列，つまり，$QQ^{\rm{H}} = Q^{\rm{H}} Q = I, ZZ^{\rm{H}} = Z^{\rm{H}} Z=I$である．
+\item 全ての$i (= 1, 2, \cdots n)$に対して，$s_{ii}$と$t_{ii}$が同時にゼロになることはない\footnote{$x_{ij}$によって，任意の行列$X$の$(i,j)$成分を表すものとする}．
+\item ペンシル$(B,A)$の第$i$一般化固有値$\lambda_{i}\in\lambda (B,A)$は$S$の第$i$対角成分$s_{ii}$と$T$の第$i$対角成分$t_{ii}$を使って$\lambda_i=\frac{s_{ii}}{t_{ii}}$で求められる．（$t_{ii} = 0$のときは，$\lambda_i = \infty$と書くことにする．）
+\item ペア$(s_{ii}, t_{ii}) (i=1,2,\cdots, n)$の順番は任意に入れ替えられ，$Q, Z, S, T$はそのペア順番に依存して決まる．
+\end{enumerate}
+
+{\it Proof:} \citet{golub2012}を参照． 
+\end{itembox}
+\\
+
+Theorem 1.6より，一般化Schur分解は一般に複数存在する．以下では一般化Schur分解は結果として得られる一般化固有値の絶対値が小さい順に上から並ぶように$S,T,Q,Z$を定めるとする．\footnote{この順序を指定した一般化Schur分解は、{\tt R}では{\tt geigen}パッケージにある{\tt gqz}関数で簡単に計算が可能である．}
+
+一般化Schur分解によって、$A = QSZ^{\rm{H}}, B = QTZ^{\rm{H}}$と分解できるので，式\eqref{model}は
+\begin{align*}
+Q TZ^{\rm{H}} E_tx_{t+1} = Q SZ^{\rm{H}} x_t + C z_t
+\end{align*}
+と書ける．両辺に左から$Q^{\rm{H}}$を掛けて，$Q^{\rm{H}}Q = I$を使うと
+\begin{align}
+&TZ^{\rm{H}} E_tx_{t+1} = SZ^{\rm{H}} x_t + Q^{\rm{H}}Cz_t \label{model2}
+\end{align}
+ここで，補助的な変数として
+\begin{align}
+y_t \equiv Z^{\rm{H}}x_t \label{defy}
+\end{align}
+と定義すると，式\eqref{model2}は
+\begin{align}
+&T E_ty_{t+1} = Sy_t + Q^{\rm{H}}Cz_t \label{model3}
+\end{align}
+と書き直すことができる．
+
+\section{解の安定性の確認（stableな一般化固有値の数と後ろ向き変数の数の比較）}
+式\eqref{model}を式\eqref{model3}に書き直したら，一般化固有値の絶対値を確認する．全部で$n$個ある一般化固有値$\lambda_i = \frac{s_{ii}}{t_{ii}}$のうち，絶対値が１より小さいものを「stableな一般化固有値」，絶対値が1より大きいものを「unstableな一般化固有値」と呼ぶことにする\footnote{絶対値がちょうど1である一般化固有値はないと仮定する．もしこれが存在すると，解くのは非常に難しくなる．}．また，stableな一般化固有値の数を$n_s$で表すことにする．このとき，以下の定理が得られる\footnote{Theorem 2のように，stableな固有値の数と後ろ向き変数（または先決変数）の数を比較して解の安定性を判別するための定理はBlanchard-Kahn Theoremと呼ばれる．}．\\
+
+\begin{itembox}[l]{{\bf Theorem 2: Stability}}
+行列$Z_{11}$を，行列$Z$の左上$n_k\times n_s$部分を取り出した行列とする．この時，
+\begin{enumerate}
+\item $n_s = n_k$かつ$Z_{11}$が逆行列を持つならば，stableな合理的期待均衡解はuniqueに定まる． (Saddle path stable)
+\item $n_s < n_k$ならば，stableな合理的期待均衡解は存在しない．(No solution)
+\item $n_s > n_k$ならば，stableな合理的期待均衡解は無数に存在する．(Indeterminacy)
+\end{enumerate}
+\end{itembox}
+\\
+
+以下の説明は，解の求め方であるとともに，Theorem 2の証明でもある．
+
+$n$個の補助変数からなるベクトル$y_t$のうち，上から$n_s$個の変数からなるベクトルを$s_t$，残り$n_u (=n-n_s)個$の変数からなるベクトルを$u_t$と書く．つまり，$y_t$を以下のようにpartitionする．
+
+\begin{align}
+\mathop{y_t}_{(n\times 1)} = \begin{bmatrix}s_t \\ {\scriptscriptstyle (n_s \times 1)} \\ u_t \\ {\scriptscriptstyle (n_u \times 1)}\end{bmatrix}.
+\end{align}
+
+行列$S, T, Q^{\rm{H}}$もそれに合わせてpartitionする．$S$と$T$は上三角行列であることに注意すると，
+\begin{align}
+S = \begin{bmatrix}S_{11} & S_{12} \\
+{\scriptscriptstyle (n_s \times n_s)} & {\scriptscriptstyle (n_s \times n_u)}\\
+0 & S_{22} \\
+{\scriptscriptstyle (n_u \times n_s)} & {\scriptscriptstyle (n_u \times n_u)}\end{bmatrix},
+T = \begin{bmatrix}T_{11} & T_{12} \\
+{\scriptscriptstyle (n_s \times n_s)} & {\scriptscriptstyle (n_s \times n_u)}\\
+0 & T_{22} \\
+{\scriptscriptstyle (n_u \times n_s)} & {\scriptscriptstyle (n_u \times n_u)}\end{bmatrix},
+Q^{\rm{H}} = \begin{bmatrix}(Q^{\rm{H}})_{1\cdot} \\
+{\scriptscriptstyle (n_s \times n)}\\
+(Q^{\rm{H}})_{2\cdot} \\
+{\scriptscriptstyle (n_u \times n)}\end{bmatrix}
+\end{align}
+と書ける．これを使って\eqref{model3}を書き直すと，
+\begin{align}
+\begin{bmatrix}T_{11} & T_{12} \\ 0 & T_{22}\end{bmatrix} \begin{bmatrix}E_ts_{t+1} \\ E_tu_{t+1}\end{bmatrix} = \begin{bmatrix}S_{11} & S_{12} \\ 0 & S_{22}\end{bmatrix} \begin{bmatrix} s_t \\ u_t\end{bmatrix} + \begin{bmatrix}(Q^{\rm{H}})_{1\cdot} \\ (Q^{\rm{H}})_{2\cdot}\end{bmatrix}Cz_t\label{model4}
+\end{align}
+
+\section{$u_t$の決定}
+
+$S$と$T$がともに上三角行列であることから，\eqref{model4}の下$n_u$行には$s_t$および$E_ts_{t+1}$が現れず，$u_t$および$E_tu_{t+1}$は以下の式を満たす事がわかる．
+\begin{align}
+T_{22}E_tu_{t+1} = S_{22}u_t + (Q^{\rm{H}})_{2\cdot}Cz_t. \label{modelu}
+\end{align}
+上の式は$n_u$本の連立方程式になっている．$S_{22}$と$T_{22}$も上三角行列であることに気をつけると，\eqref{modelu}の上から数えて第$i$番目の方程式は以下の形式になっている．
+\begin{align}
+(t_{22})_{ii}E_tu_{i,t+1} + \sum_{j=i+1}^{n_u}(t_{22})_{ij}E_tu_{j,t+1} &= (s_{22})_{ii}u_{i,t} + \sum_{j=i+1}^{n_u}(s_{22})_{ij}u_{j,t} + g_{i\cdot}z_t, \qquad &\text{for} \; i = 1,2,\cdots, n_u-1,\label{modelu1}\\
+(t_{22})_{ii}E_tu_{i,t+1} &= (s_{22})_{ii}u_{i,t} + g_{i\cdot}z_t, & \text{for} \; i=n_u. \label{modelu2}
+\end{align}
+ここで，$u_{i,t}$はベクトル$u_t$の第$i$成分，$g_{i\cdot}$は行列$(Q^{\rm{H}})_{2\cdot}C$の第$i$行を表す．\\
+
+\eqref{modelu1}, \eqref{modelu2}の方程式は，下から順に解いていくことができる．一番下にある（上から数えると第$n_u$番目の）方程式は，\eqref{modelu2}を使って
+\begin{align}
+&(t_{22})_{n_u,n_u} E_tu_{n_u,t+1} = (s_{22})_{n_u,n_u}u_{n_u,t} + g_{n_u,\cdot}z_t.\notag\\
+\Leftrightarrow \; &u_{n_u,t} = \frac{(t_{22})_{n_u,n_u}}{(s_{22})_{n_u,n_u}}E_tu_{n_u,t+1} - \frac{1}{(s_{22})_{n_u,n_u}}g_{n_u\cdot}z_t.\notag
+\end{align}
+となる．$u_t$に対応する一般化固有値はunstableなので，$|(t_{22})_{n_u,n_u}/(s_{22})_{n_u,n_u}|<1$. よって上の式はforwardに解くことができて，
+\begin{align}
+\Leftrightarrow \; &u_{n_u,t} = - \frac{1}{(s_{22})_{n_u,n_u}} \sum_{k = 0}^\infty \left(\frac{(t_{22})_{n_u,n_u}}{(s_{22})_{n_u,n_u}}\right)^k g_{n_u\cdot}E_tz_{t+k}.\label{modelu3}
+\end{align}
+
+
+となる．ここで外生の確率変数ベクトル$z_t$はVAR過程に従い，自己相関行列$\Phi$を持つ場合はより明示的に解ける．\\
+
+\begin{itembox}[l]{{\bf Assumption 2: VAR exogenous shock process}}
+確率過程$\boldsymbol{z}$は，自己相関行列$\Phi$のVAR過程に従う．つまり，$E_tz_{t+k} = \Phi^kz_t$.
+\end{itembox}
+\\
+
+Assumption 2が成立する場合は，\eqref{modelu3}は，
+\begin{align}
+u_{n_u,t} &= - \frac{1}{(s_{22})_{n_u,n_u}} \sum_{k = 0}^\infty \left(\frac{(t_{22})_{n_u,n_u}}{(s_{22})_{n_u,n_u}}\right)^k g_{n_u\cdot}\Phi^k z_t.\notag\\
+&= g_{n_u\cdot}[(t_{22})_{n_u,n_u}\Phi - (s_{22})_{n_u,n_u}I_{n_z}]^{-1}z_t \notag\\
+&= m_{n_u\cdot}z_t, \label{modelu4}
+\end{align}
+where
+\begin{align}
+m_{n_u\cdot} \equiv g_{n_u\cdot}[(t_{22})_{n_u,n_u}\Phi - (s_{22})_{n_u,n_u}I_{n_z}]^{-1}
+\end{align}
+となる（最後の式変形はAppendix Bを参照）．\\
+
+次に，一段上（上から第$(n_u-1)$番目）の方程式を書き下すと，\eqref{modelu1}式から，
+\begin{align*}
+&(t_{22})_{n_u-1,n_u-1}E_tu_{n_u-1,t+1} + (t_{22})_{n_u-1,n_u}E_tu_{n_u,t+1} \\
+&\qquad = (s_{22})_{n_u-1,n_u-1}u_{n_u-1,t} + (s_{22})_{n_u-1,n_u}u_{n_u,t} + g_{n_u-1\cdot}z_t 
+\end{align*}
+となるが，\eqref{modelu4}式とAssumption 2から，$u_{n_u,t} = m_{n_u\cdot} z_t, E_tu_{n_u,t+1} = m_{n_u\cdot}\Phi z_t$であるから，
+\begin{align}
+(t_{22})_{n_u-1,n_u-1}E_tu_{n_u-1,t+1} &= (s_{22})_{n_u-1,n_u-1}u_{n_u-1,t} + r_{n_u-1} z_t\notag\\
+\Leftrightarrow u_{n_u-1,t} &= -\frac{1}{(s_{22})_{n_u-1,n_u-1}}\sum_{k=0}^\infty \left(\frac{(t_{22})_{n_u-1,n_u-1}}{(s_{22})_{n_u-1,n_u-1}}\right)^k r_{n_u-1}\Phi^k z_t, \\
+&= r_{n_u-1}[(t_{22})_{n_u-1,n_u-1}\Phi - (s_{22})_{n_u-1,n_u-1}I_{n_z}]^{-1}z_t,\label{modelu5}
+\end{align}
+where
+\begin{align*}
+r_{n_u-1} = [(s_{22})_{n_u-1,n_u}m_{n_u\cdot} - (t_{22})_{n_u-1,n_u} m_{n_u\cdot}\Phi] + g_{n_u-1\cdot}
+\end{align*}
+\eqref{modelu5}は，
+\begin{align*}
+u_{n_u-1,t} = m_{n_u-1\cdot}z_t,
+\end{align*}
+where
+\begin{align*}
+m_{n_u-1\cdot} = r_{n_u-1}[(t_{22})_{n_u-1,n_u-1}\Phi - (s_{22})_{n_u-1,n_u-1}I_{n_z}]^{-1}
+\end{align*}
+と書ける．
+
+同様に下から順番に解いていくと，上から第$i$番目の方程式は，
+\begin{align}
+u_{i,t} = m_{i\cdot}z_t,
+\end{align}
+where
+\begin{align}
+m_{i\cdot} &= r_i[(t_{22})_{ii}\Phi - (s_{22})_{ii}I_{n_z}]^{-1},\label{mi}\\
+r_i &= \begin{cases}\sum_{j = i+1}^{n_u}[(s_{22})_{ij}m_{j\cdot} - (t_{22})_{ij} m_{j\cdot}\Phi] + g_{i\cdot} &i = 1,2,\cdots,n_u-1,\\
+g_{n_u\cdot}, &i = n_u.\end{cases}\label{ri}
+\end{align}
+
+以上から，$i = n_u, n_u-1, \cdots, 1$の順に$m_{i\cdot}$を計算し，
+\begin{align}
+M &= \begin{bmatrix}m_{1\cdot} \\ m_{2\cdot} \\ \vdots \\ m_{n_u\cdot}\end{bmatrix}
+\end{align}
+によって$n_u \times n_u$行列$M$を作れば，
+\begin{align}
+u_t = Mz_t \label{solutionu}
+\end{align}
+となり，$u_t$を外生の確率変数$z_t$で表すことができる．
+
+\section{$s_t$の決定}
+
+式\eqref{model4}の上から$n_s$本の連立方程式は，
+\begin{align*}
+T_{11}E_ts_{t+1} + T_{12}E_tu_{t+1} = S_{11}s_t + S_{12}u_t + (Q^{\rm{H}})_{1\cdot}Cz_t
+\end{align*}
+$T_{11}$は逆行列を持つ\footnote{証明は以下の通り．$i \in \{1, \cdots, n_s\}$に対して，$|\lambda_i| = |\frac{s_{ii}}{t_{ii}}|<1$. したがって$t_{ii}\not=0$. 更に，$T_{11}$の対角成分より右下の成分は全てゼロ．したがって，$T_{11}$の各行は一次独立であるので，$T_{11}$はfull rankである．}ので，
+\begin{align}
+E_ts_{t+1} &= (T_{11})^{-1}S_{11}s_t + (T_{11})^{-1}S_{12}u_t - (T_{11})^{-1}T_{12}E_tu_{t+1} + (T_{11})^{-1}(Q^{\rm{H}})_{1\cdot}Cz_t\notag\\
+&= (T_{11})^{-1}S_{11}s_t + (T_{11})^{-1}S_{12}Mz_t - (T_{11})^{-1}T_{12}M\Phi z_t + (T_{11})^{-1}(Q^{\rm{H}})_{1\cdot}Cz_t\notag\\
+&= (T_{11})^{-1}S_{11}s_t + [(T_{11})^{-1}S_{12}M - (T_{11})^{-1}T_{12}M\Phi + (T_{11})^{-1}(Q^{\rm{H}})_{1\cdot}C]z_t\label{models1}
+\end{align}
+$T_{11}^{-1}S_{11}$の全ての固有値は1より小さいので，$u_t$を解いたときのように，この式をforwardに解くことはできない．その代わり，以下の解法を使う．
+
+行列$Z$を以下のようにpartitionする．
+\begin{align*}
+Z = \begin{bmatrix}Z_{11} & Z_{12} \\ {\scriptscriptstyle (n_k\times n_s)} & {\scriptscriptstyle (n_k\times n_u)} \\ Z_{21} & Z_{22} \\ {\scriptscriptstyle ((n-n_k)\times n_s)} & {\scriptscriptstyle ((n-n_k)\times n_u)} \end{bmatrix} \end{align*}
+
+$x_t = Zy_t$より，
+\begin{align}
+k_t = Z_{11} s_t  + Z_{12} u_t.\label{ksu}
+\end{align}
+なので，
+\begin{align*}
+E_t k_{t+1} = Z_{11} E_ts_{t+1} + Z_{12} E_tu_{t+1}
+\end{align*}
+となる．したがって，これらとDefinition 1より，
+\begin{align}
+k_{t+1} - E_t k_{t+1} = Z_{11} (s_{t+1} - E_ts_{t+1}) + Z_{12} (u_{t+1} - E_tu_{t+1}) = \xi_{t+1} \label{suxi}
+\end{align}
+
+\subsection{Case 1: $n_s = n_k$ かつ $Z_{11}$の逆行列が存在する場合}
+$Z_{11}$が逆行列を持つので，式\eqref{suxi}から，
+\begin{align}
+E_ts_{t+1} &= s_{t+1} + (Z_{11})^{-1}Z_{12}(u_{t+1} - E_tu_{t+1}) - (Z_{11})^{-1}\xi_{t+1}\notag\\
+&= s_{t+1} + (Z_{11})^{-1}Z_{12}M(\Phi z_t + \varepsilon_{t+1} - \Phi z_t) - (Z_{11})^{-1}\xi_{t+1} \notag\\
+&= s_{t+1} + (Z_{11})^{-1}Z_{12}M \varepsilon_{t+1} - (Z_{11})^{-1}\xi_{t+1}\label{etst1}
+\end{align}
+を得る．この式を式\eqref{models1}に代入して整理すると，
+\begin{align}
+s_{t+1} &= (T_{11})^{-1}S_{11}s_t + (T_{11})^{-1}[S_{12}M - T_{12}M\Phi + (Q^{\rm{H}})_{1\cdot}C]z_t \notag\\
+&\qquad -(Z_{11})^{-1}Z_{12}M \varepsilon_{t+1} + (Z_{11})^{-1}\xi_{t+1} \label{solutions}
+\end{align}
+この式の中で$z_t, \varepsilon_t, \xi_{t+1}$は外生なので，もし$s_0$が与えられれば，$\{s_t\}_{t=0}^\infty$を全て求められる．\\
+
+最後に，$s_0$を求める．式\eqref{ksu}から$k_0 = Z_{11}s_0 + Z_{12} u_0$. したがって，
+\begin{align}
+s_0 &= (Z_{11})^{-1}[k_0 - Z_{12}u_0]\notag\\
+&= (Z_{11})^{-1}[k_0 - Z_{12}Mz_0] \qquad (\because \eqref{solutionu}). \label{solutions0}
+\end{align}
+
+以上で，外生変数の確率過程に対して$y_t$の確率過程がただ一つに定まる．
+
+\subsection{Case 2: $n_s < n_k$ の場合}
+\eqref{solutionu}から，$u_0$について$n_u$本の条件
+\begin{align}
+u_0 = Mz_0
+\end{align}
+があり，
+\eqref{ksu}から，$s_0$について$n_k$本の条件
+\begin{align}
+Z_{11}s_0 = Z_{12}u_0 - k_0 = Z_{12}M z_0 - k_0
+\end{align}
+がある．したがって，$y_0$について$n_s + n_k > n$本の条件が存在し，これらは互いに独立なので，すべての条件を満たす$y_0$は存在しない．したがって$x_0$も存在しない．
+
+\subsection{Case 3: $n_s > n_k$の場合}
+
+\eqref{solutionu}から，$u_0$について$n_u$本の条件
+\begin{align}
+u_0 = Mz_0
+\end{align}
+があり，
+\eqref{ksu}から，$s_0$について$n_k$本の条件
+\begin{align}
+Z_{11}s_0 = Z_{12}u_0 - k_0 = Z_{12}M z_0 - k_0
+\end{align}
+がある．したがって，$y_0$について$n_s + n_k < n$本の条件しか存在しないため，すべての条件を満たす$y_0$は無数に存在する．したがって$x_0$も無数に存在する．
+
+\section{$x_t$の均衡動学を求める}
+\subsection{$d_t$の均衡動学}
+以下は，$n_s = n_k$かつ$Z_{11}$が逆行列を持つ場合を考える．\eqref{solutionu}から，
+\begin{align}
+&u_t = Mz_t,\notag \\
+\Leftrightarrow \quad & (Z^{\rm{H}})_{21}k_t + (Z^{\rm{H}})_{22}d_t = M z_t \qquad (\because \eqref{defy}) \label{kdz}
+\end{align}
+ここで，$Z$はユニタリー行列であるから，
+\begin{align*}ZZ^{\rm{H}} = \begin{bmatrix}Z_{11}(Z^{\rm{H}})_{11} + Z_{12}(Z^{\rm{H}})_{21} & Z_{11}(Z^{\rm{H}})_{12} + Z_{12}(Z^{\rm{H}})_{22}\\
+Z_{21}(Z^{\rm{H}})_{11} + Z_{22}(Z^{\rm{H}})_{21}& Z_{21}(Z^{\rm{H}})_{12} + Z_{22}(Z^{\rm{H}})_{22}\end{bmatrix} = I\label{zzhp}
+\end{align*}
+したがって，右上ブロックに注目すると，
+$Z_{11}(Z^{\rm{H}})_{12} + Z_{12}(Z^{\rm{H}})_{22}=0$．よって，
+\begin{align}
+(Z^{\rm{H}})_{12} = -(Z_{11})^{-1}Z_{12}(Z^{\rm{H}})_{22}.
+\end{align}
+これを右下ブロックの$Z_{21}(Z^{\rm{H}})_{12} + Z_{22}(Z^{\rm{H}})_{22} = I_u$に代入すると，
+\begin{align}
+&-Z_{21}(Z_{11})^{-1}Z_{12}(Z^{\rm{H}})_{22} + Z_{22}(Z^{\rm{H}})_{22} = I_u\notag\\
+\Leftrightarrow \quad & [-Z_{21}(Z_{11})^{-1}Z_{12} + Z_{22}](Z^{\rm{H}})_{22} = I_u\label{zh22-1}
+\end{align}
+\eqref{kdz}の両辺に$-Z_{21}(Z_{11})^{-1}Z_{12} + Z_{22}$を左から掛けて，\eqref{zh22-1}を使うと，
+\begin{align}
+[-Z_{21}(Z_{11})^{-1}Z_{12}(Z^{\rm{H}})_{21} + Z_{22}(Z^{\rm{H}})_{21}]k_t - d_t = [-Z_{21}(Z_{11})^{-1}Z_{12} + Z_{22}]Mz_t
+\end{align}
+ここで，\eqref{zzhp}の左上ブロックより$Z_{12}(Z^{\rm{H}})_{21} = I_{n_s} - Z_{11}(Z^{\rm{H}})_{11}$，左下ブロックより$Z_{22}(Z^{\rm{H}})_{21} = -Z_{21}(Z^{\rm{H}})_{11}$．これらを代入すると$k_t$の係数行列が整理されて，
+\begin{align}
+-Z_{21}(Z_{11})^{-1}k_t + d_t = [-Z_{21}(Z_{11})^{-1}Z_{12} + Z_{22}]Mz_t
+\end{align}
+以上から，$d_t$の均衡動学は以下のように書ける．
+\begin{align}
+d_t = J k_t + N z_t, \label{solutiond}
+\end{align}
+where
+\begin{align}
+J &= Z_{21}(Z_{11})^{-1},\label{j}\\
+N &= [Z_{22} - Z_{21}(Z_{11})^{-1}Z_{12}]M. \label{n}
+\end{align}
+
+\subsection{$k_t$の均衡動学}
+\eqref{defy}より，
+\begin{align*}
+s_t &= (Z^{\rm{H}})_{11}k_t + (Z^{\rm{H}})_{12}d_t\notag\\
+&= [(Z^{\rm{H}})_{11} + (Z^{\rm{H}})_{12}Z_{21}(Z_{11})^{-1}]k_t + (Z^{\rm{H}})_{12}Nz_t.
+\end{align*}
+同様に，
+\begin{align*}
+s_{t+1} = [(Z^{\rm{H}})_{11} + (Z^{\rm{H}})_{12}Z_{21}(Z_{11})^{-1}]k_{t+1} + (Z^{\rm{H}})_{12}N[\Phi z_t + \varepsilon_{t+1}].
+\end{align*}
+
+この2本の式を\eqref{solutions}および\eqref{solutions0}にそれぞれ代入する．
+\begin{align}
+[(Z^{\rm{H}})_{11} + (Z^{\rm{H}})_{12}Z_{21}(Z_{11})^{-1}]k_{t+1} &= (T_{11})^{-1}S_{11}[(Z^{\rm{H}})_{11} + (Z^{\rm{H}})_{12}Z_{21}(Z_{11})^{-1}]k_t \notag\\&\qquad+ \{(T_{11})^{-1}S_{11}(Z^{\rm{H}})_{12}N + (T_{11})^{-1}[S_{12}M - T_{12}M\Phi + (Q^{\rm{H}})_{1\cdot}C]-(Z^{\rm{H}})_{12}N\Phi\}z_t \notag\\
+&\qquad -[(Z_{11})^{-1}Z_{12}M+(Z^{\rm{H}})_{12}N] \varepsilon_{t+1} + (Z_{11})^{-1}\xi_{t+1}, \label{solutionk}\\
+[(Z^{\rm{H}})_{11} + (Z^{\rm{H}})_{12}Z_{21}(Z_{11})^{-1}]k_0&= (Z_{11})^{-1}[k_0 - Z_{12}Mz_0]-(Z^{\rm{H}})_{12}Nz_0. \label{k0}
+\end{align}
+式\eqref{k0}は$k_0$と$z_0$に関する恒等式である．したがって，
+\begin{align}
+(Z^{\rm{H}})_{11} + (Z^{\rm{H}})_{12}Z_{21}(Z_{11})^{-1} &= (Z_{11})^{-1}, \label{z11-1}\\
+-(Z_{11})^{-1}Z_{12}M-(Z^{\rm{H}})_{12}N &= 0\label{zh12n}
+\end{align}
+式\eqref{solutionk}にこの2本の式を代入すると，
+\begin{align*}
+\underbrace{(Z_{11})^{-1}}_{\because \eqref{z11-1}}k_{t+1} &= (T_{11})^{-1}S_{11}\underbrace{(Z_{11})^{-1}}_{\because \eqref{z11-1}}k_t\notag\\
+&\quad +\{-(T_{11})^{-1}S_{11}\underbrace{(Z_{11})^{-1}Z_{12}M}_{\because \eqref{zh12n}} + (T_{11})^{-1}S_{12}M-(T_{11})^{-1}T_{12}M\Phi + (T_{11})^{-1}(Q^{\rm{H}})_{1\cdot}C\underbrace{+(Z_{11})^{-1}Z_{12}M}_{\because \eqref{zh12n}}\Phi\}z_t\notag\\
+&\quad -[(Z_{11})^{-1}Z_{12}M \underbrace{-(Z_{11})^{-1}Z_{12}M}_{\because \eqref{zh12n}}]\varepsilon_{t+1} + (Z_{11})^{-1}\xi_{t+1}.
+\end{align*}
+両辺に$Z_{11}$を左から掛けると，
+\begin{align}
+k_{t+1} = K k_t + L z_t + \xi_{t+1} \label{solutionk}
+\end{align}
+where
+\begin{align}
+K &= Z_{11}(T_{11})^{-1}S_{11}(Z_{11})^{-1}\label{k}\\
+L &= -Z_{11}(T_{11})^{-1}S_{11}(Z_{11})^{-1}Z_{12}M + Z_{11}(T_{11})^{-1}[S_{12}M - T_{12}M\Phi + (Q^{\rm{H}})_{1\cdot}C] + Z_{12}M\Phi\label{l}
+\end{align}
+これで，$k_0$をgivenとして，$\{k_{t+1}\}$を求められる．
+
+\section{Algorithm}
+以上から，確率的動学一般均衡モデル
+\begin{align}
+&BE_tx_{t+1} = Ax_t + Cz_t\tag{\ref{model}}\\
+&x_t = \begin{bmatrix}k_t \\ d_t\end{bmatrix}\tag{\ref{xkd}}\\
+&z_t = \Phi z_{t-1} + \varepsilon_t\notag\\
+&\xi_{t+1} = k_{t+1} - E_tk_{t+1} \;\text{は外生}, \quad E_t\xi_{t+1} = 0\notag\\
+&k_0, z_{-1}\;\text{given}\notag
+\end{align}
+の合理的期待均衡解を状態空間表現
+\begin{align}
+k_{t+1} &= K k_t + L z_t + \xi_{t+1}\tag{\ref{solutionk}}\\
+d_t &= J k_t + Nz_t\tag{\ref{solutiond}}
+\end{align}
+で表すためのアルゴリズムは以下の通りである．\\
+
+\begin{itembox}[l]{{\bf Algorithm}}
+\begin{enumerate}
+\item $A = QSZ^{\rm{H}}, B = QTZ^{\rm{H}}$にQZ分解．ただし，一般化固有値$\lambda_i$が小さい順に上から並ぶように行う．
+\item 後ろ向き変数の数 $n_k$ とstableな一般化固有値 ($\lambda_i$ such that $|\lambda_i|<1$)の数$n_s$が同じであることを確かめる．
+\begin{enumerate}
+\item $n_s = n_k$: 解がuniqueに定まるので，Step 3に進む．
+\item $n_s < n_k$: 解は存在しない．終了．
+\item $n_s > n_k$: 解は無数に存在する．終了するか，期待に関する何らかの外生な確率過程（いわゆる"sunspot shock"）を加えてやり直す．
+\end{enumerate}
+\item $G = (Q^{\rm{H}})_{2\cdot}C$を計算．
+\item 以下の要領で$M$の第$i$行ベクトル$m_{i\cdot}$を求める．
+
+$n_z$は$z_t$ベクトルの長さ，また，$n_u = n-n_s$とする．$i = n_u, \cdots, 1$に対して，以下を繰り返し計算．
+\begin{align*}
+m_{i\cdot} &= r_i[(t_{22})_{ii}\Phi - (s_{22})_{ii}I_{n_z}]^{-1},\tag{\ref{mi}}\\
+r_i &= \begin{cases}\sum_{j = i+1}^{n_u}[(s_{22})_{ij}m_{j\cdot} - (t_{22})_{ij} m_{j\cdot}\Phi] + g_{i\cdot} &i = 1,2,\cdots,n_u-1,\\
+g_{n_u\cdot}, &i = n_u.\end{cases}\tag{\ref{ri}}
+\end{align*}
+\item $m_{i\cdot}$を並べて，以下の通り$M$を作る．
+\begin{align*}
+M = \begin{bmatrix}m_{1\cdot} \\ \vdots \\ m_{n_u\cdot}\end{bmatrix} 
+\end{align*}
+\item $J,N,K,L$を以下の通り計算．
+\begin{align}
+J &= Z_{21}(Z_{11})^{-1},\tag{\ref{j}}\\
+N &= [Z_{22} - Z_{21}(Z_{11})^{-1}Z_{12}]M. \tag{\ref{n}}\\
+K &= Z_{11}(T_{11})^{-1}S_{11}(Z_{11})^{-1}\tag{\ref{k}}\\
+L &= -Z_{11}(T_{11})^{-1}S_{11}(Z_{11})^{-1}Z_{12}M + Z_{11}(T_{11})^{-1}[S_{12}M - T_{12}M\Phi + (Q^{\rm{H}})_{1\cdot}C] + Z_{12}M\Phi\tag{\ref{l}}
+\end{align}
+
+
+\end{enumerate}
+\end{itembox}
+
+\section{R code}
+
+あらかじめ{\tt geigen}パッケージをインストールしておくこと．
+
+\subsection{Calculate transition and policy functions}
+まず$H,J,C,D$を計算する関数 {\tt calc\_t\_p} を書き、{\tt calc\_trans\_policy.R}として保存しておく．\\
+
+\begin{itembox}[l]{{\tt calc\_trans\_policy.R}}
+
+\noindent
+{\tt
+library(geigen)\\
+\\
+\#\# calc\_t\_p \\
+\\
+\#\# 線型モデル \\
+\#\# B * [x\_\{t+1\}; E\_t y\_\{t+1\}] = A * [x\_t; y\_t] + G * [epsilon\_t] \\
+\#\# から状態空間表現 \\
+\#\# y\_t = H * x\_t + J * epsilon\_t \\
+\#\# x\_\{t+1\} = C * x\_t + D * epsilon\_t\\
+\#\# を求める．\\
+\\
+calc\_t\_p <- function(A, B) \{\\
+\#\# QZ decomposition \\
+dec <- gqz(A, B, ``S'')\\
+
+
+\}
+}
+
+\end{itembox}
+
+\subsection{Impulse Response}
+
+\section{Appendix}
+\begin{appendix}
+\section{Derivations of Linear Models}
+\subsection{A Stochastic Growth Model}
+確率的な生産性ショックの入ったRamsey Modelは下のように定式化される．
+\begin{align*}
+\max & \; E_0 \sum_{t=0}^\infty \frac{C_t^{1-\sigma} - 1}{1-\sigma}\\
+\text{s.t.} & \; C_t + K_t - (1-\delta) K_{t-1} \le A_t K_{t-1}^\alpha 
+\end{align*}
+最適化の一階条件は
+\begin{align*}
+&C_t^{-\sigma} = \beta E_t\left\{C_{t+1}^{-\sigma} (\alpha A_{t+1} K_t^{\alpha-1} + 1 -\delta)\right\}\\
+&K_t = (1-\delta) K_{t-1} + A_t K_{t-1}^\alpha - C_t\\
+\end{align*}
+と書ける．生産性ショックの対数はAR(1)過程に従うと仮定する($\frac{A_t}{A} = \left(\frac{A_{t-1}}{A}\right)^\rho \exp(\epsilon_t)$)．また、均衡では横断性条件 $\lim_{T \to \infty} E_t \beta^T C_{t+T}^{-\sigma} K_{t+T} = 0$が成立する。このモデルを定常状態の周りで対数線型近似すると、
+\begin{align*}
+-\sigma \tilde c_t = -\sigma  \tilde E_tc_{t+1} + \beta \alpha A (\alpha -1) K^{\alpha -1} \tilde k_t + \beta \alpha A K^{\alpha -1} E_t\tilde a_{t+1}\\
+\tilde k_t = (1-\delta) \tilde k_{t-1} + \alpha A K^{\alpha -1} \tilde k_{t-1} - \frac{C}{K} \tilde c_t + AK^{\alpha-1} \tilde a_t
+\end{align*}
+ただし、小文字は対応する大文字の変数の対数であり、チルダ($\tilde{~}$)付きの変数は、対応する変数の定常状態からの乖離を表す．
+
+定常状態では
+\begin{align*}
+1 = \beta (\alpha A K^{\alpha -1} + 1 - \delta)\\
+\delta K = AK^\alpha - C
+\end{align*}
+が成立し、また、$\tilde a_t = \rho a_{t-1} + \varepsilon_t$なので、
+\begin{align*}
+\alpha A K^{\alpha -1} = \frac{1}{\beta} - 1 + \delta \\
+\frac{C}{K} = AK^{\alpha -1} -\delta = \frac{1-\beta + (1-\alpha)\beta\delta}{\alpha\beta}\\
+E_t\tilde a_{t+1} = \rho a_t
+\end{align*}
+また、横断性条件$\lim_{T\to\infty} E_t\beta^TC_{t+T}^{-\sigma}K_{t+T} = 0$は、
+\begin{align*}
+\lim_{t\to\infty} E_s (\beta^{-1})^{-t}(-\sigma \tilde c_t + \tilde k_t) = 0
+\end{align*}
+と線形近似される．以上より、このモデルは
+\begin{align}
+\sigma \tilde c_t - \left[1 - \beta(1 - \delta)\right] (1 - \alpha) \tilde k_t -\sigma E_t\tilde c_{t+1}&=  - [1 - \beta (1 - \delta)]\rho \tilde a_t\tag{\ref{euler}}\\
+\frac{1-\beta + (1-\alpha)\beta\delta}{\alpha\beta} \tilde c_t + \tilde k_t &= \frac{1}{\beta} \tilde k_{t-1} + \frac{1-\beta(1-\delta)}{\alpha\beta} \tilde a_t\tag{\ref{evolvek}}\\
+\lim_{t\to\infty} E_s (\beta^{-1})^{-t}(-\sigma \tilde c_t + \tilde k_t) &= 0 \tag{\ref{tvc}}
+\end{align}
 となる。
 
-\section{一般化Schur分解を用いた解法}
-線型DSGEモデルを「解く」とは、モデルの状態空間表現（\eqref{ssr}式）を、適当な行列$C, D, H, J$によって
+
+\subsection{A Simple RBC Model}
+\begin{align*}
+\max_{\{C_t, K_{t+1}, H_t, I_t\}} & \; E_0 \sum_{t=0}^\infty \beta^t [\ln C_t - \psi H_t]\\
+\text{s.t.} & \; C_t + I_t = Y_t\\
+& \; Y_t = A_t K_t^\alpha H_t^{1-\alpha}\\
+& \; K_{t+1} = (1-\delta) K_t + I_t\\
+& \; K_0 \; \text{given}
+\end{align*}
+where $H_t$ represents labor supply. The other notations are the same as in A.1. Assume that log of TFP follows AR(1) process:
+\begin{align*}
+\frac{A_t}{A} = \left(\frac{A_{t-1}}{A}\right)^\rho \exp (\sigma_\varepsilon \varepsilon_t), \qquad \varepsilon_t \sim \mathcal{N}(0,1).
+\end{align*}
+that is, $\tilde a_t = \rho \tilde a_{t-1} + \sigma_\varepsilon \varepsilon_t$. We also assume that $|\rho|<1$ so that $\tilde a_t$ is stationary.
+
+\paragraph{Lagrangian}
+\begin{align*}
+\mathcal{L} = E_0 \sum_{t=0}^\infty \beta^t \left\{\ln C_t - \psi H_t + \Lambda_t \left[(1-\delta) K_t + A_t K_t^\alpha H_t^{1-\alpha} - C_t - K_{t+1}\right]\right\}
+\end{align*}
+
+\paragraph{First-Order Conditions}
+\begin{align*}
+C_t^{-1} = \beta E_t \left\{C_{t+1}^{-1} \left(\alpha A_{t+1} K_{t+1}^{\alpha-1}H_{t+1}^{1-\alpha} + 1 - \delta\right)\right\}\\
+\frac{\psi C_t}{1-H_t} = (1-\alpha) A_t K_t^\alpha H_t^{-\alpha}\\
+K_{t+1} = (1-\delta) K_t + A_tK_t^\alpha H_t^{1-\alpha} - C_t\\
+\lim_{T\to\infty} E_t [\beta^T C_{t+T}^{-1} K_{t+T+1}] = 0
+\end{align*}
+here we define the rental rate of capital $R_t$ as $R_t \equiv \alpha A_t K_t^{\alpha-1}H_t^{1-\alpha}$. The first-order conditions are rewritten as:
+\begin{align*}
+C_t^{-1} = \beta E_t \left\{C_{t+1}^{-1} \left(R_{t+1} + 1 - \delta\right)\right\}\\
+\psi C_t = (1-\alpha) \frac{Y_t}{H_t}\\
+K_{t+1} = (1-\delta) K_t + Y_t - C_t\\
+R_t = \alpha \frac{Y_t}{K_t}\\
+Y_t = A_t K_t^\alpha H_t^{1-\alpha}\\
+\lim_{T\to\infty} E_t [\beta^T C_{t+T}^{-1} K_{t+T+1}] = 0
+\end{align*}
+
+\paragraph{Steady State}
+\begin{align*}
+1 = \beta (R + 1 - \delta)\\
+\psi C = (1-\alpha) \frac{Y}{H}\\
+\delta K = Y - C\\
+R = \alpha \frac{Y}{K}\\
+Y = A K^\alpha H^{1-\alpha}
+\end{align*}
+
+\paragraph{Log-Linearized model}
+\begin{align}
+&\tilde h_t = \tilde y_t - \tilde c_t\label{h}\\
+&K \tilde k_{t+1} = (1-\delta) K \tilde k_t  + Y \tilde y_t - C \tilde c_t\notag\\
+&\tilde a_t = \rho \tilde a_{t-1} + \sigma_\varepsilon \varepsilon_t\notag\\
+&0 = \tilde y_t - \tilde a_t - \alpha \tilde k_t - (1-\alpha) \tilde h_t\notag\\
+&0 = \tilde y_t - \tilde k_t - \tilde r_t\notag\\
+&E_t\tilde c_{t+1} - \beta R E_t \tilde r_{t+1} = \tilde c_t\notag
+\end{align}
+\eqref{h} を使って$\tilde h_t$ を消去して\footnote{消去しないで進めても良い．今回消去したのは，\citet{mccan2008:abcs}の6.8節に従った．}整理すると，
+\begin{align}
+K \tilde k_{t+1} &= (1-\delta) K \tilde k_t  + Y \tilde y_t - C \tilde c_t\tag{\ref{rbc1}}\\
+\tilde a_t &= \rho \tilde a_{t-1} + \sigma_\varepsilon \varepsilon_t\tag{\ref{rbc2}}\\
+- \tilde a_t &= \alpha \tilde k_t -\alpha \tilde y_t - (1-\alpha) \tilde c_t\tag{\ref{rbc3}}\\
+0 &= \tilde k_t - \tilde y_t + \tilde r_t\tag{\ref{rbc4}}\\
+E_t\tilde c_{t+1} - \beta R E_t \tilde r_{t+1} &= \tilde c_t\tag{\ref{rbc5}}
+\end{align}
+\end{appendix}
+
+\section{行列の割引無限和}
+\eqref{modelu4}の導出について補足する．
+
+\begin{align*}
+u_{n-n_s,t} &= - \frac{1}{(s_{22})_{n-n_s,n-n_s}} \sum_{k = 0}^\infty \left(\frac{(t_{22})_{n-n_s,n-n_s}}{(s_{22})_{n-n_s,n-n_s}}\right)^k g_{n-n_s,\cdot}\Phi^k z_t \\
+&= - \frac{1}{(s_{22})_{n-n_s,n-n_s}} g_{n-n_s,\cdot} \left[\sum_{k = 0}^\infty \left(\frac{(t_{22})_{n-n_s,n-n_s}}{(s_{22})_{n-n_s,n-n_s}}\cdot\Phi\right)^k\right] z_t
+\end{align*}
+ここで，
+\begin{align*}
+\sum_{k = 0}^\infty \left(\frac{(t_{22})_{n-n_s,n-n_s}}{(s_{22})_{n-n_s,n-n_s}}\cdot\Phi\right)^k &= \left[I_{n_z} - \frac{(t_{22})_{n-n_s,n-n_s}}{(s_{22})_{n-n_s,n-n_s}}\cdot\Phi\right]^{-1}\\
+&= - \left[\frac{(t_{22})_{n-n_s,n-n_s}}{(s_{22})_{n-n_s,n-n_s}}\cdot\Phi - I_{n_z}\right]^{-1}\\
+&= - (s_{22})_{n-n_s,n-n_s} \left[(t_{22})_{n-n_s,n-n_s}\Phi - (s_{22})_{n-n_s,n-n_s} I_{n_z}\right]^{-1}
+\end{align*}
+であるから，
+\begin{align*}
+u_{n-n_s,t} &= g_{n-n_s,\cdot}[(t_{22})_{n-n_s,n-n_s}\Phi - (s_{22})_{n-n_s,n-n_s}I_{n_z}]^{-1}z_t.
+\end{align*}
+
+
+\begin{thebibliography}{xxx}
+
+\harvarditem[Golub and van Loan]{Golub and van Loan}{2012}{golub2012}
+Golub, G. H., and C. F. van Loan (2012) {\it Matrix Computations}, 4th ed., John Hopkins University Press.
+
+\harvarditem[Klein]{Klein}{2000}{klein2000}
+Klein, P. (2000) ``Using the Generalized Schur Form to Solve a Multivariate Linear Rational Expectations Model,'' {\it Journal of Economic Dynamics and Control}, 24, pp. 1405--23.
+
+\harvarditem[McCandless]{McCandless}{2008}{mccan2008:abcs}
+McCandless, G. (2008) {\it The ABCs of RBCs: An Introduction to Dynamic Macroeconomic Models}, Harvard University Press.
+
+\harvarditem[Sims]{Sims}{2002}{sims2002}
+Sims, C. (2002) ``Solving Linear Rational Expectations Models,'' {\it Computational Economics,} 20, pp. 1-20
+%\harvarditem[Stokey et al.]{Stokey et al.}{1989}{stoke1989:recur}
+%Stokey, N., R. Lucas, and E. Prescott (2008) {\it Recursive Methods in Economic Dynamics}, Harvard University Press.
+\end{thebibliography}
+
+\end{document}
+
+線型DSGEモデルを「解く」とは、Canonical Form（\eqref{canonical}式）を、適当な行列$C, D, H, J$によって
 \begin{align}
 y_t &= H x_t + J \epsilon_t \\
 x_{t+1} &= C x_t + D \epsilon_t
 \end{align}
-と表現し直すことである。ただし、$C$の固有値は絶対値が1より小さくなくてはならない。行列$H, J, C, D$を求められれば、所与の$x_0$とショックの流列$\{\epsilon_t\}$から内生変数の列$\{x_{t+1}, y_t\}$を$t=0$から順に求めることができる。\\
+と表現し直すことである．ただし、$C$の固有値は絶対値が1より小さくなくてはならない．行列$H, J, C, D$を求められれば、所与の$x_0$とショックの流列$\{\epsilon_t\}$から内生変数の列$\{x_{t+1}, y_t\}$を$t=0$から順に求めることができる．\\
 
-モデルを解く際には、行列$A, B$を一般化Schur分解する方法がよく使われる\footnote{詳細は\citet{klein2000}を参照。}。一般化Schur分解は以下のように定義される。\\
+モデルを解く際には、行列$A, B$を一般化Schur分解する方法がよく使われる\footnote{詳細は\citet{klein2000}を参照．}．一般化Schur分解は以下のように定義される．\\
 
 \begin{itembox}[l]{{\bf 定理：一般化Schur分解 (Generalized Schur decomposition)}}
-任意の2つの正方行列$A,B$に対して、以下の1～4を満たす行列の組$(S,T,Q,Z)$が存在する。
+任意の2つの正方行列$A,B$に対して、以下の1～4を満たす行列の組$(S,T,Q,Z)$が存在する．
 \begin{enumerate}
-\item $A, B$は以下のように分解可能。
+\item $A, B$は以下のように分解可能．
 \begin{align}
 &A = QSZ^\prime\\
 &B = QTZ^\prime
 \end{align}
 \item $Q$と$Z$は直交行列、つまり、 \; $QQ^\prime = Q^\prime Q = I, ZZ^\prime = Z^\prime Z = I$.
-\item $S$と$T$は上三角行列。
-\item このシステムの第$i$固有値$\lambda_{i}$は$S$の第$i$対角成分$s_{ii}$と$T$の第$i$対角成分$t_{ii}$を使って$\lambda_i=\frac{s_{ii}}{t_{ii}}$で求められる。
+\item $S$と$T$は上三角行列．
+\item このシステムの第$i$固有値$\lambda_{i}$は$S$の第$i$対角成分$s_{ii}$と$T$の第$i$対角成分$t_{ii}$を使って$\lambda_i=\frac{s_{ii}}{t_{ii}}$で求められる．
 \end{enumerate}
 \end{itembox}
-一般化Schur分解は一般に複数存在するが、以下では一般化Schur分解は結果として得られる固有値の絶対値が小さい順に上から並ぶように$S,T,Q,Z$を定めるとする。\footnote{この順序を指定した一般化Schur分解は、{\tt R}では{\tt geigen}パッケージにある{\tt gqz}関数で簡単に計算が可能である。}
+一般化Schur分解は一般に複数存在するが、以下では一般化Schur分解は結果として得られる固有値の絶対値が小さい順に上から並ぶように$S,T,Q,Z$を定めるとする．\footnote{この順序を指定した一般化Schur分解は、{\tt R}では{\tt geigen}パッケージにある{\tt gqz}関数で簡単に計算が可能である．}
 
-一般化Schur分解の結果、状態空間表現\eqref{ssr}は
+一般化Schur分解の結果、Canonical Form\eqref{ssr}は
 \begin{align}
 QTZ^\prime \begin{bmatrix}x_{t+1}\\E_ty_{t+1}\end{bmatrix} = QSZ^\prime \begin{bmatrix}x_t\\y_t\end{bmatrix} + G\epsilon_t
 \end{align}
-と書くことができる。両辺左側から$Q^\prime$をかけると、
+と書くことができる．両辺左側から$Q^\prime$をかけると、
 \begin{align}
 \begin{bmatrix}T_{11} & T_{12} \\ 0 & T_{22}\end{bmatrix}\begin{bmatrix}Z^\prime_{11} & Z^\prime_{12} \\ Z^\prime_{21} & Z^\prime_{22}\end{bmatrix}\begin{bmatrix}x_{t+1} \\ E_ty_{t+1}\end{bmatrix}=\begin{bmatrix}S_{11} & S_{12} \\ 0 & S_{22}\end{bmatrix}\begin{bmatrix}Z^\prime_{11} & Z^\prime_{12} \\ Z^\prime_{21} & Z^\prime_{22}\end{bmatrix}\begin{bmatrix}x_t \\ y_t\end{bmatrix} + \begin{bmatrix}Q^\prime_{11} & Q^\prime_{12} \\ Q^\prime_{21} & Q^\prime_{22}\end{bmatrix}\begin{bmatrix}G_{1} \\ G_{2}\end{bmatrix}\epsilon_t
 \end{align}
-発散する固有値は下の行にある\footnote{証明は行わないが、モデルが鞍点安定を示すことは、発散する固有値が操作変数の数と等しいことと同値である。今は、この条件は満たされていると仮定する。}ので、モデルが定常状態に収束するためには、
+発散する固有値は下の行にある\footnote{証明は行わないが、モデルが鞍点安定を示すことは、発散する固有値が操作変数の数と等しいことと同値である．今は、この条件は満たされていると仮定する．}ので、モデルが定常状態に収束するためには、
 \begin{align}
 S_{22}Z^\prime_{21}x_t + S_{22}Z^\prime_{22}y_t + [Q^\prime_{21}G_{1}+Q^\prime_{22}G_2]\epsilon_t=0
 \end{align}
@@ -203,12 +823,12 @@ S_{22}Z^\prime_{21}x_t + S_{22}Z^\prime_{22}y_t + [Q^\prime_{21}G_{1}+Q^\prime_{
 y_t &= -(Z^\prime_{22})^{-1}Z^\prime_{21}x_t - (Z^\prime_{22})^{-1}S_{22}^{-1}[Q^\prime_{21}G_{1}+Q^\prime_{22}G_2]\epsilon_t\notag\\
 &\equiv -Nx_t - L\epsilon_t\label{soly}
 \end{align}
-となる。\\
-次に先決変数についての解を求める。\eqref{soly}式より、
+となる．\\
+次に先決変数についての解を求める．\eqref{soly}式より、
 \begin{align}
 E_ty_{t+1} = -Nx_{t+1}
 \end{align}
-これを状態空間表現\eqref{ssr}に代入すると、
+これをCanonical Form\eqref{ssr}に代入すると、
 \begin{align}
 \begin{bmatrix}B_{11} & B_{12} \\ B_{21} & B_{22}\end{bmatrix}\begin{bmatrix}I \\ -N\end{bmatrix}x_{t+1} = \begin{bmatrix}A_{11} & A_{12} \\ A_{21} & A_{22}\end{bmatrix}\begin{bmatrix}I \\ -N\end{bmatrix}x_t + \begin{bmatrix}G_1- A_{12}L\\G_2-A_{22}L\end{bmatrix}\epsilon_t
 \end{align}
@@ -221,17 +841,5 @@ E_ty_{t+1} = -Nx_{t+1}
 x_{t+1} &= [B_{11} - B_{12}N]^{-1}[A_{11} - A_{12}N]x_t + [B_{11} - B_{12}N]^{-1}[G_1-A_{12}L]\epsilon_t\\
 &\equiv C x_t + D\epsilon_t
 \end{align}
-となり、これでモデルが解けた。
+となり、これでモデルが解けた．
 
-\begin{thebibliography}{xxx}
-\harvarditem[McCandless]{McCandless}{2008}{mccan2008:abcs}
-McCandless, G. (2008) {\it The ABCs of RBCs: An Introduction to Dynamic Macroeconomic Models}, Harvard University Press.
-
-\harvarditem[Klein]{Klein}{2000}{klein2000}
-Klein, P. (2000) ``Using the Generalized Schur Form to Solve a Multivariate Linear Rational Expectations Model,'' {\it Journal of Economic Dynamics and Control}, 24, pp. 1405--23.
-
-%\harvarditem[Stokey et al.]{Stokey et al.}{1989}{stoke1989:recur}
-%Stokey, N., R. Lucas, and E. Prescott (2008) {\it Recursive Methods in Economic Dynamics}, Harvard University Press.
-\end{thebibliography}
-
-\end{document}
