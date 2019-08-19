@@ -1,0 +1,2171 @@
+\documentclass[a4paper,12pt,onecolumn,oneside,notitlepage,final]{article}
+%Preamble
+
+%one-inch margin
+\oddsidemargin -0.28in%-0.33in%-0.23229in%0.0in
+\topmargin -0.0in
+\textwidth 7in%6.9in% 6.26771in
+%???}???[???W?????????I????????????
+
+\usepackage{natbib}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{ascmac}
+\usepackage{graphicx}
+\usepackage{afterpage}
+\usepackage{tabularx}
+\usepackage{enumerate}
+\usepackage{eurosym}
+\usepackage{setspace}
+\usepackage{color}
+\usepackage[dvipdfmx]{hyperref}
+\usepackage{pxjahyper}
+\allowdisplaybreaks[1]
+\renewcommand{\tablename}{Table}
+%\renewcommand{\figurename}{Fig.}
+%\renewcommand{\abstractname}{abstract}
+%\renewcommand{\appendixname}{Appendix }
+
+\newtheorem{prop}{Proposition}
+\newtheorem{defi}{Definition}
+\newtheorem{theo}{Theorem}
+\newtheorem{coro}{Corollary}
+\newtheorem{lemm}{Lemma}
+\newtheorem{resu}{Result}
+
+%\setlength{\textwidth}{\fullwidth}
+\setlength{\evensidemargin}{\oddsidemargin}
+
+\title{対数近似についてのメモ
+}
+\author{荒戸寛樹}
+\date{August 7, 2019 \\ revised:\today}
+
+
+\begin{document}
+\maketitle
+
+線形近似・2次近似はモデルの解析を格段に容易にする．そのため，適切な近似法を理解することは理論を理解する上で重要である．また，変数の自然対数を取ることで，変数の（変化量ではなく）変化率で理解することができる．このことは，経済変数の単位を意識する必要がなくなるという意味で大変便利である．本稿では，対数近似の手法について解説する．
+
+\section{Taylor展開と線型近似・2次近似}
+\subsection{1変数関数のTaylor展開}
+$k \in \mathbb{N}, D \subset \mathbb{R}$ とする．$D$を定義域とする関数 $f: D \to \mathbb{R}$は，$k$回微分可能であるとする．このとき，次の定理が得られる．\\
+
+\begin{itembox}[l]{{\bf 定理1：1変数関数におけるTaylorの定理}}
+$D$の内点において$k$回微分可能な関数$D\to\mathbb{R}$を考える．任意の$\bar{x} \in \text{int}(D)$に対して\footnote{$\text{int}(D)$は，$D$の内部（内点すべての集合）を表す．}，
+\begin{align}
+f(x) &= f(\bar{x}) + \frac{f^\prime(\bar{x})}{1!} \cdot (x-\bar x) + \frac{f^{(2)}(\bar{x})}{2!} \cdot (x-\bar x)^2 + \cdots + \frac{f^(k)(\bar x)}{k!}\cdot (x-\bar x)^k + R_k(x) \notag\\
+&= f(\bar x) + \sum_{n=1}^k \frac{1}{n!} f^{(n)}(\bar x) \cdot (x - \bar x)^n + R_k(x), \label{te}
+\end{align}
+where
+\begin{align*}
+R_k(x) = O(|x-\bar x|^{k+1}) \quad (x \to \bar x)
+\end{align*}
+ただし，$O$はランダウの記号であり，$h(x) = O(g(x))$とは，$\lim_{x\to\infty}\left|\dfrac{h(x)}{g(x)}\right| < \infty$であることを表す．
+\eqref{te}を使って，定義域内のある点$\bar x$での微分係数を用いて関数を$k$次関数の形に近似する作業を，$x = \bar x$の周りでの$k$次のTaylor展開という．
+\end{itembox}\\
+
+\paragraph{例1：1変数関数のTaylor展開の例}
+
+\begin{enumerate}
+\item 関数 $f(x) = e^x$ の$x=0$の周りでのTaylor展開は，
+\begin{align*}
+e^x &= 1 + e^0 \cdot (x-0) + \frac{1}{2!}\cdot e^0 \cdot (x-0)^2 + \frac{1}{3!} \cdot e^0 \cdot (x-\bar x)^3 + \cdots\\
+&= 1 + x + \frac{1}{2!}x^2 + \frac{1}{3!}x^3 + \cdots
+\end{align*}
+\item 関数 $f(x) = \cos x$ の $x=0$ の周りでのTaylor展開は，
+\begin{align*}
+\cos x &= \cos 0 + \frac{1}{1!} (-\sin 0) \cdot (x-0) + \frac{1}{2!} (-\cos 0) \cdot (x-0)^2 + \frac{1}{3!} \sin 0 \cdot (x-0)^3 + \frac{1}{4!} \cos 0 \cdot (x-0)^4 + \cdots \\
+&= 1 - \frac{1}{2}x^2 + \frac{1}{4!} x^4 - \cdots
+\end{align*}
+\item 関数 $f(x) = \ln x$ の $x=1$ の周りでのTaylor展開は，
+\begin{align*}
+\ln x &= \ln 1 + \frac{1}{1!}\left(\frac{1}{1}\right) (x-1) + \frac{1}{2!}\left(-\frac{1}{1^2}\right) (x-1)^2 + \frac{1}{3!}\left(\frac{2}{1^3}\right) (x-1)^3 + \cdots\\
+&= (x-1) - \frac{1}{2}(x-1)^2+\frac{1}{3}(x-1)^3 - \cdots
+\end{align*}
+\item 関数 $f(x) = ax^2 + bx +c$の$x=0$の周りでのTaylor展開は，
+\begin{align*}
+f(x) &= c + (2a\cdot 0 + b) (x-0) + \frac{1}{2!} (2a) (x-0)^2\\
+&= ax^2 + bx + c
+\end{align*}
+\item 関数 $f(x) = ax^2 + bx +c$の$x=\bar x$の周りでのTaylor展開は，
+\begin{align*}
+f(x) &= a \bar{x}^2 + b \bar{x} + c + (2a\bar x + b) (x-\bar x) + \frac{1}{2!} (2a) (x-\bar x)^2\\
+&= ax^2 + bx + c
+\end{align*}
+※2次関数をTaylor展開すると元の2次関数を得る（当たり前）
+\end{enumerate}
+
+\subsection{多変数関数のTaylor展開}
+
+$D\subset \mathbb{R}^n$とする．無限回連続微分可能な関数$f: D \to \mathbb{R}$に対して，次の定理が成り立つ．
+
+\begin{itembox}[l]{{\bf 定理2：多変数関数のTaylor展開}}
+$x = [x_1 \; x_2 \; \cdots \; x_n]^\prime \in D$ とする．任意の $\bar x = [\bar x_1 \; \bar x_2 \; \cdots \; \bar x_n]^\prime \in D$に対して，
+\begin{align}
+f(x) &= f(\bar x) + f_1(\bar x) (x_1 - \bar x_1) + f_2(\bar x) (x_2-\bar x_2) + \cdots + f_n(\bar x) (x_n-\bar x_n) \notag \\
+&+\frac{1}{2!}f_{11}(\bar x) (x_1 - \bar x_1)^2 + \frac{2}{2!}f_{12}(\bar x) (x_1-\bar x_1)(x_2-\bar x_2) + \frac{1}{2!}f_{22}(\bar x) (x_2-\bar x)^2 \notag \\
+&+ \cdots \notag \\
+&= f(\bar x) + \sum_{i = 1}^n f_{i}(\bar x) (x_i - \bar x_i) + \sum_{i=1}^n\sum_{j=1}^n \frac{1}{2!}f_{ij}(\bar x)(x_i-\bar x_i)(x_j-\bar x_j) \notag \\
+&+ \sum_{i=1}^\infty \sum_{j=1}^\infty \sum_{k=1}^\infty \frac{1}{3!}f_{ijk}(\bar x) (x_i-\bar x_i)(x_j-\bar x_j)(x_k-\bar x_k) + \cdots
+\end{align}
+
+\end{itembox}
+
+\paragraph{例2：多変数関数のTaylor展開の例}
+\begin{enumerate}
+\item $f(x,y) = e^x \ln (1+y)$の$(x,y) = (0,0)$の周りでのTaylor展開は，
+\begin{align*}
+f(x,y) &= e^0\ln 1 + \underbrace{e^0\ln 1}_{f_x(0,0)} \cdot (x-0) + \underbrace{e^0 \frac{1}{1}}_{f_y(0,0)} \cdot (y-0) \\
+&+ \frac{1}{2!}\underbrace{e^0\ln 1}_{f_{xx}(0,0)} \cdot (x-0)^2 + \frac{1}{2!} \underbrace{e^0 (-\frac{1}{1})}_{f_{yy}(0,0)} \cdot (y-0)^2 +\\
+&+ \frac{2}{2!}\underbrace{e^0 \frac{1}{1}}_{f_{xy}(0,0)} \cdot (x-0)(y-0) + \cdots \\
+&= y + xy -\frac{1}{2}y^2 + \cdots
+\end{align*}
+\item $f(K,L) = K^\alpha L^{1-\alpha}$ の，$(K, L) = (\bar K, \bar L)$ の周りでのTaylor展開は，
+\begin{align*}
+f(K,L) &= \bar K^\alpha \bar L^{1-\alpha} + \alpha \bar K^{\alpha-1} \bar L^{1-\alpha} (K-\bar K) + (1-\alpha) \bar K^\alpha \bar L^{-\alpha} (L-\bar L) \\
+&+\frac{1}{2}\alpha (\alpha-1) \bar K^{\alpha-2} \bar L^{1-\alpha} (K-\bar K)^2  + \frac{1}{2} (1-\alpha) (-\alpha) \bar K^\alpha \bar L^{-\alpha-1} (L-\bar L)^2 \\
+&+ \alpha (1-\alpha) \bar K^{\alpha-1} \bar L^{-\alpha} (K-\bar K) (L-\bar L) + \cdots
+\end{align*}
+\end{enumerate}
+
+Taylor展開を$n$次の項まで行い，$n+1$次より高次の項を無視して$n$次関数で近似することを，関数$f$の$n$次近似と呼び，1次近似のことを特に線形近似と呼ぶ．
+
+\paragraph{練習問題1}~\\
+\begin{enumerate}
+\item オイラー方程式
+\begin{align*}
+C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}
+\end{align*}
+を定常状態$(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで線型近似せよ．
+
+\item CES型生産関数
+\begin{align}
+Y = [a K^\frac{\theta -1}{\theta} + b L^\frac{\theta -1}{\theta}]^{\frac{\theta}{\theta -1}}
+\end{align}
+を$(K,L,Y)=(\bar K, \bar L, \bar Y)$の周りで線形近似せよ．
+\end{enumerate}
+
+\section{対数線型化（log-linearization）}
+
+$D \subset \mathbb{R}^n$を定義域とする関数$f(x)$を（場合によっては近似して）$\ln x_1, \ln x_2, \cdots, \ln x_n$の線型関数で表すことを，$f$の対数線型化という．
+
+\subsection{対数線型化の方法1}
+\begin{itembox}[l]{{\bf 対数線型化の方法１: $x$でTaylor展開するやり方}}
+\begin{itemize}
+\item Step1: 任意に選んだ$\bar x$ の周りで$f$を１次のTaylor展開（線型近似）する．
+\item Step2: $x_i - \bar x_i (i \in 1, \cdots, n)$の各項の分子と分母にそれぞれ$x_i$を掛けて，$\dfrac{x_i - \bar x_i}{\bar x_i}$を作る．
+\item Step3: $\ln x_i$を$\bar x_i$の周りで線型近似すると，
+\begin{align}
+\frac{x_i - \bar x_i}{\bar x_i} = \ln x_i - \ln \bar x_i \label{lnapp}
+\end{align} 
+が得られるので，Step2の各$\dfrac{x_i - \bar x_i}{\bar x_i}$に\eqref{lnapp}を代入．
+\end{itemize}
+\end{itembox}
+
+\paragraph{例3: 方法１によるCobb-Douglas型生産関数の対数線型化}
+\begin{align}
+Y = A K^\alpha L^{1-\alpha}
+\end{align}
+を，定常状態$(A,K,L,Y) = (\bar A, \bar K. \bar L, \bar Y)$の周りで対数線型化する．
+
+\begin{itemize}
+\item Step1: 両辺をそれぞれ$(A,K,L,Y) = (\bar A, \bar K. \bar L, \bar Y)$の周りで線型近似すると，
+\begin{align*}
+\bar Y + (Y-\bar Y) = \bar A \bar K^\alpha \bar L^{1-\alpha} + \bar K^\alpha \bar L^{1-\alpha} (A - \bar A) + \alpha \bar A \bar K^{\alpha -1} \bar L^{1-\alpha} (K-\bar K) + (1-\alpha) \bar A \bar K^\alpha \bar L^{-\alpha} (L - \bar L)
+\end{align*}
+定常状態の関係から$\bar Y = \bar A \bar K^\alpha \bar L^{1-\alpha}$が成り立つので，
+\begin{align*}
+Y-\bar Y = \bar K^\alpha \bar L^{1-\alpha} (A - \bar A) + \alpha \bar A \bar K^{\alpha -1} \bar L^{1-\alpha} (K-\bar K) + (1-\alpha) \bar A \bar K^\alpha \bar L^{-\alpha} (L - \bar L)
+\end{align*}
+
+\item Step2: 左辺第1項には$\bar Y$，右辺第1項には$\bar A$，第2項には$\bar K$，第3項には$\bar L$を，分子と分母に掛ける．
+\begin{align*}
+\bar Y \cdot \frac{Y-\bar Y}{\bar Y} = \bar A \bar K^\alpha \bar L^{1-\alpha} \cdot \frac{A-\bar A}{\bar A} + \alpha \bar A \bar K^\alpha \bar L^{1-\alpha} \cdot \frac{K-\bar K}{\bar K} + (1-\alpha) \bar A \bar K^\alpha \bar L^{1-\alpha} \cdot \frac{L-\bar L}{\bar L}
+\end{align*}
+$\bar Y = \bar A \bar K^\alpha \bar L^{1-\alpha}$が成り立つので，
+\begin{align*}
+\frac{Y-\bar Y}{\bar Y} = \frac{A-\bar A}{\bar A} + \alpha \cdot \frac{K-\bar K}{\bar K} + (1-\alpha) \cdot \frac{L-\bar L}{\bar L}
+\end{align*}
+\item Step3: \eqref{lnapp}を使って，定常状態からの変化率になっている部分を対数の差に書き換える．
+\begin{align}
+\ln Y - \ln \bar Y = (\ln A - \ln \bar A) + \alpha (\ln K - \ln \bar K) + (1-\alpha) (\ln L - \ln \bar L) \label{llcb}
+\end{align}
+これで対数線型化が完成．
+\item 解釈：対数の差は近似的に変化率を表している（式\eqref{lnapp}）ので，Cobb-Douglas型生産関数について（少なくとも定常状態の近傍では\footnote{今は線型近似して\eqref{llcb}を導出したので，今のところこの関係は定常状態の近傍から離れたらどうなるかは定かではないが，本当はCobb-Douglasに関しては以下の3つは任意の点で成立する．例4を見なさい．}）次のことが言える
+\begin{enumerate}
+\item $A$が1\%上昇すると，$Y$は1\%増える\\
+ ($Y$の$A$に対する弾力性は1)
+\item $K$が1\%増加すると，$Y$は$\alpha\%$増える．\\
+($Y$の$K$に対する弾力性は$\alpha$)
+\item $L$が1\%増加すると，$Y$は$(1-\alpha)\%$増える．\\
+($Y$の$L$に対する弾力性は$1-\alpha$)
+\end{enumerate}
+\end{itemize}
+
+\paragraph{練習問題2} 方法1を使って以下の方程式を対数線型化しなさい．
+\begin{enumerate}
+\item オイラー方程式 $C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}$ ($(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで)
+\item 財市場の均衡 $Y_t = C_t + I_t + G_t$ ($(Y,C,I,G) = (\bar Y, \bar C, \bar I, \bar G)$の周りで)
+\end{enumerate}
+
+\subsection{対数線型化の方法2}
+\begin{itembox}[l]{{\bf 対数線型化の方法その2： $x$を$e^{\ln x}$に変形して，$\ln x$の関数と見てTaylor展開する}}
+\begin{itemize}
+\item Step1: $x = e^{\ln x}$を使って，$f(x)$を$\ln x$の関数$g(\ln x)$で書き直す．
+\begin{align*}
+f(x) = f(e^{\ln x}) \equiv g(\ln x)
+\end{align*}
+\item Step2: $g(\ln x)$を$\ln x$に関してTaylor展開する．
+\end{itemize}
+\end{itembox}
+
+\paragraph{例4：方法2によるCobb-Douglas型生産関数の対数線型化}~\\
+\begin{align*}
+Y = AK^\alpha L^{1-\alpha}
+\end{align*}
+を，対数線型化する．
+\begin{itemize}
+\item Step1: $\text{(左辺)} = Y = \exp[\ln Y]$，$(\text{右辺}) = AK^\alpha L^{1-\alpha} = \exp[\ln A + \alpha \ln K + (1-\alpha)\ln L]$であるから，
+\begin{align*}
+\exp[\ln Y] = \exp[\ln A + \alpha \ln K + (1-\alpha) \ln L]
+\end{align*}
+したがって，
+\begin{align*}
+\ln Y = \ln A + \alpha \ln K + (1-\alpha) \ln L
+\end{align*}
+となり，近似せずに対数線型化が完了\footnote{この式から，Cobb-Douglas型生産関数においては任意の点において$Y$の$A$に対する弾力性は1，$K$に対する弾力性は$\alpha$，$L$に対する弾力性は$1-\alpha$であることがわかる．方法1では，定常状態周りの弾力性しかわからなかった（例3を参照）．}．\\
+定常状態$(\bar A, \bar K, \bar L, \bar Y)$で$\ln \bar Y = \ln \bar A + \alpha \ln \bar K + (1-\alpha) \ln \bar L$なので，辺々引き算すると，
+\begin{align*}
+\ln Y - \ln \bar Y = \ln A - \ln \bar A + \alpha (\ln K - \ln \bar K) + (1-\alpha) (\ln L - \ln \bar L)
+\end{align*}
+が成り立ち，方法1で行った場合と全く同じ結果が得られる．
+\end{itemize}
+
+\paragraph{例5：方法2による財市場の均衡式の対数線型化}
+\begin{align*}
+Y = C + I + G
+\end{align*}
+を対数線型化する．
+\begin{itemize}
+\item Step 1: $(\text{左辺}) = Y = \exp[\ln Y]$，$(\text{左辺}) = C + I + G = \exp[\ln C] + \exp[\ln I] + \exp[\ln G]$であるから，
+\begin{align*}
+\exp[\ln Y] = \exp[\ln C] + \exp[\ln I] + \exp[\ln G]
+\end{align*}
+\item Step 2: 定常状態$(\ln Y, \ln C, \ln I, \ln G) = (\ln \bar Y, \ln \bar C, \ln \bar I, \ln \bar G)$の周りで1次のTaylor展開すると，
+\begin{align*}
+(\text{左辺}) &\approx \exp(\ln \bar Y) \cdot (\ln Y - \ln \bar Y) = \bar Y (\ln Y - \ln \bar Y)\\
+(\text{右辺}) &\approx \exp(\ln \bar C) \cdot (\ln C - \ln \bar C) + \exp(\ln \bar I) \cdot (\ln I - \ln \bar I) + \exp(\ln \bar G) \cdot (\ln G - \ln \bar G)\\
+&= \bar C \cdot (\ln C - \ln \bar C) + \bar I \cdot (\ln I - \ln \bar I) + \bar G \cdot (\ln G - \ln \bar G)
+\end{align*}
+よって，
+\begin{align*}
+\ln Y - \ln \bar Y = \frac{\bar C}{\bar Y} \cdot (\ln C - \ln \bar C) + \frac{\bar I}{\bar Y} \cdot (\ln I - \ln \bar I) + \frac{\bar G}{\bar Y} \cdot (\ln G - \ln \bar G)
+\end{align*}
+これで対数線型近似完了．生産量の各需要項目に対する弾力性はその需要項目のシェアである．
+\end{itemize}
+
+\paragraph{練習問題3} 方法2を使って以下の方程式を対数線型化しなさい．
+\begin{enumerate}
+\item 労働供給曲線 $\dfrac{N^\frac{1}{\phi}}{C^{-\frac{1}{\sigma}}} = w$ \quad ($(C,N) = (\bar C, \bar N)$の周りで)
+\item オイラー方程式 $C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}$ \quad ($(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで)
+\item CES aggregator に対する物価指数の式 $P = \left[\lambda (P^a)^{1-\theta} + (1-\lambda) (P^b)^{1-\theta}\right]^\frac{1}{1-\theta}$ \quad ($(P^a, P^b, P) = (P^a, P^a, P^a)$の周りで)
+\end{enumerate}
+
+\section{対数2次近似(log second-order approximation)}
+\subsection{対数2次近似の方法1}
+
+\begin{itembox}[l]{{\bf 対数2次近似の方法1: $x$に関してTaylor展開する方法}}
+\begin{itemize}
+\item Step 1: 任意に選んだ$\bar x$の周りで$f$に対して2次のTaylor展開を施す．
+\begin{align}
+f(x,y) = &f(\bar x, \bar y) + f_x(\bar x, \bar y) \cdot (x-\bar x) + f_y(\bar x, \bar y) \cdot (y-\bar y)\notag \\
+&+ \frac{1}{2}f_{xx}(\bar x, \bar y) (x-\bar x)^2 + f_{xy}(\bar x, \bar y) (x-\bar x)(y-\bar y) + \frac{1}{2}f_{yy}(\bar x, \bar y) (y-\bar y)^2 \label{ls1}
+\end{align}
+\item Step 2: \eqref{ls1}の1次の項に分子と分母に$x_i$を掛けて$\dfrac{x_i-\bar x_i}{\bar x_i}$を作る． 2次の項には分子と分母に$x_i^2$を掛けて$\left(\dfrac{x_i-\bar x_i}{\bar x_i}\right)^2$を作る．
+\begin{align}
+f(x,y) = &f(\bar x, \bar y) + f_x(\bar x, \bar y) \bar x \cdot \frac{x - \bar x}{\bar x} + f_y(\bar x, \bar y) \bar y \cdot \frac{y - \bar y}{\bar y} \notag \\
+&+\frac{1}{2} f_{xx}(\bar x, \bar y) \bar x^2 \left(\frac{x-\bar x}{\bar x}\right)^2 + f_{xy}(\bar x, \bar y) \bar x \bar y \cdot \frac{x-\bar x}{\bar x}\cdot \frac{y-\bar y}{\bar y} + \frac{1}{2} f_{yy}(\bar x, \bar y) \bar y^2 \left(\frac{y-\bar y}{\bar y}\right)^2 \label{sn2}
+\end{align}
+\item Step 3: $\ln x$を2次近似すると，
+\begin{align*}
+\ln x_i - \ln \bar x_i = \frac{x_i - \bar x_i}{\bar x_i} - \frac{1}{2}\cdot \left(\frac{x_i - \bar x_i}{\bar x_i}\right)^2
+\end{align*}
+なので，
+\begin{align}
+\frac{x_i - \bar x_i}{\bar x_i} = (\ln x_i - \ln \bar x_i) + \frac{1}{2}\left(\frac{x_i - \bar x_i}{\bar x_i}\right)^2, \quad \left(\frac{x_i - \bar x_i}{\bar x_i}\right)^2 = (\ln x_i - \ln \bar x_i)^2 \label{lnxend}
+\end{align}
+を得る．\eqref{lnxend}を\eqref{sn2}に代入すると，$\ln x$に関する2次関数が得られて，対数2次近似完了．
+\begin{align}
+f(x,y) = &f(\bar x, \bar y) + f_x(\bar x, \bar y) \bar x \left[(\ln x - \ln \bar x) + \frac{1}{2}(\ln x - \ln \bar x)^2\right]\notag \\
+&+f_y(\bar x, \bar y)\bar y \cdot \left[(\ln y - \ln \bar y) + \frac{1}{2}(\ln y - \ln \bar y)^2\right]\notag \\
+&+\frac{1}{2}f_{xx}(\bar x, \bar y)\bar x^2(\ln x - \ln \bar x)^2 + \frac{1}{2}f_{yy}(\bar x, \bar y) \bar y^2 (\ln y -\ln \bar y) \notag\\
+&+f_{xy}(\bar x, \bar y)\bar x \bar y (\ln x - \ln \bar x) (\ln y - \ln \bar y).
+\end{align}
+\end{itemize}
+\end{itembox}
+
+\paragraph{例6：方法1による財市場の均衡式の対数2次近似}
+\begin{align*}
+Y = C + I + G
+\end{align*}
+を定常状態$(Y,C,I,G) = (\bar Y, \bar C, \bar I, \bar G)$に周りで対数2次近似する．
+\begin{itemize}
+\item Step 1: 元の式は線型なので，定常状態の式を辺々引き算して，
+\begin{align*}
+Y - \bar Y = (C-\bar C)+ (I - \bar I) + (G-\bar G)
+\end{align*}
+を得る．
+\item Step 2: 全て1次の項なので，分子と分母に定常状態の値を掛けて，
+\begin{align*}
+\bar Y \cdot \frac{Y-\bar Y}{\bar Y} = \bar C \cdot \frac{C-\bar C}{\bar C} + \bar I \cdot \frac{I- \bar I}{\bar I} + \bar G \cdot\frac{G-\bar G}{\bar G}
+\end{align*}
+を得る．
+\item Step 3: \eqref{lnxend}を使うと，
+\begin{align}
+\bar Y \left[(\ln Y - \ln \bar Y) + \frac{1}{2} (\ln Y - \ln \bar Y)^2\right] = \; &\bar C\left[(\ln C - \ln \bar C) + \frac{1}{2}(\ln C - \ln \bar C)^2\right]\notag\\
+&+\bar I \left[(\ln I - \ln \bar I) + \frac{1}{2} (\ln I - \ln \bar I)^2\right]\notag\\
+&+\bar G\left[(\ln G - \ln \bar G) + \frac{1}{2} (\ln G - \ln \bar G)^2\right] \label{d2nd}
+\end{align}
+これで対数2次近似完了．$\ln Y$を他の変数で対数2次近似したい場合は， \eqref{d2nd}を両辺2乗して2次以下の項のみを書くと，
+\begin{align*}
+(\ln Y - \ln \bar Y)^2 = &\left(\frac{\bar C}{\bar Y}\right)^2 (\ln C - \ln \bar C)^2 + \left(\frac{\bar I}{\bar Y}\right)^2 (\ln I - \ln \bar I)^2 + \left(\frac{\bar G}{\bar Y}\right)^2 (\ln G - \ln \bar G)^2 \\
+&+ 2\left(\frac{\bar C \bar I}{\bar Y^2}\right) (\ln C - \ln \bar C) (\ln I - \ln \bar I) + 2\left(\frac{\bar I \bar G}{\bar Y^2}\right) (\ln I - \ln \bar I) (\ln G - \ln \bar G) \\
+&+ 2\left(\frac{\bar G \bar C}{\bar Y^2}\right) (\ln G - \ln \bar G) (\ln C - \ln \bar C)
+\end{align*}
+これを\eqref{d2nd}に代入して$\ln Y$の2次の項を消去すると，
+\begin{align*}
+\ln Y - \ln \bar Y = &\frac{\bar C}{\bar Y}\cdot (\ln C - \ln \bar C) + \frac{\bar I}{\bar Y}\cdot (\ln I - \ln \bar I) + \frac{\bar G}{\bar Y}\cdot (\ln G - \ln \bar G) \\
+&+ \frac{1}{2}\cdot \frac{\bar C}{\bar Y} \left(1-\frac{\bar C}{\bar Y}\right) (\ln C - \ln \bar C)^2 \\
+&+ \frac{1}{2}\cdot \frac{\bar I}{\bar Y} \left(1-\frac{\bar I}{\bar Y}\right) (\ln I - \ln \bar I)^2 \\
+&+ \frac{1}{2}\cdot \frac{\bar G}{\bar Y} \left(1-\frac{\bar G}{\bar Y}\right) (\ln G - \ln \bar G)^2 \\
+&- \frac{\bar C}{\bar Y}\cdot \frac{\bar I}{\bar Y} (\ln C - \ln \bar C) (\ln I - \ln \bar I)\\
+&- \frac{\bar I}{\bar Y}\cdot \frac{\bar G}{\bar Y} (\ln I - \ln \bar I) (\ln G - \ln \bar G)\\
+&- \frac{\bar G}{\bar Y}\cdot \frac{\bar C}{\bar Y} (\ln G - \ln \bar G) (\ln C - \ln \bar C)
+\end{align*}
+となり，$Y$の定常状態からの対数乖離を需要項目の定常状態からの対数乖離で2次近似できた．
+\end{itemize}
+
+
+\paragraph{練習問題4} 方法1を使って，次の式を対数2次近似しなさい．
+\begin{enumerate}
+\item Cobb-Douglas型生産関数 $Y = AK^\alpha L^{1-\alpha}$ \quad ($(A,K,L,Y) = (\bar A, \bar K, \bar L, \bar Y)$の周りで)
+\item オイラー方程式 $C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}$ \quad ($(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで)
+\item 資本蓄積の動学を表す式 $K_{t+1} = (1-\delta) K_t + I_t$ (定常状態 $(K_t, K_{t+1}, I_t) = (\bar K, \bar K, \bar I)$の周りで．ただし，$\delta \bar K = \bar I$を満たす．)
+\end{enumerate}
+
+\subsection{対数2次近似の方法2}
+\begin{itembox}[l]{{\bf 対数2次近似の方法2：$\ln x$の関数に直して，$\ln x$に関してTaylor展開}}
+\begin{itemize}
+\item Step 1: $x = \exp(\ln x)$ を使うと，
+\begin{align}
+f(x,y) = f(\exp(\ln x), \exp(\ln y)).
+\end{align}
+\item Step 2: $f(\exp(\ln x)), \exp(\ln y))$を，$(\ln x, \ln y)$の関数と見て，Taylor展開．
+\begin{align}
+f(x) = &f(\bar x, \bar y) + f_x(\bar x, \bar y) \bar x (\ln x - \ln \bar x) + f_y(\bar x, \bar y) \bar y (\ln y - \ln \bar y) \notag \\
+&+ \frac{1}{2}f_{xx}(\bar x, \bar y) \bar x^2 (\ln x - \ln \bar x)^2 + \frac{1}{2} f_{yy} (\bar x, \bar y) \bar y^2 (\ln y - \ln \bar y) \notag \\
+&+ f_{xy}(\bar x, \bar y) \bar x^2 \bar y^2 (\ln x - \ln \bar x) (\ln y - \ln \bar y)
+\end{align}
+\end{itemize}
+\end{itembox}
+
+\paragraph{例7： 方法2による財市場の均衡式の対数2次近似}
+\begin{align*}
+Y = C + I + G
+\end{align*}
+を定常状態$(Y,C,I,G) = (\bar Y, \bar C, \bar I, \bar G)$に周りで対数2次近似する．
+\begin{itemize}
+\item Step 1: $x = \exp(\ln x)$を使うと，
+\begin{align*}
+\exp(\ln Y) = \exp(\ln C)+ \exp(\ln I) + \exp(\ln G)
+\end{align*}
+\item Step 2: $(\ln Y, \ln C, \ln I, \ln G) = (\ln \bar Y, \ln \bar C, \ln \bar I, \ln \bar G)$の周りで2次のTaylor展開を行うと，
+\begin{align*}
+\bar Y \cdot (\ln Y - \ln \bar Y) + \frac{1}{2}\bar Y \cdot (\ln Y - \ln \bar Y)^2 = \; &\bar C \cdot (\ln C -\ln \bar C) + \frac{1}{2} \bar C \cdot (\ln C - \ln \bar C)^2 \\
+&+ \bar I \cdot (\ln I - \ln \bar I) + \frac{1}{2} \bar I \cdot (\ln I - \ln \bar I)^2 \\
+&+ \bar G \cdot (\ln G - \ln \bar G) + \frac{1}{2} \bar G \cdot (\ln G - \ln \bar G)^2
+\end{align*}
+これで対数2次近似完了．方法1で行った場合（例6）と同じになっている．
+\end{itemize}
+
+\paragraph{練習問題5} 方法2を使って，次の式を対数2次近似しなさい．
+\begin{enumerate}
+\item Cobb-Douglas型生産関数 $Y = AK^\alpha L^{1-\alpha}$ \quad ($(A,K,L,Y) = (\bar A, \bar K, \bar L, \bar Y)$の周りで)
+\item オイラー方程式 $C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}$ \quad ($(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで)
+\item 資本蓄積の動学を表す式 $K_{t+1} = (1-\delta) K_t + I_t$ (定常状態 $(K_t, K_{t+1}, I_t) = (\bar K, \bar K, \bar I)$の周りで．ただし，$\delta \bar K = \bar I$を満たす．)
+\end{enumerate}
+
+\newpage
+\section{練習問題の解答}
+\paragraph{練習問題1}~\\
+\begin{enumerate}
+\item オイラー方程式
+\begin{align*}
+C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}
+\end{align*}
+を定常状態$(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで線型近似せよ．\\
+
+{\bf 解答:} $\partial \text{(左辺)}/\partial C_t = -\frac{1}{\sigma} C_t^{-\frac{1}{\sigma}-1}$, $\partial \text{(右辺)}/\partial C_{t+1} = -\frac{1}{\sigma} \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}-1}$, $\partial \text{(右辺)}/\partial R_{t+1} = \beta C_{t+1}^{-\frac{1}{\sigma}}$であるから，
+\begin{align*}
+\text{(左辺)} = &\bar C^{-\frac{1}{\sigma}} + \left(-\frac{1}{\sigma}\right)\bar C^{-\frac{1}{\sigma}-1} (C_t - \bar C), \\
+\text{(右辺)} = &\beta \cdot \frac{1}{\beta} \cdot \bar C^{-\frac{1}{\sigma}} + \left(-\frac{1}{\sigma}\right)\cdot \beta \cdot \frac{1}{\beta}\cdot\bar C^{-\frac{1}{\sigma}-1} \cdot (C_{t+1} - \bar C) \\
+&+ \beta \bar C^{-\frac{1}{\sigma}}\cdot \left(R_{t+1} - \frac{1}{\beta}\right) \\
+= &\bar C^{-\frac{1}{\sigma}} -\frac{1}{\sigma}\bar C^{-\frac{1}{\sigma}-1} (C_{t+1} - \bar C) + \beta \bar C^{-\frac{1}{\sigma}} (R_{t+1} - \frac{1}{\beta})
+\end{align*}
+よって，
+\begin{align*}
+C_t - \bar C = (C_{t+1}-\bar C) - \sigma \beta \bar C (R_{t+1} - \frac{1}{\beta})
+\end{align*}
+
+
+\item CES型生産関数
+\begin{align*}
+Y = [a K^\frac{\theta -1}{\theta} + b L^\frac{\theta -1}{\theta}]^{\frac{\theta}{\theta -1}}
+\end{align*}
+を$(K,L,Y)=(\bar K, \bar L, \bar Y)$の周りで線形近似せよ．\\
+
+{\bf 解答:} $\partial (\text{左辺})/\partial Y = 1$,\\
+$\partial (\text{右辺})/\partial K = [a K^\frac{\theta -1}{\theta} + b L^\frac{\theta -1}{\theta}]^{\frac{1}{\theta -1}}\cdot a K^{-\frac{1}{\theta}}$,\\
+$\partial (\text{右辺})/\partial L = [a K^\frac{\theta -1}{\theta} + b L^\frac{\theta -1}{\theta}]^{\frac{1}{\theta -1}}\cdot b L^{-\frac{1}{\theta}}$なので,
+\begin{align*}
+\text{(左辺)} = &\bar Y + 1\cdot (Y - \bar Y),\\
+\text{(右辺)} = &[a \bar K^\frac{\theta -1}{\theta} + b \bar L^\frac{\theta -1}{\theta}]^{\frac{\theta}{\theta -1}} \\ &+ [a \bar K^\frac{\theta -1}{\theta} + b \bar L^\frac{\theta -1}{\theta}]^{\frac{1}{\theta -1}}\cdot a \bar K^{-\frac{1}{\theta}} (K - \bar K) + [a \bar K^\frac{\theta -1}{\theta} + b \bar L^\frac{\theta -1}{\theta}]^{\frac{1}{\theta -1}}\cdot b \bar L^{-\frac{1}{\theta}} (L - \bar L)
+\end{align*}
+ここで$\bar Y = [a \bar K^\frac{\theta -1}{\theta} + b \bar L^\frac{\theta -1}{\theta}]^{\frac{\theta}{\theta -1}}$, $\bar Y^\frac{1}{\theta} = [a \bar K^\frac{\theta -1}{\theta} + b \bar L^\frac{\theta -1}{\theta}]^{\frac{1}{\theta -1}}$なので,
+\begin{align*}
+Y - \bar Y = \left(\frac{\bar Y}{\bar K}\right)^\frac{1}{\theta}a (K-\bar K) + \left(\frac{\bar Y}{\bar L}\right)^\frac{1}{\theta}b (L-\bar L)
+\end{align*}
+\end{enumerate}
+
+\paragraph{練習問題2} 方法1を使って以下の方程式を対数線型化しなさい．
+\begin{enumerate}
+\item オイラー方程式 $C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}$ ($(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで)\\
+
+{\bf 解答:} 線型近似すると,
+\begin{align*}
+C_t - \bar C = (C_{t+1}-\bar C) - \sigma \beta \bar C (R_{t+1} - \frac{1}{\beta})
+\end{align*}
+辺々$\bar C$で割ると，
+\begin{align*}
+\frac{C_t - \bar C}{\bar C} = \frac{C_{t+1}-\bar C}{\bar C} - \sigma \frac{R_{t+1}-(1/\beta)}{1/\beta}
+\end{align*}
+ここで $\ln C_t - \ln \bar C = \dfrac{C_t - \bar C}{\bar C}$, $\ln (R_{t+1}) - \ln \bar R = \dfrac{R_{t+1} - 1/\beta}{1/\beta} \quad (\text{ただし，}\; \bar R \equiv 1/\beta)$なので，
+\begin{align*}
+\ln C_t - \ln \bar C = (\ln C_{t+1} - \ln \bar C) - \sigma (\ln R_{t+1} - \ln \bar R), \quad \text{ただし，} \; \bar R = 1/\beta.
+\end{align*}
+これで対数線型化完了．\\
+
+
+\item 財市場の均衡 $Y_t = C_t + I_t + G_t$ ($(Y,C,I,G) = (\bar Y, \bar C, \bar I, \bar G)$の周りで)\\
+
+{\bf 解答:} 既に線型なので，定常状態の式 $\bar Y = \bar C + \bar I + \bar G$を辺々引き算して，
+\begin{align*}
+Y - \bar Y = (C - \bar C) + (I - \bar I) + (G - \bar G)
+\end{align*}
+を得る．各項の分子と分母に定常状態での値を掛けると，
+\begin{align*}
+\bar Y \cdot \frac{Y - \bar Y}{\bar Y} = \bar C\cdot \frac{C - \bar C}{\bar C} + \bar I \cdot \frac{I - \bar I}{\bar I} + \bar G\cdot \frac{G - \bar G}{\bar G}
+\end{align*}
+この式に\eqref{lnapp}を使うと，
+\begin{align*}
+\bar Y \cdot (\ln Y - \ln \bar Y) = \bar C\cdot (\ln C - \ln \bar C) + \bar I \cdot (\ln I - \ln \bar I) + \bar G\cdot (\ln G - \ln \bar G).
+\end{align*}
+これで対数線型化完了．
+\end{enumerate}
+
+\paragraph{練習問題3} 方法2を使って以下の方程式を対数線型化しなさい．
+\begin{enumerate}
+\item 労働供給曲線 $\dfrac{N^\frac{1}{\phi}}{C^{-\frac{1}{\sigma}}} = w_t$ \quad ($(C,N) = (\bar C, \bar N)$の周りで)\\
+
+{\bf 解答:} $x = e^{\ln x}$を使うと，
+\begin{align*}
+\frac{\left(e^{\ln N}\right)^\frac{1}{\phi}}{\left(e^{\ln C}\right)^\frac{1}{\sigma}} = e^{\ln w}
+\end{align*}
+変形すると，
+\begin{align*}
+\exp\left[\frac{1}{\phi} \ln N - \frac{1}{\sigma}\ln C\right] = \exp\left[\ln w\right]
+\end{align*}
+したがって，
+\begin{align*}
+\frac{1}{\phi} \ln N - \frac{1}{\sigma}\ln C = \ln w
+\end{align*}
+これで対数線型化完了．労働供給の賃金弾力性は$\phi$である\\
+（賃金が1\%上昇すると労働供給を$\phi \%$増やす．）.
+
+\item オイラー方程式 $C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}$ \quad ($(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで)\\
+
+{\bf 解答:} $x = e^{\ln x}$を使うと，$\left(\exp\left[\ln C_t\right]\right)^{-\frac{1}{\sigma}} = \exp\left[\ln \beta\right] \exp\left[\ln R_{t+1}\right] \left(\exp\left[\ln C_{t+1}\right]\right)^{-\frac{1}{\sigma}}$. 変形すると，
+\begin{align*}
+\exp\left[-\frac{1}{\sigma}\ln C_t\right] = \exp\left[\ln \beta + \ln R_{t+1} -\frac{1}{\sigma}\ln C_{t+1}\right]
+\end{align*}
+したがって，
+\begin{align*}
+-\frac{1}{\sigma}\ln C_t = -\frac{1}{\sigma}\ln C_{t+1} + \left[\ln R_{t+1} - (-\ln \beta)\right]
+\end{align*}
+両辺に$-\sigma$を掛けて，$-\ln \beta = \ln \frac{1}{\beta}$を使うと，
+\begin{align*}
+\ln C_t = \ln C_{t+1} -\sigma \left[\ln R_{t+1} - \ln \left(\frac{1}{\beta}\right)\right]
+\end{align*}
+これで対数線型化が完了．定常状態周りで表すには，$\ln \bar C$を辺々引いて，
+\begin{align*}
+(\ln C_t - \ln \bar C) = (\ln C_{t+1} - \ln \bar C) -\sigma \left[\ln R_{t+1} - \ln \left(\frac{1}{\beta}\right)\right]
+\end{align*}
+利子率が1\%上昇すると，$C_t/C_{t+1}$が$\sigma \%$低下する．\\
+（$\sigma$は消費の異時点間の代替の弾力性．）
+
+\item CES aggregator に対する物価指数の式 $P = \left[\lambda (P^a)^{1-\theta} + (1-\lambda) (P^b)^{1-\theta}\right]^\frac{1}{1-\theta}$ \quad ($(P^a, P^b, P) = (P^a, P^a, P^a)$の周りで)\\
+
+{\bf 解答:} $x=e^{\ln x}$を使うと，
+\begin{align*}
+\exp\left[(1-\theta) \ln P\right] = \lambda \exp\left[(1-\theta) \ln P_a \right] + (1-\lambda) \exp\left[(1-\theta)\ln P_b\right] 
+\end{align*}
+$(\ln P^a, \ln P^b, \ln P) = (\ln P^a, \ln P^a, \ln P^a)$の周りで1次のTaylor展開すると，
+\begin{align*}
+(1-\theta) (P^a)^{1-\theta} (\ln P - \ln P^a) = (1-\lambda) (1-\theta) (P^a)^{1-\theta} (\ln P^b - \ln P^a)
+\end{align*}
+したがって，
+\begin{align*}
+\ln P = \lambda \ln P^a + (1-\lambda) \ln P^b
+\end{align*}
+これで対数線型化終了．物価水準の財a価格に対する弾力性は$\lambda$，財b価格に対する弾力性は$1-\lambda$である．
+\end{enumerate}
+
+\paragraph{練習問題4} 方法1を使って，次の式を対数2次近似しなさい．
+\begin{enumerate}
+\item Cobb-Douglas型生産関数 $Y = AK^\alpha L^{1-\alpha}$ \quad ($(A,K,L,Y) = (\bar A, \bar K, \bar L, \bar Y)$の周りで)\\
+
+{\bf 解答:} 左辺と右辺をそれぞれ2次のTaylor展開すると，
+\begin{align*}
+\bar Y + (Y - \bar Y) = &\bar A \bar K^\alpha \bar L^{1-\alpha} + \bar K^\alpha \bar L^{1-\alpha} (A-\bar A) + \alpha \bar A \bar K^{\alpha-1} \bar L^{1-\alpha} (K-\bar K) + (1-\alpha) \bar A \bar K^\alpha \bar L^{-\alpha} (L-\bar L)\\
+&+\frac{1}{2} \alpha (\alpha -1)\bar A \bar K^{\alpha -2} \bar L^{1-\alpha} (K-\bar K)^2 + \frac{1}{2} (1-\alpha) (-\alpha) \bar A \bar K^\alpha \bar L^{-\alpha-1} (L-\bar L)^2\\
+&+ \alpha \bar K^{\alpha -1} \bar L^{1-\alpha} (A - \bar A)(K - \bar K) \\
+&+ (1-\alpha) \bar K^\alpha \bar L^{-\alpha} (A - \bar A) (L-\bar L) \\
+&+ \alpha (1-\alpha) \bar A \bar K^{\alpha-1} \bar L^{-\alpha} (K-\bar K) (L-\bar L) 
+\end{align*}
+$\bar Y = \bar A \bar K^\alpha \bar L^{1-\alpha}$で0次の項は消える．1次の項には分子と分母に定常状態の値を，2次の項には分子と分母に定常状態の2乗を掛けると，
+\begin{align*}
+\bar Y \cdot \frac{Y - \bar Y}{\bar Y} = &\bar Y \cdot \frac{A-\bar A}{\bar A} + \alpha \bar Y \cdot \frac{K-\bar K}{\bar K} + (1-\alpha) \bar Y \cdot\frac{L-\bar L}{\bar L}\\
+&-\frac{1}{2} \alpha (1-\alpha) \cdot \bar Y \cdot \left(\frac{K-\bar K}{\bar K}\right)^2 - \frac{1}{2} \alpha (1-\alpha) \cdot \bar Y \cdot \left(\frac{L-\bar L}{\bar L}\right)^2 \\
+&+ \alpha \bar Y \cdot \left(\frac{A-\bar A}{\bar A}\right) \cdot\left(\frac{K-\bar K}{\bar K}\right)\\
+&+ (1-\alpha) \bar Y \cdot \left(\frac{A-\bar A}{\bar A}\right) \cdot \left(\frac{L - \bar L}{\bar L}\right)\\
+&+ \alpha (1-\alpha) \cdot \bar Y \cdot \left(\frac{K-\bar K}{\bar K}\right) \cdot \left(\frac{L-\bar L}{\bar L}\right)
+\end{align*}
+したがって，
+\begin{align*}
+\frac{Y - \bar Y}{\bar Y} = &\frac{A-\bar A}{\bar A} + \alpha \cdot \frac{K-\bar K}{\bar K} + (1-\alpha) \cdot \frac{L-\bar L}{\bar L}\\
+&-\frac{1}{2} \alpha (1-\alpha) \cdot \left(\frac{K-\bar K}{\bar K}\right)^2 - \frac{1}{2} \alpha(1-\alpha) \cdot \left(\frac{L-\bar L}{\bar L}\right)^2 \\
+&+ \alpha \cdot \left(\frac{A - \bar A}{\bar A}\right) \cdot \left(\frac{K- \bar K}{\bar K}\right)\\
+&+ (1-\alpha)\cdot \left(\frac{A-\bar A}{\bar A}\right) \cdot\left(\frac{L-\bar L}{\bar L}\right)\\
+&+ \alpha (1-\alpha) \cdot \left(\frac{K-\bar K}{\bar K}\right) \cdot \left(\frac{L-\bar L}{\bar L}\right) 
+\end{align*}
+$\dfrac{x_i-\bar x_i}{\bar x_i} = \ln x_i - \ln \bar x_i + \dfrac{1}{2} (\ln x_i - \ln \bar x_i)^2$, $\left(\dfrac{x_i - \bar x_i}{\bar x_i}\right)^2 = (\ln x_i - \ln \bar x_i)^2$を代入すると，
+\begin{align*}
+\ln Y - \ln \bar Y + \frac{1}{2}(\ln Y - \ln \bar Y)^2 = &\ln A - \ln \bar A + \frac{1}{2} (\ln A - \ln \bar A)^2 \\
+&+ \alpha (\ln K - \ln \bar K) + \frac{1}{2} \alpha (\ln K - \ln \bar K)^2 \\
+&+ (1-\alpha) (\ln L - \ln \bar L) + \frac{1}{2} (1-\alpha) (\ln L - \ln \bar L)^2 \\
+&-\frac{1}{2}\alpha(1-\alpha)(\ln K - \ln \bar K)^2 - \frac{1}{2}\alpha(1-\alpha) (\ln L - \ln \bar L)^2 \\
+&+ \alpha (\ln A - \ln \bar A) (\ln K - \ln \bar K) \\
+&+ (1-\alpha) (\ln A - \ln \bar A) (\ln L - \ln \bar L) \\
+&+ \alpha (1-\alpha) (\ln K - \ln \bar K) \cdot (\ln L - \ln \bar L)
+\end{align*}
+したがって，
+\begin{align}
+\ln Y - \ln \bar Y + \frac{1}{2}(\ln Y - \ln \bar Y)^2 = &\ln A - \ln \bar A + \frac{1}{2} (\ln A - \ln \bar A)^2 \notag \\
+&+ \alpha(\ln K - \ln \bar K) + \frac{1}{2}\alpha^2 (\ln K - \ln \bar K)^2 \notag \\
+&+ (1-\alpha)(\ln L - \ln \bar L) + \frac{1}{2} (1-\alpha)^2(\ln L - \ln \bar L)^2 \notag \\
+&+ \alpha (\ln A - \ln \bar A)(\ln K - \ln \bar K) \notag \\
+&+ (1-\alpha) (\ln A - \ln \bar A) (\ln L - \ln \bar L) \notag \\
+&+ \alpha (1-\alpha) (\ln K - \ln \bar K) \cdot (\ln L - \ln \bar L) \label{cd2nd}
+\end{align}
+ここで\eqref{cd2nd}を両辺2乗して，2次以下の項のみ書き出すと，
+\begin{align*}
+(\ln Y - \ln \bar Y)^2 = &(\ln A - \ln \bar A)^2 + \alpha^2 (\ln K - \ln \bar K)^2 + (1-\alpha)^2(\ln L - \ln \bar L)^2 \\
+&+ 2\alpha (\ln A - \ln \bar A) (\ln K - \ln \bar K) + 2(1-\alpha) (\ln A - \ln \bar A) (\ln L - \ln \bar L) \\
+&+ 2\alpha(1-\alpha) (\ln K - \ln \bar K) (\ln L - \ln \bar L)
+\end{align*}
+
+以上から，2次の項は全て打ち消しあい，以下のようになり対数2次化完了．
+\begin{align*}
+\ln Y - \ln \bar Y = &\ln A - \ln \bar A + \alpha (\ln K - \ln \bar K) + (1-\alpha) (\ln L - \ln \bar L)
+\end{align*}
+（もともと対数線型の形なので，対数2次化しても，2次の項は現れない．）
+
+
+\item オイラー方程式 $C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}$ \quad ($(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで)\\
+
+{\bf 解答:} 左辺と右辺をそれぞれ2次のTaylor展開すると（定数項は消せるので），
+\begin{align*}
+-\frac{1}{\sigma} \bar C^{-\frac{1}{\sigma}-1} (C_t - \bar C) + &\frac{1}{2}\cdot \frac{1}{\sigma}\cdot \left(\frac{1}{\sigma}+1\right) \bar  C^{-\frac{1}{\sigma}-2} (C_t - \bar C)^2 \\
+\quad = &\beta \bar C^{-\frac{1}{\sigma}} \left(R_{t+1} - \frac{1}{\beta}\right) -\frac{1}{\sigma} \bar C^{-\frac{1}{\sigma}-1} (C_{t+1} - \bar C) + \frac{1}{2}\frac{1}{\sigma}\left(\frac{1}{\sigma} + 1\right) \bar C^{-\frac{1}{\sigma}-2} (C_{t+1}-\bar C)^2
+\end{align*}
+変形すると，
+\begin{align*}
+\frac{C_t - \bar C}{\bar C} - &\frac{1}{2}\cdot \left(\frac{1}{\sigma}+1\right) \cdot \left(\frac{C_t - \bar C}{\bar C}\right)^2 \\
+\quad = & \frac{C_{t+1} - \bar C}{\bar C} - \frac{1}{2}\cdot\left(\frac{1}{\sigma} + 1\right)\cdot \left(\frac{C_{t+1}-\bar C}{\bar C}\right)^2 -\sigma \cdot \frac{R_{t+1} - \frac{1}{\beta}}{\frac{1}{\beta}}
+\end{align*}
+$\dfrac{x_i-\bar x_i}{\bar x_i} = \ln x_i - \ln \bar x_i + \frac{1}{2}(\ln x_i - \ln \bar x_i)^2, \left(\dfrac{x_i - \bar x_i}{\bar x_i}\right)^2 = (\ln x_i - \ln \bar x_i)^2$を代入すると，
+\begin{align}
+\ln C_t - \ln \bar C - \frac{1}{2\sigma} (\ln C_t - \ln \bar C)^2 = &\ln C_{t+1} - \ln \bar C - \frac{1}{2\sigma} (\ln C_{t+1} - \ln \bar C)^2 \notag \\
+&- \sigma \left(\ln R_{t+1} - \ln \frac{1}{\beta}\right) - \frac{\sigma}{2} \left(\ln R_{t+1} - \ln \frac{1}{\beta}\right)^2 \label{euler2nd}
+\end{align}
+両辺を2乗して，2次の項まで見ると，
+\begin{align*}
+(\ln C_t - \ln \bar C)^2 = (\ln C_{t+1} - \ln \bar C)^2 + \sigma ^2 \left(\ln R_{t+1} - \ln \frac{1}{\beta}\right)^2
+\end{align*}
+これを\eqref{euler2nd}に代入すると，ちょうど2次の項が打ち消しあい，
+\begin{align*}
+\ln C_t - \ln \bar C = &\ln C_{t+1} - \ln \bar C - \sigma \left(\ln R_{t+1} - \ln \frac{1}{\beta}\right)
+\end{align*}
+（もともと対数線型なので，2次の項は現れない．）
+
+
+\item 資本蓄積の動学を表す式 $K_{t+1} = (1-\delta) K_t + I_t$ (定常状態 $(K_t, K_{t+1}, I_t) = (\bar K, \bar K, \bar I)$の周りで．ただし，$\delta \bar K = \bar I$を満たす．)\\
+
+{\bf 解答:} 両辺をそれぞれ2次のTaylor展開すると，
+\begin{align*}
+K_{t+1} - \bar K = (1-\delta) (K_t - \bar K) + (I_t - \bar I)
+\end{align*}
+（もともと線型なので，基本的に変わらない．定常状態の値を引いただけの形になる．）これを変形すると，
+\begin{align*}
+\frac{K_{t+1} - \bar K}{\bar K} = (1-\delta) \cdot \frac{K_t - \bar K}{\bar K} + \frac{\bar I}{\bar K} \cdot \frac{I_t - \bar I}{\bar I}
+\end{align*}
+$\bar I/ \bar K = \delta$なので，
+\begin{align*}
+\frac{K_{t+1} - \bar K}{\bar K} = (1-\delta) \cdot \frac{K_t - \bar K}{\bar K} + \delta \cdot \frac{I_t - \bar I}{\bar I}
+\end{align*}
+ここで\eqref{lnxend}を使うと，
+\begin{align}
+\ln K_{t+1} - \ln \bar K + \frac{1}{2} (\ln K_{t+1} - \ln \bar K)^2 = &(1-\delta) (\ln K_t - \ln \bar K) + \frac{1}{2} (1-\delta) (\ln K_t - \ln \bar K)^2 \notag \\
+&+ \delta \cdot (\ln I_t - \ln \bar I) + \frac{1}{2}\cdot \delta \cdot (\ln I_t - \ln \bar I)^2 \label{ki2nd}
+\end{align}
+これで対数2次の式になった．もし$K_{t+1}$の1次の対数乖離を$K_t$と$I_t$の2次までの対数乖離で近似したければ，以下のようにすれば良い．\eqref{ki2nd}を2乗して2次以下の項を無視すると，
+\begin{align*}
+(\ln K_{t+1} - \ln \bar K)^2 = &(1-\delta)^2 (\ln K_t - \ln \bar K)^2 + \delta^2 \cdot (\ln I_t - \ln \bar I)^2 \\
+&+ 2\delta\cdot (1-\delta) \cdot (\ln K_t - \ln \bar K) \cdot (\ln I_t - \ln \bar I)
+\end{align*}
+これを\eqref{ki2nd} に代入すると，
+\begin{align*}
+\ln K_{t+1} - \ln \bar K = &(1-\delta) (\ln K_t - \ln \bar K)  + \frac{1}{2}\cdot (1-\delta) \delta (\ln K_t - \ln \bar K)^2 \\
+& + \delta (\ln I_t - \ln \bar I) + \frac{1}{2}\cdot \delta \left(1-\delta\right) (\ln I_t - \ln \bar I)^2 \\
+&-\delta \cdot (1-\delta) \cdot (\ln K_t - \ln \bar K) (\ln I_t - \ln \bar I)
+\end{align*}
+これで完了\footnote{これを変形すると
+\begin{align*}
+\ln K_{t+1} - \ln K_t = \delta \left(\ln \frac{I_t}{K_t} - \ln \frac{\bar I_t}{\bar K_t}\right) + \frac{1}{2}\delta (1-\delta) \left(\ln \frac{I_t}{K_t} - \ln \frac{\bar I}{\bar K}\right)^2 
+\end{align*}
+と書くことができる．つまり，資本の成長率の期待値は，投資-資本比率の期待値と分散の増加関数に近似できる．}．
+\end{enumerate}
+
+\paragraph{練習問題5} 方法2を使って，次の式を対数2次近似しなさい．
+\begin{enumerate}
+\item Cobb-Douglas型生産関数 $Y = AK^\alpha L^{1-\alpha}$ \quad ($(A,K,L,Y) = (\bar A, \bar K, \bar L, \bar Y)$の周りで)
+
+\paragraph{解答:} $x = e^{\ln x}$を使って，
+\begin{align*}
+\exp\left[\ln Y\right] = \exp\left[\ln A + \alpha \ln K + (1-\alpha) \ln L\right]
+\end{align*}
+したがって，
+\begin{align*}
+\ln Y = \ln A + \alpha \ln K + (1-\alpha) \ln L
+\end{align*}
+となり，もともと対数線型であるので，これで終了．定常状態では$\ln \bar Y = \ln \bar A + \alpha \ln \bar K + (1-\alpha) \ln \bar L$なので，これを辺々引くと，
+\begin{align*}
+\ln Y - \ln \bar Y = \ln A - \ln \bar A + \alpha (\ln K - \ln \bar K) + (1-\alpha) (\ln L - \ln \bar L)
+\end{align*}
+となり，方法1と同じ結果になる．\\
+
+\item オイラー方程式 $C_t^{-\frac{1}{\sigma}} = \beta R_{t+1} C_{t+1}^{-\frac{1}{\sigma}}$ \quad ($(C_t, C_{t+1}, R_{t+1}) = (\bar C, \bar C, \frac{1}{\beta})$の周りで)
+
+\paragraph{解答:} $x = e^{\ln x}$を使って，
+\begin{align*}
+\exp\left[ -\frac{1}{\sigma} \ln C_{t+1}\right] = \exp\left[\ln \beta + \ln R_{t+1} -\frac{1}{\sigma} \ln C_{t+1}\right]
+\end{align*}
+したがって，
+\begin{align*}
+-\frac{1}{\sigma} \ln C_{t} = \ln \beta + \ln R_{t+1} -\frac{1}{\sigma} \ln C_{t+1}
+\end{align*}
+両辺に$-\sigma$を掛けると，
+\begin{align*}
+\ln C_{t} =  \ln C_{t+1} -\sigma \left(\ln R_{t+1} - \ln \frac{1}{\beta}\right) 
+\end{align*}
+これで完了．（もともと対数線型なので，2次の項は現れない．）\\
+
+\item 資本蓄積の動学を表す式 $K_{t+1} = (1-\delta) K_t + I_t$ (定常状態 $(K_t, K_{t+1}, I_t) = (\bar K, \bar K, \bar I)$の周りで．ただし，$\delta \bar K = \bar I$を満たす．)
+
+\paragraph{解答:} $x = e^{\ln x}$を使って，
+\begin{align*}
+\exp [\ln K_{t+1}] = (1-\delta) \exp[\ln K_t] + \exp[\ln I_t].
+\end{align*}
+$(\ln K_t, \ln K_t, \ln I_t) = (\ln \bar K, \ln \bar K, \ln \bar I)$の周りで2次のTaylor展開をすると，
+\begin{align*}
+\bar K (\ln K_{t+1} - \ln K_t) + \frac{1}{2} \bar K (\ln K_{t+1} - \ln \bar K)^2 = &(1-\delta) \bar K (\ln K_t - \ln \bar K) + \frac{1}{2} (1-\delta) \bar K (\ln K_t - \ln \bar K)^2 \\
+&+ \bar I (\ln I_t - \ln \bar I) + \frac{1}{2} \bar I (\ln I_t - \ln \bar I)^2.
+\end{align*}
+両辺を$\bar K$で割って，$\bar I/\bar K = \delta$を使うと，
+\begin{align*}
+(\ln K_{t+1} - \ln K_t) + \frac{1}{2} (\ln K_{t+1} - \ln \bar K)^2 = &(1-\delta) (\ln K_t - \ln \bar K) + \frac{1}{2} (1-\delta) (\ln K_t - \ln \bar K)^2 \\
+&+ \delta (\ln I_t - \ln \bar I) + \frac{1}{2} \delta (\ln I_t - \ln \bar I)^2.
+\end{align*}
+となり，\eqref{ki2nd}と同じ式を得る．
+\end{enumerate}
+
+
+\end{document}
+
+\section{The Efficient Allocation}
+Preference(式(1))とTechnology(式(2), (3), (4)) とEndowment(このモデルでは出てこない)が与えられたとき，その下でwelfere (1)を最大化するようにallocationを決めるSocial Plannerを考える．
+\begin{itemize}
+\item The Social Planner's Problem
+\begin{align}
+\max_{\{C_t, \{C_t(i)\}_{i\in [0,1]}, N_t, \{N_t(i)\}_{i\in[0,1]}\}_{t=0}^\infty} \; & E_0 \sum_{t=0}^\infty \beta^t U(C_t, N_t; Z_t)\\
+\text{s.t.} \; & C_t = \left(\int_0^1 C_t(i)^{1-\frac{1}{\varepsilon}}di\right)^\frac{\varepsilon}{\varepsilon -1} & \text{for} \; \forall t \in \mathbb{N} \cup \{0\}\\
+&C_t(i) = A_t N_t(i)^{1-\alpha} & \text{for} \; \forall i \in [0,1], \quad \forall t \in \mathbb{N} \cup \{0\}\\
+&N_t = \int_0^1 N_t(i) di&\text{for} \; \forall t \in \mathbb{N} \cup \{0\}
+\end{align}
+\item この問題は，資本のような内生の状態変数がない．したがって，各時点でその時点のinstantaneous utilityを最大化すればよい．つまり，上の動学的最大化問題は，以下のような各時点のstaticな最大化問題に分解できる．
+任意の$t \in \mathbb{N}\cup \{0\}$に対して，
+\begin{align}
+\max_{C_t, \{C_t(i)\}_{i\in [0,1]}, N_t, \{N_t(i)\}_{i\in[0,1]}} \; & U(C_t, N_t; Z_t)\notag\\
+\text{s.t.} \; & C_t = \left(\int_0^1 C_t(i)^{1-\frac{1}{\varepsilon}}di\right)^\frac{\varepsilon}{\varepsilon -1}\\
+&C_t(i) = A_t N_t(i)^{1-\alpha} & \text{for} \; \forall i \in [0,1]\\
+&N_t = \int_0^1 N_t(i) di
+\end{align}
+\item (5), (6), (7)に対するラグランジュ定数をそれぞれ$\lambda_t, \eta_t(i), \nu_t$とすると，ラグランジュ関数は
+\begin{align*}
+\mathcal{L} = U(C_t, N_t; Z_t) &+ \lambda_t \left[\left(\int_0^1 C_t(i)^{1-\frac{1}{\varepsilon}}di\right)^\frac{\varepsilon}{\varepsilon -1} - C_t\right]\\
+&+ \int_0^1 \eta_t(i) [A_t N_t(i)^{1-\alpha} - C_t(i)]di\\
+&+ \nu_t \left[ N_t - \int_0^1 N_t(i) di\right]
+\end{align*}
+このラグランジュ関数を$C_t, N_t, \lambda_t, \nu_t, \eta_t(i), C_t(i), N_t(i)$ ($i \in [0,1])$に関してそれぞれ微分した値をゼロとした式が，この経済における最適配分が満たすべき一階条件です．求めてみて下さい．
+\subsection{一階条件の導出}
+\item 一階条件は，任意の$t \in \mathbb{N}\cup \{0\}$に対して，以下のとおり．
+\begin{align}
+&U_C(C_t, N_t; Z_t) - \lambda_t = 0, \\
+&U_N(C_t, N_t; Z_t) + \nu_t = 0, \\
+&\left(\int_0^1 C_t(i)^{1-\frac{1}{\varepsilon}}di\right)^\frac{\varepsilon}{\varepsilon -1} - C_t =0,\\
+&N_t - \int_0^1 N_t(i) di = 0,\\
+&A_t N_t(i)^{1-\alpha} - C_t(i)=0, &i \in [0,1],\\
+&C_t^\frac{1}{\varepsilon}C_t(i)^{-\frac{1}{\varepsilon}}\lambda_t - \eta_t(i) = 0, \qquad &i \in [0,1],\\
+&\eta_t(i) (1-\alpha)A_tN_t(i)^{-\alpha}-\nu_t = 0, \qquad &i \in [0,1].
+\end{align}
+\item 式 (13)の意味は以下のとおり，
+\begin{align*}
+\underbrace{\eta_t(i)}_{\text{第}i\text{財の限界効用}} = \underbrace{C_t^\frac{1}{\varepsilon}C_t(i)^{-\frac{1}{\varepsilon}}}_{\text{第}i\text{財の限界最終財生産力} \frac{\partial C_t}{\partial C_t(i)}} \times \underbrace{\lambda_t}_{\text{最終財の限界効用}}, \qquad \forall i \in [0,1].
+\end{align*}
+第$i$財に関する(13)と第$j$財に関する(13)を辺々割ると，
+\begin{align}
+\underbrace{\frac{\eta_t(i)}{\eta_t(j)}}_{\text{中間財間の限界代替率}} = \underbrace{\left(\frac{C_t(i)}{C_t(j)}\right)^{-\frac{1}{\varepsilon}}}_{\text{中間財間の技術的限界代替率}}, \qquad \forall i,j \in [0,1].
+\end{align}
+
+\item 式(14)の意味は以下のとおり．
+\begin{align*}
+\underbrace{\nu_t}_{\text{労働の限界不効用}} =  \underbrace{(1-\alpha)A_tN_t(i)^{-\alpha}}_{\text{労働の限界第}i\text{財生産力}\frac{\partial C_t(i)}{\partial N_t(i)}} \times \underbrace{\eta_t(i)}_{\text{第}i\text{財の限界効用}}, \qquad \forall i \in [0,1].
+\end{align*}
+第$i$財に関する(14)と第$j$財に関する(14)を辺々割ると，
+\begin{align*}
+\underbrace{\frac{\eta_t(i)}{\eta_t(j)}}_{\text{中間財間の限界代替率}} = \underbrace{\left(\frac{N_t(i)}{N_t(j)}\right)^{\alpha}}_{\text{中間財間の限界変形率}}, \qquad \forall i,j \in [0,1].
+\end{align*}
+生産関数(12)を使って$N_t(i), N_t(j)$を消去すると，
+\begin{align}
+\underbrace{\frac{\eta_t(i)}{\eta_t(j)}}_{\text{中間財間の限界代替率}} = \underbrace{\left(\frac{C_t(i)}{C_t(j)}\right)^{\frac{\alpha}{1-\alpha}}}_{\text{中間財間の限界変形率}}, \qquad \forall i,j \in [0,1].
+\end{align}
+\item (15)と(16)より，
+\begin{align*}
+\underbrace{\left(\frac{C_t(i)}{C_t(j)}\right)^{-\frac{1}{\varepsilon}}}_{\text{中間財間の技術的限界代替率}} = \underbrace{\left(\frac{C_t(i)}{C_t(j)}\right)^{\frac{\alpha}{1-\alpha}}}_{\text{中間財間の限界変形率}}, \qquad \forall i,j \in [0,1].
+\end{align*}
+この式から，任意の$i,j(\in [0,1])$に対して$C_t(i)/C_t(j) = 1$となる．よって，
+\begin{align}
+C_t(i) = C_t(j), \qquad \forall i,j \in [0,1].
+\end{align}
+したがって，
+\begin{align}
+C_t(i) = a_t, \qquad \forall i \in [0,1].
+\end{align}
+（ただし，$a_t$は$i$に依存しないある数）と書けるので，(18)を(10)に代入すれば，
+\begin{align}
+C_t = \left(\int_0^1 a_t^{1-\frac{1}{\varepsilon}}di\right)^\frac{\varepsilon}{\varepsilon -1} = a_t.
+\end{align}
+よって，(18)と(19)から，
+\begin{align}
+C_t(i) = C_t, \qquad \forall i \in [0,1].
+\end{align}
+(20)と(12)から，
+\begin{align*}
+N_t(i) = \frac{C_t}{A_t}^\frac{1}{1-\alpha}
+\end{align*}
+となり，$N_t(i)$は$i$に依存しない値である．これを$b_t$として(11)に代入すると，
+\begin{align*}
+N_t = \int_0^1 b_t di = b_t.
+\end{align*}
+よって，
+\begin{align}
+N_t(i) = N_t, \qquad \forall i \in [0,1].
+\end{align}
+\item (20)と(21)を(13)と(14)に代入すると，
+\begin{align*}
+\lambda_t &= \eta_t(i)\\
+\eta_t(i)(1-\alpha)A_t N_t^{-\alpha} &= \nu_t
+\end{align*}
+$\eta_t(i)$を消去して，$\lambda_t(1-\alpha)A_tN_t^{-\alpha} = \nu_t$．これに(8),(9)を代入すると，
+\begin{align}
+\underbrace{(1-\alpha)A_tN_t^{-\alpha}}_{\text{労働の限界最終財生産}} = \underbrace{\frac{-U_N(C_t, N_t; Z_t)}{U_C(C_t, N_t; Z_t)}}_{\text{最終財消費と余暇の限界代替率}}
+\end{align}
+が得られる．以上から，この経済における最適資源配分$\{\{C_t(i)\}_{i\in[0,1]}, \{N_t(i)\}_{i\in [0,1]}, C_t, N_t\}_{t=0}^\infty$が満たすべき一階条件は，全ての$t\in\mathbb{N}\cup \{0\}$において，
+\begin{align}
+&C_t(i) = C_t \qquad &\forall i \in [0,1], \tag{20}\\
+&N_t(i) = N_t \qquad &\forall i \in [0,1], \tag{21}\\
+&(1-\alpha)A_tN_t^{-\alpha} = \frac{-U_N(C_t, N_t; Z_t)}{U_C(C_t, N_t; Z_t)}, \tag{22}\\
+&C_t = A_tN_t^{1-\alpha}.
+\end{align}
+が成り立つことである．
+\end{itemize}
+
+\section{Loss Function}
+基本的な New Keynesian Model:
+\begin{align}
+&Q_t = \beta E_t \left(\frac{U_{C,t+1}}{U_{C,t}}\cdot\frac{P_t}{P_{t+1}}\right)\\
+&E_t \sum_{k=0}^\infty \theta^k \frac{\beta^k U_{C,t+k}}{U_{C,t}}\frac{P_t}{P_{t+k}}\left[(1-\varepsilon) Y_{t+k|t} - \mathcal{C}^\prime_{t+k}(Y_{t+k|t})\cdot (-\varepsilon)\cdot \frac{Y_{t+k|t}}{P^\ast_t}\right] = 0 \label{focpast}
+\end{align}
+
+
+
+\end{document}
+\subsection{Households}
+
+\subsubsection{Utility maximization problem}
+\begin{align*}
+\max _{\{C_t, N_t\}} \quad &E_0 \sum_{t=0}^\infty \beta^t U(C_t, N_t; Z_t)\\
+\text{s.t.}\quad &C_t \le \left[\int_0^1 C_t(i)^\frac{\varepsilon-1}{\varepsilon} di\right]^\frac{\varepsilon}{\varepsilon-1} \qquad [\beta^t \nu_t]\\
+&\int_0^1 P_t(i)C_t(i) di + Q_tB_t \le B_{t-1} + W_tN_t + T_t \qquad \left[\frac{\beta^t \nu_t}{P_t}\right]
+\end{align*}
+
+\subsubsection{Lagrangian}
+
+\begin{align*}
+\mathcal{L} = &E_0 \sum_{t=0}^\infty \beta^t \Bigg\{U(C_t, N_t; Z_t) + \nu_t\left[\left(\int_0^1 C_t(i)^\frac{\varepsilon-1}{\varepsilon}di\right)^\frac{\varepsilon}{\varepsilon-1} - C_t\right] \\
+&\qquad + \frac{\nu_t}{P_t} \left[B_{t-1} + W_tN_t + T_t - \int_0^1P_t(i)C_t(i)di - Q_tB_t\right]\Bigg\}
+\end{align*}
+
+\subsubsection{First-order conditions}
+
+\begin{align}
+&C_t = \left[\int_0^1 C_t(i)^\frac{\varepsilon-1}{\varepsilon} di\right]^\frac{\varepsilon}{\varepsilon-1} \label{D-S}\\
+&\int_0^1 P_t(i)C_t(i) di + Q_tB_t = B_{t-1} + W_tN_t + T_t \label{fbc}\\
+&C_t^\frac{1}{\varepsilon}C_t(i)^{-\frac{1}{\varepsilon}} = \frac{P_t(i)}{P_t} \label{focci}\\
+&U_{C,t} = \nu_t\\
+&-U_{N,t} = \nu_t\cdot \frac{W_t}{P_t} \label{focn} \\
+&Q_t\cdot\frac{\nu_t}{P_t} = E_t\beta \frac{\nu_{t+1}}{P_{t+1}} \label{focb}
+\end{align}
+
+$U_{C,t}$, $U_{N,t}$はそれぞれ消費の限界効用と労働の限界効用を表す.\footnote{つまり,
+\begin{align*}
+&U_{C,t} \equiv \frac{\partial U(C_t, N_t; Z_t)}{\partial C_t} \\
+&U_{N,t} \equiv \frac{\partial U(C_t, N_t; Z_t)}{\partial N_t} \\
+\end{align*}
+である.}
+
+\subsection{Firms}
+
+\subsubsection{Production Technology}
+\begin{align}
+Y_t(i) = A_t N_t(i)^{1-\alpha} \label{prod}
+\end{align}
+
+\subsubsection{Cost Function}
+
+\begin{align*}
+\text{Nominal Total Cost}_t(i) = W_t N_t(i) = W_t\cdot\left(\frac{Y_t(i)}{A_t}\right)^\frac{1}{1-\alpha} \equiv \mathcal{C}_{t}(Y_t(i))
+\end{align*}
+
+\subsubsection{Calvo Pricing}
+
+\begin{align}
+P_t(i) = \begin{cases}P_{t-1}(i) \quad &\text{with probability} \; \theta, \\ P^\ast_t \quad &\text{with probability} \; 1-\theta. \end{cases} \label{calvo}
+\end{align}
+
+\subsubsection{Profit Maximization}
+独占的競争モデルであるので、企業は自社製品の価格を決定し、その価格において発生する需要に合わせて生産を行う。Calvo Pricingの設定では、今期に決定した自社製品価格が、一定確率で次期にも適用される（\eqref{calvo}）。したがって、今期に自社製品価格を設定する企業は、その意思決定に際して次期以降もその価格で売らなければならない可能性を考慮する.\footnote{反対に、伸縮価格モデル (flexible price model), つまり自社製品の価格が毎期自由に変更可能であるモデルならば、今期設定する自社製品価格は来期以降の利潤に影響を与えないので, 今期の価格設定問題における目的関数は今期のみの利潤と考えてよい。つまり, (多くの) 伸縮価格モデルでは, 企業の意思決定問題は今期のみの静学的な問題となる.} つまり、Calvo Pricingにおける価格設定問題はforward lookingな動学的最適化問題である。具体的には、第$t$期に自社製品の価格改定機会が訪れた企業は、第$t$期から将来にわたる利潤の割引現在価値の総和\footnote{この, 「第$t$期から将来にわたる利潤の割引現在価値の総和」は, この企業の企業価値と呼ばれる.}を最大化すると考えられる。\\
+
+ここで, （今期を含む）もっとも近い過去に訪れた価格再設定の機会が第$t$期の企業の, 第$t+s$期$(s \ge 0)$における(名目)企業価値を$V_{t+s|t}$と表すことにすると, 以下のベルマン方程式が成り立つ.
+
+\begin{align*}
+V_{t|t} = \max_{P^\ast_t} \left\{ \left[P^\ast_t Y_{t|t} - \mathcal{C}_t(Y_{t|t}) \right] + \theta E_t\left[\frac{\beta U_{C,t+1}}{U_{C,t}}\cdot \frac{P_t}{P_{t+1}}\cdot V_{t+1|t}\right] + (1-\theta) E_t\left[\frac{\beta U_{C,t+1}}{U_{C,t}}\cdot \frac{P_t}{P_{t+1}}\cdot V_{t+1|t+1}\right]\right\}
+\end{align*}
+
+これを前向きに解くと,
+\begin{align*}
+V_{t|t} = \max_{P^\ast_t} &\left\{E_t \sum_{k=0}^\infty \theta^k \frac{\beta^k U_{C,t+k}}{U_{C,t}}\frac{P_t}{P_{t+k}}\left[P^\ast_t Y_{t+k|t} - \mathcal{C}_{t+k}(Y_{t+k|t})\right]\right\} + E_t \sum_{k=1}^\infty \theta^{k-1}(1-\theta) V_{t+k|t+k}\\
+\text{s.t.} \quad &Y_{t+k|t} = \left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\varepsilon} C_{t+k}
+\end{align*}
+
+が得られ, 上の式の後半の項は（第$t+1$期以降に価格を変更した場合の価値なので）$P^\ast_t$に依存しない. したがって、最大化問題を考える際は後半の項を無視して,
+\begin{align*}
+\max_{P^\ast_t} &\left\{E_t \sum_{k=0}^\infty \theta^k \frac{\beta^k U_{C,t+k}}{U_{C,t}}\frac{P_t}{P_{t+k}}\left[P^\ast_t Y_{t+k|t} - \mathcal{C}_{t+k}(Y_{t+k|t})\right]\right\}\\
+\text{s.t.} \quad &Y_{t+k|t} = \left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\varepsilon} C_{t+k}
+\end{align*}
+を考えれば良い.
+
+\subsubsection{First-order condition}
+\begin{align}
+&E_t \sum_{k=0}^\infty \theta^k \frac{\beta^k U_{C,t+k}}{U_{C,t}}\frac{P_t}{P_{t+k}}\left[(1-\varepsilon) Y_{t+k|t} - \mathcal{C}^\prime_{t+k}(Y_{t+k|t})\cdot (-\varepsilon)\cdot \frac{Y_{t+k|t}}{P^\ast_t}\right] = 0 \label{focpast}\\
+&Y_{t+k|t} = \left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\varepsilon} C_{t+k} \label{demandytk} \\
+&\left(\mathcal{C}_{t}(Y) = W_t\cdot\left(\frac{Y}{A_t}\right)^\frac{1}{1-\alpha}\right)
+\end{align}
+
+\subsection{Market Clearing Conditions}
+\begin{align}
+&Y_t(i) = C_t(i) \label{gmc}\\
+&P_tY_t = \int_0^1P_t(i)Y_t(i)di \label{aggy} \\
+&N_t = \int_0^1 N_t(i)di \label{lmc} \\
+&T_t = \int_0^1 \left[P_t(i)Y_t(i) - W_t N_t(i)\right]di \label{profit}\\
+&B_t = 0 \label{bmc}
+\end{align}
+
+\section{Equilibrium}
+Given $\{P_{-1}(i)\}_i$, $A_0$, $Z_0$, a stochastic process of $\{A_t, Z_t\}_{t=1}^\infty$ and a monetary policy rule, an equilibrium $\{C_t, \{C_t(i)\}_i, \{P_t(i)\}_i, Q_t, B_t, W_t, N_t, T_t, P_t, \{Y_t(i)\}_i, \{N_t(i)\}_i, Y_{t+k|t}, P^\ast_t, Y_t\}_{t=0}^\infty$ satisfies following conditions;
+\paragraph{Households' FOCs}
+\begin{align}
+&C_t = \left[\int_0^1 C_t(i)^\frac{\varepsilon-1}{\varepsilon} di\right]^\frac{\varepsilon}{\varepsilon-1} \tag{\ref{D-S}}\\
+&\int_0^1 P_t(i)C_t(i) di + Q_tB_t = B_{t-1} + W_tN_t + T_t \tag{\ref{fbc}} \\
+&C_t(i) = \left(\frac{P_t(i)}{P_t}\right)^{-\varepsilon} C_t \tag{\ref{focci}$^\prime$} \label{demandci}\\
+&-\frac{U_{N,t}}{U_{C,t}} = \frac{W_t}{P_t} \tag{\ref{focn}$^\prime$} \label{ls} \\
+&Q_t = E_t \left[\frac{\beta U_{C,t+1}}{U_{C,t}}\cdot\frac{P_t}{P_{t+1}}\right] \tag{\ref{focb}$^\prime$} \label{euler}
+\end{align}
+\paragraph{Firms' FOCs}
+\begin{align}
+&Y_t(i) = A_t N_t(i)^{1-\alpha} \tag{\ref{prod}}\\
+&P_t(i) = \begin{cases}P^\ast_t \quad &\text{with probability} \; 1-\theta\\ P_{t-1}(i) \quad &\text{with probability} \; \theta.\end{cases} \tag{\ref{calvo}}\\
+&\sum_{k=0}^\infty \theta^k E_t \left\{ \frac{\beta^k U_{C,t+k}}{U_{C,t}}\cdot\frac{P_t}{P_{t+k}}Y_{t+k|t} \cdot\left[P^\ast_t - \frac{\varepsilon}{\varepsilon-1}\mathcal{C}^\prime_{t+k}(Y_{t+k|t})\right]\right\} = 0 \tag{\ref{focpast}$^\prime$} \label{focpast2}\\
+&Y_{t+k|t} = \left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\varepsilon} C_{t+k} \tag{\ref{demandytk}}
+\end{align}
+\paragraph{Market Clearing Conditions and Definitions}
+\begin{align}
+&Y_t(i) = C_t(i) \tag{\ref{gmc}}\\
+&Y_t = C_t \tag{\ref{aggy}$^\prime$} \label{agggmc}\\
+&N_t = \int_0^1 N_t(i)di \tag{\ref{lmc}}\\
+&T_t = P_tY_t - W_t N_t \tag{\ref{profit}$^\prime$} \label{profit2}\\
+&B_t = 0 \tag{\ref{bmc}}
+\end{align}
+and an equation describing monetary policy rule.\\
+
+\eqref{fbc} is redundant by the Walras' law.
+
+This system describes the model's equilibrium dynamics. However, it is difficult to know the dynamics of distribution $\{C_t(i), P_t(i), Y_t(i)\}$. Hence we rewrite these equilibrium conditions by using aggregate variables.
+
+\section{Aggregation}
+\paragraph{Aggregate Price Dynamics}~\\
+
+Substituting \eqref{demandci} into \eqref{D-S} yields that:
+\begin{align*}
+P_t^{1-\varepsilon} = \int_0^1 P_t(i)^{1-\varepsilon} di.
+\end{align*}
+Hence, from \eqref{calvo},
+\begin{align}
+P_t^{1-\varepsilon} = \theta P_{t-1}^{1-\varepsilon} + (1-\theta) {P^\ast_t}^{1-\varepsilon}. \label{evolp}
+\end{align}
+
+\paragraph{Aggregate Production}~\\
+
+Substituting \eqref{gmc}, \eqref{prod}, and \eqref{agggmc} into \eqref{demandci} yields that:
+\begin{align*}
+A_tN_t(i)^{1-\alpha} = \left(\frac{P_t(i)}{P_t}\right)^{-\varepsilon}Y_t.
+\end{align*}
+Hence,
+\begin{align*}
+N_t(i) = \left(\frac{P_t(i)}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}\cdot\left(\frac{Y_t}{A_t}\right)^\frac{1}{1-\alpha}.
+\end{align*}
+Substitute it into \eqref{lmc}, and we obtain that:
+\begin{align*}
+Y_t = A_t N_t^{1-\alpha}\cdot\left[\int_0^1 \left(\frac{P_t(i)}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}di\right]^{-(1-\alpha)}.
+\end{align*}
+Define $D_t$ as
+\begin{align}
+D_t \equiv \left[\int_0^1 \left(\frac{P_t(i)}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}di\right]^{1-\alpha}, \label{defd}
+\end{align}
+which represents the degree of price dispersion, and we obtain the aggregate production function:
+\begin{align}
+Y_t = \frac{A_t}{D_t} \cdot N_t^{1-\alpha}. \label{aggprod}
+\end{align}
+
+\paragraph{Dynamics of $D_t$}~\\
+
+From \eqref{evolp} and \eqref{calvo},
+\begin{align*}
+D_t &= \left[\theta\cdot \int_0^1 \left(\frac{P_{t-1}(i)}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}di + (1-\theta)\cdot \left(\frac{P^\ast_t}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}\right]^{1-\alpha} \\
+&= \left[\theta\cdot\left(\frac{P_{t-1}}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}\int_0^1 \left(\frac{P_{t-1}(i)}{P_{t-1}}\right)^{-\frac{\varepsilon}{1-\alpha}}di + (1-\theta)\cdot \left(\frac{P^\ast_t}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}\right]^{1-\alpha}
+\end{align*}
+Hence,
+\begin{align}
+D_t^\frac{1}{1-\alpha} = \theta \cdot \left(\frac{P_t}{P_{t-1}}\right)^\frac{\varepsilon}{1-\alpha} D_{t-1}^\frac{1}{1-\alpha} + (1-\theta)\cdot\left(\frac{P^\ast_t}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}. \label{eveld}
+\end{align}
+
+\section{Aggregate Equilibrium}
+An aggregate allocation and price system $\{N_t, C_t, W_t, P_t, Q_t, Y_t, D_t, Y_{t+k|t}, P^\ast_t\}_{t=0}^\infty$
+\begin{align}
+&-\frac{U_{N,t}}{U_{C,t}} = \frac{W_t}{P_t} \tag{\ref{ls}} \\
+&Q_t = E_t \left[\frac{\beta U_{C,t+1}}{U_{C,t}}\cdot\frac{P_t}{P_{t+1}}\right] \tag{\ref{euler}}\\
+&Y_t = \frac{A_t}{D_t} N_t^{1-\alpha} \tag{\ref{aggprod}}\\
+&\sum_{k=0}^\infty \theta^k E_t \left\{ \frac{\beta^k U_{C,t+k}}{U_{C,t}}\cdot\frac{P_t}{P_{t+k}}Y_{t+k|t} \cdot\left[P^\ast_t - \frac{\varepsilon}{\varepsilon-1}\mathcal{C}^\prime_{t+k}(Y_{t+k|t})\right]\right\} = 0 \tag{\ref{focpast2}}\\
+&Y_{t+k|t} = \left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\varepsilon} C_{t+k} \tag{\ref{demandytk}}\\
+&Y_t = C_t \tag{\ref{agggmc}}\\
+&P_t^{1-\varepsilon} = \theta P_{t-1}^{1-\varepsilon} + (1-\theta) {P^\ast_t}^{1-\varepsilon}. \tag{\ref{evolp}}\\
+&D_t^\frac{1}{1-\alpha} = \theta \cdot \left(\frac{P_t}{P_{t-1}}\right)^\frac{\varepsilon}{1-\alpha} D_{t-1}^\frac{1}{1-\alpha} + (1-\theta)\cdot\left(\frac{P^\ast_t}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}. \tag{\ref{eveld}}
+\end{align}
+and an equation describing monetary policy rule.\\
+
+\subsection{Marginal Cost and Markup}
+
+\subsubsection{Firm $i$'s marginal cost}
+Firm $i$'s nominal cost function in period $t+k$ is $\mathcal{C}_{t+k}(Y_{t+k}(i))$, hence period-$t+k$ nominal marginal cost of firms which reset nominal price in period $t$ and keep its price until period $t+k$, $MC_{t+k|t}$, is
+\begin{align}
+MC_{t+k|t} = \mathcal{C}^\prime_{t+k}(Y_{t+k|t}) &= \frac{\partial}{\partial Y_{t+k|t}}\left[W_{t+k}\cdot \left(\frac{Y_{t+k|t}}{A_{t+k}}\right)^\frac{1}{1-\alpha}\right]\notag \\
+&= \frac{1}{1-\alpha}\cdot W_{t+k}\cdot A_{t+k}^{-\frac{1}{1-\alpha}}\cdot Y_{t+k|t}^\frac{\alpha}{1-\alpha}\notag\\
+&= \frac{1}{1-\alpha}\cdot W_{t+k}\cdot A_{t+k}^{-\frac{1}{1-\alpha}}\cdot \left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\frac{\alpha\varepsilon}{1-\alpha}}\cdot Y_{t+k}^\frac{\alpha}{1-\alpha}. \label{mci}
+\end{align}
+
+\subsubsection{Economywide marginal cost and markup}
+Nominal economywide marginal cost, $MC_t$ is defined as marginal cost of final goods, that is,
+\begin{align}
+MC_t &= \frac{\partial}{\partial Y_t} \left[W_t \cdot \left(\underbrace{\frac{D_t}{A_t}\cdot Y_t}_{= N_t}\right)^\frac{1}{1-\alpha}\right]\notag\\
+&= \frac{1}{1-\alpha}\cdot W_t\cdot D_t^\frac{1}{1-\alpha} \cdot A_t^{-\frac{1}{1-\alpha}}\cdot Y_t^\frac{\alpha}{1-\alpha} \label{avgmc}
+\end{align}
+
+By \eqref{mci} and \eqref{avgmc}, we find that:
+\begin{align}
+MC_{t+k|t} = \left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\frac{\alpha\varepsilon}{1-\alpha}} \cdot D_{t+k}^{-\frac{1}{1-\alpha}}\cdot MC_{t+k}.
+\end{align}
+
+Economywide markup rate, $\Lambda_t$, is defined as the ratio between a nominal price of final good, $P_t$, and its nominal marginal cost, $MC_t$.
+\begin{align}
+\Lambda_t &\equiv \frac{P_t}{MC_t} = (1-\alpha) \cdot \frac{P_t A_t^\frac{1}{1-\alpha}}{W_t D_t^\frac{1}{1-\alpha} Y_t^\frac{\alpha}{1-\alpha}},\label{markup}\\
+MC_{t+k|t} &= \left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\frac{\alpha\varepsilon}{1-\alpha}} \cdot D_{t+k}^{-\frac{1}{1-\alpha}}\cdot \frac{P_t}{\Lambda_t}.\label{mcmu}
+\end{align}
+Substitute \eqref{mcmu} into \eqref{focpast2}, and we obtain:
+\begin{align}
+&\sum_{k=0}^\infty \theta^k E_t \left\{ \frac{\beta^k U_{C,t+k}}{U_{C,t}}\cdot\frac{P_t}{P_{t+k}}\left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\varepsilon}Y_{t+k} \cdot\left[P^\ast_t - \frac{\varepsilon}{\varepsilon-1}\left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\frac{\alpha\varepsilon}{1-\alpha}} \cdot D_{t+k}^{-\frac{1}{1-\alpha}}\cdot \frac{P_t}{\Lambda_t}\right]\right\} = 0 \tag{\ref{focpast2}$^\prime$} \label{focpast3}
+\end{align}
+
+\subsection{Aggregate equilibrium}
+Specify the utility function as $U(C,N;Z) = Z\left[\frac{C^{1-\sigma}}{1-\sigma} - \frac{N^{1+\phi}}{1+\phi}\right]$. Given $P_{-1}$, an aggregate allocation and price system $\{N_t, C_t, W_t, P_t, Q_t, Y_t, D_t, \Lambda_t, P^\ast_t\}_{t=0}^\infty$ satisfies the following equations.
+\begin{align}
+&C_t^\sigma N_t^\phi = \frac{W_t}{P_t} \tag{\ref{ls}$^\prime$} \label{ls2} \\
+&Q_t = E_t \left[\frac{\beta C_{t+1}^{-\sigma}}{C_t^{-\sigma}}\cdot\frac{Z_{t+1}}{Z_t}\cdot\frac{P_t}{P_{t+1}}\right] \tag{\ref{euler}$^\prime$} \label{euler2}\\
+&Y_t = \frac{A_t}{D_t} N_t^{1-\alpha} \tag{\ref{aggprod}}\\
+&\sum_{k=0}^\infty \theta^k E_t \left\{ \frac{\beta^k C_{t+k}^{-\sigma}}{C_t^{-\sigma}}\cdot\frac{Z_{t+k}}{Z_t}\cdot\frac{P_t}{P_{t+k}}\left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\varepsilon}Y_{t+k} \cdot\left[P^\ast_t - \frac{\varepsilon}{\varepsilon-1}\left(\frac{P^\ast_t}{P_{t+k}}\right)^{-\frac{\alpha\varepsilon}{1-\alpha}} \cdot D_{t+k}^{-\frac{1}{1-\alpha}}\cdot \frac{P_t}{\Lambda_t}\right]\right\} = 0 \tag{\ref{focpast3}$^\prime$} \label{focpast4}\\
+&\Lambda_t = (1-\alpha) \cdot \frac{P_t A_t^\frac{1}{1-\alpha}}{W_t D_t^\frac{1}{1-\alpha} Y_t^\frac{\alpha}{1-\alpha}},\tag{\ref{markup}}\\
+&Y_t = C_t \tag{\ref{agggmc}}\\
+&P_t^{1-\varepsilon} = \theta P_{t-1}^{1-\varepsilon} + (1-\theta) {P^\ast_t}^{1-\varepsilon}. \tag{\ref{evolp}}\\
+&D_t^\frac{1}{1-\alpha} = \theta \cdot \left(\frac{P_t}{P_{t-1}}\right)^\frac{\varepsilon}{1-\alpha} D_{t-1}^\frac{1}{1-\alpha} + (1-\theta)\cdot\left(\frac{P^\ast_t}{P_t}\right)^{-\frac{\varepsilon}{1-\alpha}}. \tag{\ref{eveld}}
+\end{align}
+and an equation describing monetary policy rule.\\
+
+\section{Zero Inflation Steady State}
+In zero inflation steady state, $P_{t-1} = P_t$, and all endogenous variables are constant.
+\begin{align}
+&C^\sigma N^\phi = \frac{W}{P} \label{ls2ss} \\
+&Q = \beta \label{euler2ss}\\
+&Y = A N^{1-\alpha} \label{aggprodss}\\
+&\mu = \frac{\varepsilon}{\varepsilon-1} \label{focpast4ss}\\
+&\mu = (1-\alpha) \cdot \frac{P A^\frac{1}{1-\alpha}}{W Y^\frac{\alpha}{1-\alpha}} \label{markupss}\\
+&Y = C \tag{\ref{agggmc}}\\
+&P = P^\ast \label{evolpss}\\
+&D = 1 \label{eveldss}
+\end{align}
+
+\section{Log-linearization}
+For an arbitrary variable $X_t$, we define that $x_t \equiv \ln X_t$.
+
+Taking log of \eqref{ls2},
+\begin{align}
+\sigma c_t + \phi n_t = w_t - p_t. \label{llls}
+\end{align}
+
+\eqref{euler2} can be rewritten as
+\begin{align*}
+\exp(q_t) = \beta E_t \exp(\sigma c_t - \sigma c_{t+1} + z_{t+1} - z_t + p_t - p_{t+1}).
+\end{align*}
+Its first-order approximation is:
+\begin{align*}
+Q\cdot (q_t - q) &= Q\sigma (c_t - c) - Q\sigma (E_tc_{t+1} - c) + Q\cdot (E_tz_{t+1} - z) - Q\cdot (z_t - z) \\
+&\qquad + Q\cdot (p_t - p) - Q\cdot (E_tp_{t+1} - p),
+\end{align*}
+hence, 
+\begin{align}
+c_t = E_t\{c_{t+1}\} - \frac{1}{\sigma} \left( i_t - E_t\{\pi_{t+1}\} - \rho\right) + \frac{1}{\sigma} (z_t - E_tz_{t+1}).
+\end{align}
+where, $i_t \equiv -\ln q_t$ is nominal interest rate, $\pi_t \equiv \ln p_t - \ln p_{t-1}$ is inflation rate, $\rho \equiv q = \ln\beta$ is  household's subjective discount rate, respectively. We refer to $i_t - E_t\pi_{t+1}$ as real interest rate. This equation is referred to as the Euler equation.
+
+Taking log of \eqref{aggprod},
+\begin{align}
+y_t = a_t - d_t + n_t^{1-\alpha}.
+\end{align}
+
+\eqref{focpast4} can be rewritten as
+\begin{align*}
+&\sum_{k=0}^\infty (\beta\theta)^k E_t\exp(\sigma c_t - \sigma c_{t+k} + z_{t+k} - z_t + p_t - p_{t+k} -\varepsilon p^\ast_t +\varepsilon p_{t+k} + y_{t+k} + p^\ast_t)\\
+&\quad = \frac{\varepsilon}{\varepsilon-1} \sum_{k=0}^\infty (\beta\theta)^k E_t\exp(\sigma c_t - \sigma c_{t+k} + z_{t+k} - z_t + p_t - p_{t+k} \\
+&\quad \quad -\varepsilon p^\ast_t +\varepsilon p_{t+k} -\frac{\alpha\varepsilon}{1-\alpha}p^\ast_t + \frac{\alpha\varepsilon}{1-\alpha} p_{t+k} - \frac{1}{1-\alpha} d_{t+k} + p_t - \lambda_t). 
+\end{align*}
+
+First-order approximation of LHS is:
+\begin{align}
+LHS_t \approx & \; \sigma \cdot (LHS) \cdot (c_t - c) + \sigma \cdot (LHS) \cdot (E_t\{c_{t+k}\} - c) \notag \\
+& \quad + (LHS) \cdot (z_{t+k} - z) - (LHS) \cdot (z_t - z) + (LHS) \cdot (p_t - p) - (LHS) \cdot (E_t\{p_{t+k}\} - p) -\varepsilon \cdot (LHS) \cdot (p^\ast_t - p^\ast) \notag \\
+& \quad + \varepsilon \cdot (LHS) \cdot (E_t p_{t+k} - p) + (LHS) \cdot (E_ty_{t+k} - y) + (LHS) \cdot (p^\ast - p).
+\end{align}
+
+First-order approximation of RHS is:
+\begin{align}
+RHS_t \approx & \; \sigma \cdot (RHS) \cdot (c_t - c) + \sigma \cdot (RHS) \cdot (E_t\{c_{t+k}\} - c) \notag \\
+& \quad + (RHS) \cdot (z_{t+k} - z) - (RHS) \cdot (z_t - z) + (RHS) \cdot (p_t - p) -\varepsilon \cdot (RHS) \cdot (p^\ast_t - p^\ast) \notag \\
+& \quad + \varepsilon \cdot (RHS) \cdot (E_t p_{t+k} - p) + (RHS) \cdot (E_ty_{t+k} - y) + (RHS) \cdot (p^\ast - p).
+\end{align}
+
+
+
+\end{document}
+
+\section{Reading List}
+\begin{enumerate}
+\item {\bf International Prices and Exchange Rates}
+\begin{enumerate}
+\item (*) Burstein, A., and G. Gopinath (2014) ``International Prices and Exchange Rates,'' In: {\it Handbook of International Economics,} vol. 4, Ch. 7, North Holland, Elsevier, pp. 391--451.
+\item Froot, K. A., and K. Rogoff (1995) ``Perspectives on PPP and Long-run Real Exchange Rates,'' In: {\it Handbook of International Economics,} vol. 3, Ch. 32, North Holland, Elsevier, pp. 1647--1688.
+\end{enumerate}
+
+\item {\bf Nominal Exchange Rate Determination}
+\begin{enumerate}
+\item Mark (2001) Ch. 3.
+\item (*) Engel, C. (2014) ``Exchange Rates and Interest Parity,'' In: {\it Handbook of International Economics,} vol. 4, Ch. 8, North Holland, Elsevier, pp. 453--522.
+\item Evans (2011).
+\end{enumerate}
+
+\item {\bf International Risk Sharing and Allocation of Capital across Countries}
+\begin{enumerate}
+\item Heathcote, J., and F. Perri (2014) ``Assessing International Efficiency,'' In: {\it Handbook of International Economics,} vol. 4, Ch. 9, North Holland, Elsevier, pp. 523--584.
+\end{enumerate}
+
+\item {\bf International Capital Flows}
+\begin{enumerate}
+\item Gourinchas, P.-O., and H. Rey (2014) ``External Adjustment, Global Imbalances, Valuation Effects,'' In: {\it Handbook of International Economics,} vol. 4, Ch. 10, North Holland, Elsevier, pp. 585--645.
+\end{enumerate}
+
+\item {\bf Sovereign Debt Crises and International Financial Crises}
+\begin{enumerate}
+\item Aguiar, M., and M. Amador (2014) ``Sovereign Debt,'' In: {\it Handbook of International Economics,} vol. 4, Ch. 11, North Holland, Elsevier, pp. 647--687.
+\item Lorenzoni, G. (2014) ``International Financial Crises,'' In: {\it Handbook of International Economics,} vol. 4, Ch. 12, North Holland, Elsevier, pp. 689--740. 
+\end{enumerate}
+
+\item {\bf New Open Economy Macroeconomic Models}
+\begin{enumerate}
+\item Obstfeld and Rogoff (1996).
+\item Corsetti, G., L. Dedola and S. Leduc (2010) ``Optimal Monetary Policy in Open Economies,'' In: {\it Handbook of Monetary Economics,} vol. 3, Ch. 16, North Holland, Elsevier, pp. 861--933.
+\end{enumerate}
+\end{enumerate}
+\end{document}
+
+授業の予定としては、
+・資産価格（金利含む） Asset pricing
+・国際マクロ経済 International Macroeconomics
+・銀行理論 Banking 
+・金融政策 Monetary Policy
+・貨幣経済学 Monetary Economics
+の5つのテーマの中から、受講者それぞれ興味のあるテーマを選んで頂き、
+そのテーマについての教科書および論文を発表してもらう形式を考えています。
+
+授業内での使用言語は日本語です。
+（発表のためのスライドは英語で作成しても構いません。）
+
+テキストは、
+・資産価格
+Campbell (2017) Financial Decisions and Markets: A Course in Asset Pricing
+https://www.amazon.co.jp/dp/0691160805/
+
+・国際マクロ経済
+Uribe and Schmitt-Grohe (2017) Open Economy Macroeconomics
+https://www.amazon.co.jp/dp/0691158770/
+
+・銀行理論
+Freixas and Rochet (2008) Microeconomics of banking, 2nd edition
+https://www.amazon.co.jp/dp/0262062704/
+
+・金融政策
+Gali (2015) Monetary Policy, Inflation, and the Business Cycle: An Introduction to the New Keynesian Framework and Its Applications, 2nd edition
+https://www.amazon.co.jp/dp/0691164789/
+
+・貨幣経済学
+Money, Payments, and Liquidity, 2nd edition
+https://www.amazon.co.jp/dp/0262533278/
+
+です。
+
+
+\section{Classical Monetary Models and Policy Analysis}
+\begin{itemize}
+\item Standard Textbook
+\begin{itemize}
+\item Walsh, C. (2010) {\it Monetary Theory and Policy,} 3rd ed., MIT Press.
+\end{itemize}
+\item Empirical Methods and Facts
+\begin{itemize}
+\item Ch.1 in Walsh (2010).
+\end{itemize}
+\item Money in the Utility Function
+\begin{itemize}
+\item Ch.2 in Walsh (2010).
+\item Ch.9 in McCandless (2008).
+\end{itemize}
+\item Cash in Advance
+\begin{itemize}
+\item Ch.3 in Walsh (2010).
+\item Ch.8 in McCandless (2008).
+\end{itemize}
+\item Optimal Fiscal and Monetary Policy
+\begin{itemize}
+\item Ch.4 in Walsh (2010)
+\item Chari, V. V. and P. J. Kehoe (1999) ``Optimal Fiscal and Monetary Policy,'' Ch.26 in {\it Handbook of Macroeconomics,} Vol.1, Part C, pp.1671-1745.
+\end{itemize}
+\end{itemize}
+
+\section{Sticky Price Models and Monetary Policy}
+\begin{itemize}
+\item Standard Textbook
+\begin{itemize}
+\item Gal\'\i , J. (2015) {\it Monetary Policy, Inflation, and the Business Cycle: An Introduction to the New Keynesian Framework and Its Applications,} 2nd ed., Princeton University Press.
+\item Woodford, M. (2003) {\it Interest and Prices: Foundations of a Theory of Monetary Policy,} Princeton University Press.
+\end{itemize}
+\item New Keynesian Phillips Curve and New Keynesian Model
+\begin{itemize}
+\item Ch.5 and 6 and 8 in Walsh (2010).
+\item Ch.3 in Gal\'\i~(2015).
+\item Ch.3 and 4 in Woodford (2003).
+\end{itemize}
+\item Optimal Monetary Policy
+\begin{itemize}
+\item Ch.8 in Walsh (2010).
+\item Ch.4 in Gal\'\i~(2015).
+\item Ch.6 and 8 in Woodford (2003).
+\end{itemize}
+\item Tradeoff between Inflation and Output Stabilization
+\begin{itemize}
+\item Ch.8 in Walsh (2010)
+\item Ch.5 in Gal\'\i~(2015).
+\item Ch.6 and 8 in Woodford (2003).
+\end{itemize}
+\item Rule versus Discretion: Time Inconsistency Problem, Inflation Bias and Stabilization Bias
+\begin{itemize}
+\item Ch.8 in Walsh (2010)
+\item Ch.5 in Gal\'\i~(2015).
+\item Ch.7 in Woodford (2003).
+\end{itemize}
+\end{itemize}
+\section{Asset Pricing and Macro-Finance}
+\begin{itemize}
+\item Standard Textbook
+\begin{itemize}
+\item Campbell, J. Y. (2017) {\it Financial Decisions and Markets: A Course in Asset Pricing,} Princeton University Press.
+\item Cochrane, J. H. (2005) {\it Asset Pricing,} Revised Edition, Princeton University Press.
+\item Campell, J. Y., A. Lo and C. Mackinlay (1997) {\it The Econometrics of Financial Markets,} Princeton University Press. (祝迫得夫，大橋和彦，中村信弘，本多俊毅，和田賢治（訳） 『ファイナンスのための計量分析』，共立出版．)
+\end{itemize}
+\item Consumption Capital Asset Pricing Model (C-CAPM)
+\begin{itemize}
+\item Ch.8 in Romer, D. (2018) {\it Advanced Macroeconomics,} 5th ed., McGraw-Hill.
+\item Ch.8, 13, and 14 in LS.
+\item Campbell, J. Y. (2003) ``Consumption-Based Asset Pricing,'' Ch.13 in {\it Handbook of the Economics of Finance,} edited by G. M. Constantinides, M. Harris and R. Stulz, Vol.1, pp.803--887.
+\item Mehra, R. and E. C. Prescott (2003) ``The Equity Premium in Retrospect,'' Ch.14 in {\it Handbook of the Economics of Finance,} edited by G. M. Constantinides, M. Harris and R. Stulz, Vol.1, pp.889--938.
+\item Ludvigson, S. C. (2012) ``Advances in Consumption-Based Asset Pricing: Empirical Tests,'' Ch.12 in {\it Handbook of the Economics of Finance,} edited by G. M. Constantinides, M. Harris and R. Stulz, Vol.2B, pp.803--887.
+\end{itemize}
+\item Bond Pricing and the Term-structure
+\begin{itemize}
+\item Ch.14 in LS.
+\item Shiller, R. J. and J. H. McCulloch (1990) ``The Term Structure of Interest Rates,'' Ch.13 in {\it Handbook of Monetary Economics,} edited by B. M. Friedman and F. H. Hahn, Vol.1, pp.627--722.
+\item Duffie, D. (2002) ``Intertemporal Asset Pricing Theory,'' Ch.11 in {\it Handbook of the Economics of Finance,} edited by G. M. Constantinides, M. Harris and R. Stulz, Vol.1, pp.639--742.
+\item Duffee, G. R. (2013) ``Bond Pricing and the Macroeconomy,'' Ch.12 in {\it Handbook of the Economics of Finance,} edited by G. M. Constantinides, M. Harris and R. Stulz, Vol.2B, pp.907--967.
+\end{itemize}
+\end{itemize}
+\section{Money and Banking Theory and Its Extensions to Macro}
+
+\begin{itemize}
+\item Standard Textbooks
+\begin{itemize}
+\item Freixas, X. and J.-C. Rochet (2008) {\it Microeconomics of Banking,} 2nd ed., MIT Press.
+\item Champ, B., S. Freeman and J. Haslag (2017) {\it Modeling Monetary Economies,} 4th ed., Cambridge University Press.
+\item Rocheteau, G. and E. Nosal (2017) {\it Money, Payments, and Liquidity,} 2nd ed., MIT Press.
+\end{itemize}
+\item Banking Theory
+\begin{itemize}
+\item Freixas and Rochet (2008).
+\end{itemize}
+\item Classical Money and Banking in Macroeconomics
+\begin{itemize}
+\item Champ et al. (2017).
+\end{itemize}
+\item New Monetarist Approach
+\begin{itemize}
+\item Rocheteau and Nosal (2017).
+\item Williamson, S. and R. Wright (2010) ``New Monetarist Economics: Models,'' Ch.2 in {\it Handbook of Monetary Economics,} edited by B. M. Friedman and M. Woodford, Vol.3, pp.25--96.
+\item Lagos, R., G. Rocheteau and R. Wright (2017) ``Liquidity: A New Monetarist Perspective,'' {\it Journal of Economic Literature,} 55(2), pp.371--440.
+\end{itemize}
+\end{itemize}
+\section{Open Economy Macroeconomics}
+\begin{itemize}
+\item Standard Textbooks
+\begin{itemize}
+\item Uribe, M. and S. Schmitt-Groh\'e (2017) {\it Open Economy Macroeconomics,} Princeton University Press.
+\item Obstfeld, M. and K. Rogoff (1996) {\it Foundations of International Macroeconomics,} MIT Press.
+\end{itemize}
+\end{itemize}
+
+\end{document}
+
+授業の予定としては、
+・資産価格（金利含む） Asset pricing
+・国際マクロ経済 International Macroeconomics
+・銀行理論 Banking 
+・金融政策 Monetary Policy
+・貨幣経済学 Monetary Economics
+の5つのテーマの中から、受講者それぞれ興味のあるテーマを選んで頂き、
+そのテーマについての教科書および論文を発表してもらう形式を考えています。
+
+授業内での使用言語は日本語です。
+（発表のためのスライドは英語で作成しても構いません。）
+
+テキストは、
+・資産価格
+Campbell (2017) Financial Decisions and Markets: A Course in Asset Pricing
+https://www.amazon.co.jp/dp/0691160805/
+
+・国際マクロ経済
+Uribe and Schmitt-Grohe (2017) Open Economy Macroeconomics
+https://www.amazon.co.jp/dp/0691158770/
+
+・銀行理論
+Freixas and Rochet (2008) Microeconomics of banking, 2nd edition
+https://www.amazon.co.jp/dp/0262062704/
+
+・金融政策
+Gali (2015) Monetary Policy, Inflation, and the Business Cycle: An Introduction to the New Keynesian Framework and Its Applications, 2nd edition
+https://www.amazon.co.jp/dp/0691164789/
+
+・貨幣経済学
+Money, Payments, and Liquidity, 2nd edition
+https://www.amazon.co.jp/dp/0262533278/
+
+です。
+
+
+\begin{thebibliography}{xxx}
+
+\harvarditem[Christiano et al.]{Christiano et al.}{2003}{chris2003:great}
+Christiano, L., R. Motto, and M. Rostagno (2003) ``The Great Depression and the Friedman-Schwartz Hypothesis,'' \textit{Journal of Money, Credit and Banking}, Vol. 35, Number 6, pp. 1119-1197.
+
+\harvarditem[Fischer]{Fischer}{1972}{fisch1972:money}
+Fischer, S. (1972) ``Money, Income, Wealth, and Welfare,'' \textit{Journal of Economic Theory}, Vol. 4, pp. 289-311.
+
+\harvarditem[Fischer]{Fischer}{1982}{fisch1982:frame}
+Fischer, S. (1982) ``A Framework for Monetary and Banking Analysis,'' NBER Working Paper Series, Number 936.
+
+
+\end{thebibliography}
+
+\end{document}
+
+\newpage
+%\doublespacing
+\section{Introduction}
+
+[To be written ...]
+\section{The Endogenous Lower Bound of Reserve Rate}
+In this section, we consider banks' demand for reserve deposits and cash. We show that the effective lower bound of interest rate on reserve deposits is endogenously determined and that the lower bound can be negative.
+\subsection{Banks}
+There is a continuum of identical banks. Banks are assumed to have the two functions. The one is money creation through bank lending. The other is production of transaction services for consumers' credit goods purchases. 
+\subsubsection{Money Creation}
+A representative bank issues deposit liabilities, $D^H_t$, to households. A part of these deposit liabilities is used to finance the purchase of government bonds, $B^B_t$. The other is hold as the form of cash, $M^B_t$, and the balance of central bank reserve, $E_t$. Hence,
+\begin{align}
+D^H_t = B^B_t + M^B_t + E_t. \label{bs1}
+\end{align}
+The bank creates money by lending working-capital loans $L_t$ to firms' checking accounts whose balance is represented by $D^F_t$. Hence,
+\begin{align}
+L_t = D^F_t. \label{bs2}
+\end{align}
+The bank's balance sheet at a minute before the end of the time-t production period is in Table \ref{tab:bs}.
+
+\begin{table}[htbp]
+\centering
+  \begin{tabular}{lc|lr}
+  \hline
+  \multicolumn{2}{l|}{\textbf{Assets}} & \multicolumn{2}{l}{\textbf{Liabilities}}\\
+  \hline\hline
+    Central Bank reserves & $E_t$ & Household deposits & $D^H_t$\\
+    Cash holdings & $M^B_t$ & & ($= E_t + M^B_t + B^B_t$)\\
+    Government bonds & $B^B_t$ & & \\
+    \hline
+    Working capital loans & $L_t$ & Firm deposits & $D^F_t$\\
+    & & & (=$L_t$)\\
+    \hline
+  \end{tabular}
+  \caption{A Representative Bank's Balance Sheet}
+  \label{tab:bs}
+\end{table}
+
+Similar to \citet{chris2003:great}, we assume that the management of total deposit liabilities, $D_t$, requires labor $h^D_t$ and liquid assets, that is, the sum of the balance of reserve accounts and cash holding, according to the following constant-return-to-scale technology:
+\begin{align}
+&\frac{D_t}{P_t} = \mathcal{F}^D\left(h^D_t, \frac{E_t + M^B_t}{P_t}\right),\label{depprod1}\\
+&D_t = D^H_t + D^F_t,\label{depprod2}
+\end{align}
+where a twice-differentiable function $\mathcal{F}^D: \mathbb{R}_{+}^2 \to \mathbb{R}_+$ is homogeneous of degree one, satisfies the Inada condition and decreasing marginal returns on labor and liquid assets\footnote{More formally, decreasing returns on labor and liquid assets means that:
+\begin{align*}
+\frac{\partial \mathcal{F}^D}{\partial h^D_t} >0, \quad &\frac{\partial \mathcal{F}^D}{\partial [(E_t+M^B_t)/P_t]} >0, \\
+\frac{\partial^2 \mathcal{F}^D}{\partial  (h^D_t)^2} <0,\quad&\frac{\partial^2 \mathcal{F}^D}{\partial [(E_t+M^B_t)/P_t]^2} <0.
+\end{align*}}.
+The sum of reserve balances and cash holding are included as an input to the production of demand deposit. This is a reduced-form way to capture the precautionary motive of banks concerned about the possibility of unexpected withdrawals.
+
+\subsubsection{Transaction Services Production}
+
+Banks provide not only lending services to firms but also credit transaction services, $g_t$, to households. Providing credit transaction services follows interbank settlement because, in many cases of goods transaction by credit, a bank which accepts the buyer's deposit account differs from a bank which accept the seller's deposit account. We assume that interbank settlement requires reserve account balance but that cash is useless for interbank settlement. This is because the huge amount of interbank settlements by cash needs too large transportation cost. Similar to \citet{fisch1972:money} and \citet{fisch1982:frame}, we assume bank's production technology of credit transaction services as follows:
+\begin{align}
+g_t = \mathcal{F}^g\left(h^g_t, \frac{E_t}{P_t}\right),\label{trnsprod}
+\end{align}
+where $h^g_t$ represents labor employed at the settlement segments in banks, and a twice-differentiable function $\mathcal{F}^g$ is homogeneous of degree one, satisfies the Inada condition, and decreasing returns on labor and reserve balance\footnote{
+\begin{align*}
+\frac{\partial \mathcal{F}^g}{\partial h^g_t} >0, \quad &\frac{\partial \mathcal{F}^g}{\partial (E_t/P_t)} >0, \\
+\frac{\partial^2 \mathcal{F}^g}{\partial  (h^g_t)^2} <0, \quad &\frac{\partial^2 \mathcal{F}^g}{\partial (E_t/P_t)^2} <0.
+\end{align*}
+}.
+
+\subsubsection{Profit Maximization}
+We denote the nominal interest rates on demand deposits by $R^D_t$, on working capital loans by $R^L_t$, on government bonds by $R^B_t$, and the nominal price of credit transaction services by $P^g_t$. We assume a wage-payment-in-advance constraint, and assume that wage payment must pay through deposit accounts, so that banks must pay interest with wage payments. The representative bank's nominal profit $P_t \phi_t$ is as follows.
+\begin{align}
+&P_t \phi_t = R^L_t L_t + P^g_t g_t + R^B_t B_t + R^E_t E_t - R^D_t (D^H_t + D^F_t + P_tw_th^B_t) - P_tw_th^B_t,\label{bankprofit}
+\end{align}
+where $h^B_t$ represents the total labor employed by the bank, defined as:
+\begin{align}
+h^B_t = h^D_t + h^g_t. \label{bld}
+\end{align}
+We assume that banks are prohibited from issuing bank notes:
+\begin{align}
+M^B_t \ge 0. \label{bnc}
+\end{align}
+The representative bank chooses $\{B_t, E_t, M^B_t, L_t, D^H_t, D^F_t, g_t, h^B_t, h^D_t, h^g_t\}_{t=0}^\infty$ to maximize her profit \eqref{bankprofit}, subject to the balance-sheet constraint \eqref{bs1} and \eqref{bs2}, the deposit production technology \eqref{depprod1} and \eqref{depprod2}, the credit transaction service production technology \eqref{trnsprod}, the labor demand \eqref{bld}, and the non-negative cash holding constraint \eqref{bnc}. The optimality conditions are as follows.
+\begin{align}
+&(R^L_t - R^D_t)\mathcal{F}^D_{1,t} = (1+R^D_t)w_t,\label{ldd}\\
+&p^g_t\mathcal{F}^g_{1,t} = (1+R^D_t)w_t,\label{ldg}\\
+&(R^L_t-R^D_t)\mathcal{F}^D_{2,t} + p^g_t\mathcal{F}^g_{2,t} + R^E_t = R^B_t, \label{arbitrage}\\
+&R^L_t = R^B_t,
+\end{align}
+and Kuhn-Tucker condition:
+\begin{align}
+&\lambda^m_t = p^g_t\mathcal{F}^g_{2,t} + R^E_t \ge 0, \label{kt}\\
+&\lambda^m_t m^B_t = 0,
+\end{align}
+where the lowercase letters are the real value of the nominal variables which are represented by the corresponding uppercase letters, $\lambda^m_t$ represents the Lagrange multiplier for \eqref{bnc}, and $\mathcal{F}^i_{n,t}$ represents the partial derivative of $\mathcal{F}^i(\mathbf{x}_t)$ with respect to the $n$-th argument for $i = D, g$.
+
+\subsection{The lower bound of interest rate on reserve}
+
+\subsubsection{The endogenous lower bound}
+From the fact that the Lagrange multiplier $\lambda^m_t$ is nonnegative, we obtain the following lemma.
+
+\begin{lemm}
+On the equilibrium, the interest rate on reserve account is bounded below;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+\begin{align}
+R^E_t \ge - p^g_t\mathcal{F}^g_{2,t}. \label{lowerbound}
+\end{align}
+ \end{lemm}
+
+{\it Proof:} It is obvious from \eqref{kt}.\\
+
+The Lagrange multiplier $\lambda^m_t$ represents the difference between the bank's marginal return on reserve and on cash. A bank which deposits an addtional unit of value to the central bank reserve gets an interest $R^E_t$ and an additional income from providing transaction service $p^g_t \mathcal{F}^g_{2,t}$. If $\lambda^m_t$ is negative, bank gets an additional profit by withdrawing from central bank reserve and holding it's value by cash; hence a negative $\lambda^m_t$ does not support any equilibria. If $\lambda^m_t$ is positive, a bank wants to deposit additional cash to central bank reserve but if $m^B = 0$, the bank cannot borrow by cash (cannot issue any bank notes) to deposit to central bank reserve; hence $\lambda^m_t > 0$ and $m^B_t=0$ can support an equilibrium.
+
+A novel feature in the model is that the lower bound of reserve rate is endogenous, depending on the price of transaction service and the marginal transaction service productivity of reserve balances. As shown later, the equilibrium price of transaction service is positive, $p^g_t > 0$; hence the lower bound of reserve rate is negative. 
+
+\section{General Equilibrium Model}
+\subsection{Firms}
+The representative firm employs labor, $l^F_t$ and produces consumption goods $y_t$ subject to the following linear technology:
+\begin{align}
+y_t = A^F l^F_t, \label{production}
+\end{align}
+where $A^F$ represents labor productivity for consumption good.
+
+Firms must pay a wage payment in advance so that they must borrow working capital from a bank. The representative firm's profit is as follows:
+\begin{align}
+\pi = y_t - (1+R^L_t) w_t l^F_t. \label{firmprofit}
+\end{align}
+
+The representative firm maximizes her profit \eqref{firmprofit} subject to the production technology \eqref{production}. The optimality condition is:
+\begin{align}
+A^F = (1+R^L_t)w_t. \label{ldf}
+\end{align}
+
+\subsection{Households}
+
+We assume that a representative household supplies a unit of labor service inelastically and has all financial asset as the form of demand deposit. The household solves the following utility maximization problem.
+
+\begin{align}
+\max \; &\sum_{t=0}^\infty \beta^t u(c_t),\notag\\
+\text{s.t.} \;& A_{t-1} + P_t\tau_t = D_t,\\
+&A_t = (1+R^D_t)(D_t+P_tw_t)-(P_tc_t+P^g_tg_t)+P_t\phi_t,\\
+&c_t = g_t,\label{trnsclear}
+\end{align}
+where $A_t$ represents the nominal value of financial assets held by households, $\tau_t$ is real value of monetary transfer from the government, and $u$ is the household's utility function which is assumed that $u^\prime (\cdot) > 0, u^{\prime\prime} (\cdot) < 0$ and $\lim_{c\to 0}u^\prime(c) = \infty$.
+By solving the problem, we obtain the Euler equation:
+\begin{align}
+\frac{u^\prime(c_t)}{1+p^g_t} = \beta \frac{u^\prime(c_{t+1})}{1+p^g_{t+1}}\cdot\frac{1+R^D_{t+1}}{1+\pi_{t+1}} \label{euler}.
+\end{align}
+
+\subsection{Closing the Model}
+\subsubsection{Market Clearing Conditions}
+All markets must clear as following.\\
+Lending market:
+\begin{align}
+L_t = P_tw_th^F_t, \label{cmc}
+\end{align}
+Labor market:
+\begin{align}
+h^d_t + h^g_t + h^F_t = 1,\label{lmc}
+\end{align}
+and goods market:
+\begin{align}
+y_t = c_t.
+\end{align}
+ 
+\subsubsection{Monetary and Fiscal Authorities}
+We call the consolidated fiscal and monetary authorities the government. The government's flow budget constraint is as follows:
+\begin{align}
+b_t + hm_t = \frac{1+R^B_{t-1}}{1+\pi_t}b_{t-1} + \frac{1+R^E_{t-1}}{1+\pi_t}e_{t-1}+\frac{1}{1+\pi_t}m^B_{t-1}+\tau_t,
+\end{align}
+where $hm_t$ represents the real value of high-powered money:
+\begin{align}
+hm_t \equiv e_t + m^B_t.
+\end{align}
+
+For the given initial total nominal government debt $B_0 + HM_0$, the fiscal authority is assumed to keep the total nominal government debt constant;
+\begin{align}
+B_t + HM_t = B_0 + HM_0, \quad \forall t \ge 0.
+\end{align}
+The monetary authority is assumed to set the initial quantity of high-powered money $HM_0$, and to keep it constant;
+\begin{align}
+HM_t = HM_0, \quad \forall t \ge 0. \label{hm}
+\end{align}
+Define $\xi$ as the ratio of high-powered money and government bond:
+\begin{align}
+\xi \equiv \frac{HM_t}{B_t + HM_t} (=\text{const}).
+\end{align}
+The monetary authority determines the initial high-powered money, $HM_0$, by open market operation (an exchange government bond and high-powered money); hence, $\xi$ represents the degree of quantitative easing. Furthermore, the monetary authority determines the interest rate on central bank reserve, $R^E_t$. Therefore, the monetary authority has two policy instruments, the degree of quantitative easing $\xi$ and the interest rate on reserve deposits $R^E_t$.
+
+\section{Deposit-Lending Spread}
+
+Given deposit rate $R^D$, we consider the equilibrium spread between lending and deposit rate, $R^L - R^D$. The existence of an unique equilibrium lending rate is shown in the following Lemma.
+
+\begin{lemm}
+
+\end{lemm}
+
+{\it Proof:} 
+
+\section{Aggregate Supply Relation}
+
+\section{Aggregate Demand}
+
+\section{The Effect of Quantitative Easing and Reserve Rate Policy}
+
+We consider steady state equilibrium. From the constant high-powered money rule \eqref{hm}, and from the Euler equation \eqref{euler},
+\begin{align}
+\pi &= 0,\\
+1+R^D &= \frac{1}{\beta},
+\end{align}
+respectively.
+
+Assume that bank's both money creation and credit production technologies are the Cobb-Douglas with equal shares;
+\begin{align}
+\mathcal{F}^C(h^d_t, e_t+m^B_t) &= A^C (h^d_t)^\frac{1}{2}(e_t+m^B_t)^\frac{1}{2},\\
+\mathcal{F}^g(h^g_t,e_t) &= A^g (h^g_t)^\frac{1}{2}e_t^\frac{1}{2}.
+\end{align}
+This assumption simplifies the following analysis. More general analysis is left as future research.
+
+\subsection{When the lower bound of reserve rate is non-binding}
+Consider the case that $R^E > -p^g\mathcal{F}^g_{2}(h^g,e)$. Then the bank does not hold cash; $m^B_t=0$.
+
+From the bank's no arbitrage condition \eqref{arbitrage}, the labor demands \eqref{ldd} and \eqref{ldg}, and \eqref{ldf}, we obtain:
+\begin{align}
+4(1+R^D)A^F[(1+R^L)-(1+R^E)] = (1+R^L)[(A^C)^2[(1+R^L)-(1+R^D)]^2+(A^g)^2(p^g)^2. \label{eq1}
+\end{align}
+Equation \eqref{eq1} determines the equilibrium lending rate at steady state.
+
+\begin{prop}
+If the constraint for interest rate on reserve is non-binding:
+\begin{align*}
+R^E > -p^g\mathcal{F}^g_{2}(h^g,e)
+\end{align*}
+then, quantitative easing lowers banks' lending rate and a decline of interest rate on reserve raises the lending rate.
+\begin{align*}
+\frac{dR^L}{d\xi} < 0, \quad \frac{dR^L}{dR^E} < 0.
+\end{align*}
+\end{prop}
+\textit{Proof:} [To be written...]
+
+From labor market clearing \eqref{lmc}, \eqref{ldd}, \eqref{ldg}, the firm's production function \eqref{production}, \eqref{trnsprod}, and the households' demand for transaction service \eqref{trnsclear},
+\begin{align}
+\left\{\frac{(A^C)^2[(1+R^L)-(1+R^D)]^2(1+R^L)}{2p^g(A^g)^2(1+R^D)A^F} + \frac{p^g(1+R^L)}{2(1+R^D)A^F}+\frac{1}{A^F}\right\}y=1.\label{eq2}
+\end{align}
+From \eqref{depprod1}, \eqref{depprod2}, the lending market clearing condition \eqref{cmc}, and \eqref{ldd},
+\begin{align}
+2A^F(1+R^D)+\xi (A^g)^2p^g = \xi(A^C)^2(1+R^L)[(1+R^L)-(1+R^D)].\label{eq3}
+\end{align}
+
+Equations \eqref{eq1} and \eqref{eq3} imply that:
+\begin{align}
+&4(1+R^D)A^F[(1+R^L)-(1+R^E)]=\notag\\
+&\qquad(1+R^L)[(A^C)^2[(1+R^L)-(1+R^D)]^2+\frac{\{\xi(1+R^L)[(1+R^L)-(1+R^D)]^2(A^C)^2-2(1+R^D)A^F\}^2}{\xi^2(A^g)^2}, \label{eq4}
+\end{align}
+and Equations \eqref{eq2} and \eqref{eq3} imply that:
+\begin{align}
+\Big\{\frac{(A^C)^2[(1+R^L)-(1+R^D)]^2(1+R^L)\xi}{2(1+R^D)A^F\{\xi(1+R^L)[(1+R^L)-(1+R^D)](A^C)^2-2(1+R^D)A^F\}}+\notag\\
+\frac{(1+R^L)\{\xi(1+R^L)[(1+R^L)-(1+R^D)](A^C)^2-2(1+R^D)A^F\}}{2\xi(A^g)^2(1+R^D)A^F}
++\frac{1}{A^F}\Big\}y=1\label{eq5}
+\end{align}
+The solution of the system \eqref{eq4} and \eqref{eq5} determines equilibrium output $y$. 
+
+\begin{lemm}
+In Equation \eqref{eq5}, $\frac{\partial y}{\partial R^L} <0$.
+\end{lemm}
+\textit{Proof}: [To be written...]
+
+\begin{prop}
+When the reserve rate lower bound is non-binding, \\
+\begin{align}
+\frac{dy}{dR^E} <0
+\end{align}
+\end{prop}
+\textit{Proof}: [To be written...]
+
+Propsition 1 claims that a decline of reserve rate has a contraction effect. 
+
+\subsection{When the lower bound of reserve rate is binding}
+
+[To be written...]
+
+\section{Conclusion}
+
+[To be written...]
+
+\begin{thebibliography}{xxx}
+
+\harvarditem[Christiano et al.]{Christiano et al.}{2003}{chris2003:great}
+Christiano, L., R. Motto, and M. Rostagno (2003) ``The Great Depression and the Friedman-Schwartz Hypothesis,'' \textit{Journal of Money, Credit and Banking}, Vol. 35, Number 6, pp. 1119-1197.
+
+\harvarditem[Fischer]{Fischer}{1972}{fisch1972:money}
+Fischer, S. (1972) ``Money, Income, Wealth, and Welfare,'' \textit{Journal of Economic Theory}, Vol. 4, pp. 289-311.
+
+\harvarditem[Fischer]{Fischer}{1982}{fisch1982:frame}
+Fischer, S. (1982) ``A Framework for Monetary and Banking Analysis,'' NBER Working Paper Series, Number 936.
+
+
+\end{thebibliography}
+
+\end{document}
+The authorities provide much information regarding economic fundamentals to the public. This information influences the behavior of market participants. Several papers address whether publicly provided information improves social welfare. In their seminal paper, \citet{morri02:socia} show that public information may induce excessive coordination of agents' actions, leading to a detrimental welfare effect if those actions are strategic complements. They conclude that an opaque policy can improve social welfare if the precision of public information is sufficiently low. 
+
+Many researchers challenge the results of \citet{morri02:socia}.\footnote{\citet{JL11, JL12b} strengthen the result of an opaque policy. On the other hand, many researchers show welfare-improving effect of transparent policy, for instance, \citet{hellw02}, \citet{angel04:trans}, \citet{svensson}, \citet{morri07:opcommu}, \citet{corna08:optim}, \citet{dm08, dm09}, \citet{an2010, an2012}, and \citet{myatt10:sourc}. Moreover, \citet{angel07:effic} and \citet{uy13} show necessary and sufficient conditions that social welfare is improved by transparent policies in quadratic Bayesian games under incomplete information with normal noises.} Among them, \citet{corna08:optim} show that a partial-announcement policy, under which the authorities disseminate public information to a certain fraction of agents, can alleviate the problem of excess coordination using the beauty contest model of \citet{morri02:socia}. \citet{corna08:optim} conclude that, under an optimal partial announcement, a transparent policy can ameliorate social welfare regardless of the precision of public information. 
+
+For policy makers, an important issue is how to pursue a partial announcement policy. %If policy makers can know the optimal fraction of public information users and also count the number of users, they could achieve partial announcement by disclosing their information up to the optimal number of users in order of arrival. However, it is not realistic to correctly count up to the level of millions or tens of millions of market participants. Naturally, \citet{corna08:optim} describe plausible methods to exclude some fraction of the agents from acquiring the information.\footnote{See page 730 in \citet{corna08:optim}.} However, because the fraction of information users is exogenously given in their model, they omit a model-based analysis. 
+In the present paper, we endogenize the fraction of information users and then attempt to design a simple and realistic policy instrument that can achieve the socially optimal partial announcement policy. To endogenize the fraction of information users, we assume that each agent has to pay a usage fee to acquire public information. If the usage of public information generates a larger payoff than not using public information, an agent decides to pay usage fee and become an information user. As a result, the fraction of information users is endogenized. Using this simple framework, we examine the features of usage fees that implement a partial announcement policy and then characterize the socially optimal usage fee for public information. 
+
+Initially, we find that it is not easy for the authorities to implement a partial announcement by selling information at a certain price. When agents' actions are strategic complements, information acquisitions are also strategic complements, as shown by \citet{hv09}.\footnote{There are other studies regarding endogenous information acquisition in the literature of beauty contest games. \citet{colombo} and \citet{ui14} study the model of \citet{morri02:socia} that is extended by introduction of cost functions regarding acquisition of signal precisions. \citet{myatt11:endo} show that the cause of multiple equilibria %as in \citet{hv09} 
+is closely related to forms of cost functions regarding information acquisition. \citet{cfp} and \citet{ui13} analyze welfare effect of information acquisition under general strategic situations. In contrast to these studies, we focus on stability of a partial announcement equilibrium from a view point of policy implementation.} 
+If the authorities sell public information at a certain price, such strategic complementarity causes multiple equilibria, which consists of two pure strategy equilibria (full- and no-announcement equilibria), and a mixed strategy equilibrium (a partial-announcement equilibrium). The partial-announcement equilibrium is unstable. Hence, unless the authorities could completely coordinate the beliefs of all agents, it would be difficult to realize the partial-announcement equilibrium by selling information at a certain price. %As shown by \citet{corna08:optim}, if the fraction of information users is exogenously given, a partial-announcement policy may alleviate over coordination caused by strategic complementarities. However, our analysis implies that, if each agent faces a decision whether to acquire public information, strategic complementarities caused by the acquisition of public information may disturb the implementation of a partial announcement. 
+
+To ensure the uniqueness and stability of the partial-announcement equilibrium, we propose another pricing rule of information. If the authorities offer a pricing rule that counteracts the strategic complementarities of information acquisition, %they can coordinate the agents' expectation, and hence, 
+the partial announcement is implementable. One such pricing rule is that the price of public information is sufficiently increasing in relation to the number of public information users. This method involves a strategic substitution effect and makes mixed strategy equilibrium stable.\footnote{\citet{hv09} and \citet{myatt11:endo} also propose the ways to ensure equilibrium uniqueness. They propose the ways to realize a unique pure strategy equilibrium. In contrast, we propose a way to make the mixed strategy equilibrium unique, because the mixed strategy equilibrium corresponds to a partial-announcement one.}% this footnote is moved from footnote 6 at p.10
+
+
+We then show that there exists the socially optimal usage fee that implements the socially optimal level of publicity. The socially optimal usage fee is determined by the relative precision of public information to private information and the degree of coordination motive. It is shown that, if the relative quality of private information decreases, the optimal degree of publicity and the optimal usage fee increases.
+
+The intuition is as follows. The relative worsening of private information accuracy makes the over coordination problem less serious; therefore, the authorities should increase the degree of publicity. Then, the authorities should \textit{increase} the usage fee to \textit{strengthen} the agent's incentive to acquire public information. Such an optimal pricing strategy may seem strange because suppliers who want to increase quantity sell at a lower price under ordinary economic circumstances. This counterintuitive result comes from the strategic complementarities on information acquisition. The agent's private incentive to acquire public information increases with the number of public information users, and therefore, the authorities must raise the usage fee to neutralize the incentive.
+
+%the market demand curve of public information is upward sloping.
+
+%\textcolor{blue}{When the public information is more precise, it becomes more valuable to the players, and social planner must raise the cost of obtaining it to offset their incentives to acquire too much more. Of course, the planner does not wish to offset these incentives completely, since there is also additional social value in the information.}
+
+
+
+%The optimal usage fee is independent of the degree of strategic complementarity. A higher degree of strategic complementarity has two opposite effects. On one hand, the optimal degree of publicity decreases because the excess coordination problem becomes more serious. This effect makes the optimal usage fee lower through the upward-sloping demand curve of public information. On the other hand, the demand curve shifts upward because the private value of public information rises. This effect increases the optimal usage fee. In our model, these two effects cancel one another.
+
+%As mentioned above, although \citet{corna08:optim} omit model-based analyses, they describe plausible methods to implement a partial announcement policy. It should be noted that 
+Our modeling strategy of endogenizing the fraction of public information users is closely related to one of the methods discussed in \citet{corna08:optim}. More specifically, they state that by ``selling data at prices that not all agents are willing to pay," the authorities could implement a partial announcement policy. The present study complements the discussion of  \citet{corna08:optim} because we provide a model-based analysis of  ``selling data at prices that not all agents are willing to pay" by extending their model.\footnote{\citet{JL12a, JL12b} also extend the model of \citet{corna08:optim}. Their concerns are different from ours. \citet{JL12a} study effects of a partial-announcement policy under heterogeneous precision of private signals. \citet{JL12b} analyze a relationship between a partial announcement policy and a stabilization policy in their previous study \citep{JL11}.}
+%\footnote{Here we briefly discuss why we focus on the method of  ``selling data at prices that not all agents are willing to pay." We agree that all methods proposed by \citet{corna08:optim} are effective in implementing partial announcement policies. However, other methods (except for the selling of information) raise the question of fairness because these methods may exogenously determine the fraction of information users. For instance, \citet{corna08:optim} state that if the authorities can ``launch information in selected media," then they can control the degree of publicity. In this case, market participants who would like to know the policy makers' information may not be given a fair chance to acquire it. Moreover, if policy makers have rights to select media, specific media may be excluded arbitrarily. %And the rights may grant a privilege to policy makers and the selected media. 
+%In comparison with other methods, the method of selling information has advantage of fairness because the authorities can give all the market participants a fair chance to acquire information under equal conditions. Whether to acquire information at the prices displayed then becomes an individual decision for each market participant. Furthermore, under the assumption that the authorities sell public information, we can easily endogenize the fraction of public information users.
+%Theoretically, the method of selling information corresponds to endogenization of individual information acquisition and the degree of publicity regarding the model of \citet{corna08:optim}.\footnote{\citet{JL12a, JL12b} also extend the model of \citet{corna08:optim}. Their concerns are different from ours. \citet{JL12a} study effects of partial-announcement policy under heterogenous precision of private signals. \citet{JL12b} analyze relationship between partial announcement policy and stabilization policy in their previous work \citep{JL11}.} 
+%Thus, the method of selling information is well suited to a model-based analysis of a partial announcement policy.%as in concessions to the effectiveness and the fairness.
+%}
+
+This paper is organized as follows. Section 2 describes the model and shows the multiplicity of equilibria under certain prices. In Section 3, we present a solution to survive a partial announcement equilibrium. We analyze welfare implications in Section 4. Finally, in Section 5, conclusions are provided.
+
+\section{The Model}
+
+We borrow our basic model from \citet{corna08:optim}. However, departing from their model, we assume that each agent must pay a usage fee to acquire public information.
+
+\subsection{Model structure}
+\paragraph{Payoff structure}
+There are the authorities and a continuum of agents indexed by $i\in[0,1]$. Each agent $i$ chooses an action $a_i\in\mathbb{R}$ to maximize the expected value of the following payoff:
+\begin{align}
+u_i(a,\theta) = \underbrace{-(1-r)(a_{i} - \theta)^{2}}_{\text{Loss 1}} \underbrace{- r(L_{i}-\bar{L})}_{\text{Loss 2}} \underbrace{- T_{i} + \tau}_{\text{Usage fee}}, \label{payoff}
+\end{align}
+where $a\equiv \{a_i: i\in [0,1]\}$ is an action profile, $\theta \in \mathbb{R}$ is an unobservable state, and $r\in (0,1)$ is a parameter that represents the degree of strategic complementarity of action. 
+Loss 1 is a standard loss. Agent $i$ suffers a loss from a distance between $a_{i}$ and $\theta$. Loss 2 is a beauty contest loss. $L_{i} \equiv \int^{1}_{0}(a_{i}-a_{j})^{2}dj$ indicates that agent $i$ incurs a loss from distances between $a_{i}$ and others' action $a_{j}$. Loss 2 has zero-sum structure because $\bar{L}\equiv \int^{1}_{0}L_{j}dj$. Agents who use public information are called users and others are called non-users. The share of users is denoted as $P\in [0,1]$. In contrast to \citet{corna08:optim}, $P$ is an endogenous variable. The authorities charge a constant usage fee for public information, $T$, and 
+\begin{align*}
+T_{i}\equiv
+\begin{cases}
+T, \qquad &\text{if agent $i$ uses public information},\\
+0, \qquad &\text{otherwise.}
+\end{cases}
+\end{align*}
+$\tau$ is lump-sum transfer from the authorities to agents. Financial resource of $\tau$ is total fee, $\tau=PT$. From \eqref{payoff}, agent $i$'s optimal action is $a_{i}=(1-r)E_{i}(\theta) + r E_{i}(\bar{a})$, where $\bar{a}=\int^{1}_{0}a_idi$ is an average action. 
+
+\paragraph{Information structure}
+The information structure is as follows. Assume that all error terms are independent mutually. The state $\theta$ is uniformly distributed on $\mathbb{R}$. After nature draws $\theta$, agent $i$ receives a private signal $x_i=\theta + \epsilon_i$ with $\epsilon_i\sim N(0,1/\beta)$. The authorities also receive a public signal $y=\theta + \eta$ with $\eta\sim N(0,1/\alpha)$, and disclose it only to users.\footnote{Similarly to the model of \citet{corna08:optim}, we implicitly assumes that agents cannot communicate $y$ to others. The reasons that justify the implicit assumption is given by Subsection 4.2 in \citet{corna08:optim}.} In this setting, users' and non-users' estimations of $\theta$ are $E_{iu}(\theta)\equiv E(\theta|x_{i},y)=(\beta x_{i} + \alpha y)/(\beta + \alpha)$, $E_{in}(\theta)\equiv E(\theta|x_{i})=x_{i}$,
+respectively. 
+
+
+
+
+\paragraph{Timing of the game}
+The game has two stages. At stage 1, agents decide whether to buy the public information, $y$, given $T$ that is set by the authorities. At stage 2, the authorities disclose $y$ only to the users, and all agents receive $x_{i}$ and choose $a_{i}$.
+
+\subsection{Multiple Equilibria and (in)stability}
+We solve the model by backward induction. At stage 2, agents choose their actions, $a_{i}$, given $T$ and $P$. Because of additive separability of our payoff function, each agent's equilibrium action strategy is the same as in \citet{corna08:optim}. %\textcolor{blue}{The expectations of non-users are $E_{in}(\theta)=x_{i}$ and $E_{in}(\bar{a})=x_{i}$ because of independence of $\epsilon_{i}$. This means that equilibrium action of non-users is $a_{in}=x_{i}$. On the other hand, users can anticipate others' behavior through public information $y$. Then, higher order expectation works. As in \citet{corna08:optim}, we can derive a unique and linear equilibrium by using the method of indeterminate coefficients. Assume that a linear equilibrium action of user $iu$ is
+%\begin{align}
+%a_{iu}=\kappa x_{i} + (1-\kappa)y, \quad \text{where} \quad \kappa \in [0,1]. \label{linear eq:p}
+%\end{align}
+%Then, users' estimated value of $\bar{a}$ is
+%\begin{align}
+%E_{iu}(\bar{a})= E_{iu}\left[ \int^{P}_{0} a_{iu}di +  \int^{1}_{P}a_{in}di \right] = [ P\kappa + (1-P)] E_{iu}(\theta) + P(1-\kappa)y. \label{ipabar}
+%\end{align}
+%Substituting the expectations into \eqref{foc}, and comparing the coefficients of \eqref{linear eq:p}, we have a linear equilibrium actions.  
+%}
+
+\begin{resu}\label{prop:eq}
+The equilibrium action of non-users is $a_{in}=x_{i}$, and the equilibrium action of users is $a_{iu}=\kappa x_{i} + (1-\kappa)y$, where $\kappa\equiv \beta(1-rP)/[\alpha+\beta(1-rP)]%\frac{\beta(1-rP)}{\alpha+\beta(1-rP)}
+$. \label{resu1}
+\end{resu}
+
+At stage 1, each agent decides whether to use $y$, given $P$. Agent $i$'s problem can be written as
+\begin{align*}
+\max_{p_{i}} p_{i} w_{iu}(P) + (1-p_{i}) w_{in}(P),
+\end{align*} 
+where $w_{iu}(P)$ is the expected payoff of user, $w_{in}(P)$ is the expected payoff of non-user, and
+$p_{i}\in[0,1]$ is a probability that agent $i$ purchases public information. $p_{i}$ is the agent $i$'s mixed strategy. Agent $i$'s net benefit from receiving $y$ is $\Delta w_i(P)$:\footnote{See Appendix A for derivation.}
+\begin{align*}
+\Delta w_i(P)\equiv  w_{iu}(P) - w_{in}(P) = \frac{\alpha(\alpha+\beta)}{\beta\left[ \alpha + (1-rP) \beta \right]^{2} } -T \equiv \Phi(P) - T, 
+\end{align*}
+where $\Phi(P)$ represents a gross benefit of acquiring $y$.% If the net benefit is positive, purchasing $y$ is optimal for agent $i$. If negative, not buying $y$ is optimal. If zero, the two alternatives are indifferent.
+
+
+\begin{figure}%[htbp]
+\centering
+\begin{small}
+\input{benefit4.tex}
+\end{small}
+\caption{Benefit from acquiring public information}
+\label{fig:benefit1}
+\end{figure}
+
+Figure \ref{fig:benefit1} represents the cost and benefit of acquiring $y$. %Regardless of $P$, the cost is constant because $T$ is constant. On the other hand, 
+The gross benefit increases with $P$; $\Phi'(P)>0$.  This is because the value of public information as a focal point of others' action increases when more agents use $y$. As a result, the net benefit $\Delta w_i (P)=\Phi(P)-T$ is strictly increasing in $P$. 
+
+
+
+As in \citet{hv09}, public information acquisitions are strategic complements when actions are strategic complements. Public information is useful for inferring other users' actions; hence, when actions are strategic complements, the private value of public information becomes higher as the number of information users increases. %\textcolor{red}{Under a situation of a certain prices, w}
+\textcolor{red}{As in \citet{hv09}, we can easily verify that the strategic complementarities about information acquisition cause multiple equilibria.}
+
+
+
+
+\begin{prop}Suppose that the authorities apply the constant pricing rule. Then,
+\begin{enumerate}
+\item If $T \in (\Phi(0), \Phi(1))$, then multiple equilibria arise as follows. \\
+(a) No-announcement equilibrium: $p_i=0$ for all $i$, hence $P=0$, \\
+(b) Full-announcement equilibrium: $p_i=1$ for all $i$, hence $P=1$, \\
+(c) Partial-announcement equilibrium: $p_i=P_{\text{partial}}$ for all $i$, hence $P=P_{\text{partial}}$.
+\item If $T < \Phi(0)$, full-announcement equilibrium exists uniquely. If $T>\Phi(1)$, no-announcement equilibrium exists uniquely. However, if $T < \Phi(0)$ or $T>\Phi(1)$, there does not exist any partial-announcement equilibrium.
+\end{enumerate}
+\label{prop1}
+\end{prop}
+\noindent
+\textcolor{red}{Proof: see Appendix B.}
+
+
+\textcolor{red}{If $T \in (\Phi(0), \Phi(1))$, we can show that under some condition, the partial-announcement equilibrium attains the highest social welfare, which indicates the importance of partial announcement policy.}\textcolor{blue}{ 以下、welfare のことを書く？ social welfare は、public information の pricing rule に依存しないこと。}
+
+\textcolor{red}{
+Proposition 1 and the welfare result are not new. Indeed, \citet{hv09} point out the multiplicity of equilibrium and \citet{corna08:optim} show that a partial-announcement policy can improve social welfare. However, thanks to its simplicity, our model provides a further implication for the implementation of partial-announcement policy. More specifically, our model can shed light on the stability of each equilibrium.} \textcolor{blue}{\citet{hv09}は安定性について触れていないのか?}
+
+\textcolor{red}{Consider an economy that is in the partial-announcement equilibrium. Thus, there are some users and non-users of public information. Suppose that, of the non-users, only a small but non-negligible size of agents deviate and decide to acquire public information. If this creates an incentive for other non-users to acquire public information, the partial-announcement equilibrium is unstable with respect to this deviation. The economy moves away from the partial-announcement equilibrium and eventually the full-announcement equilibrium prevails. Alternatively, suppose that some users reverse their decision and do not acquire public information. This deviation may create a disincentive for other users to acquire public information. If so, the partial-announcement equilibrium is unstable with respect to this deviation. The no-announcement equilibrium eventually prevails. In these cases, without perfect coordination among agents, it is difficult to realize the partial-announcement equilibrium. Thus, the stabilities of equilibria are crucial for the implementation of the partial-announcement policy. To reflect the discussion so far, we define the stability of equilibrium as follows:}
+
+\textcolor{blue}{[the definition of the stability]}
+
+\textcolor{red}{The next proposition examines the stability of each equilibrium under the constant pricing rule .}
+
+\begin{prop}
+Suppose that the authorities apply the constant pricing rule with $T \in (\Phi(0), \Phi(1))$. Then, no-announcement and full-announcement equilibria are stable, and a partial-announcement equilibrium is unstable.
+\label{prop2}
+\end{prop}
+\noindent
+\textcolor{red}{Proof: see Appendix C.}
+
+\textcolor{red}{The constant pricing rule is not useful to implement the partial-announcement policy. The intuition behind the unstability of the partial-announcement equilibrium is rather simple. If some non-users deviate and decide to acquire public information, the number of information users increases. Due to strategic complementarities of public information acquisitions, the private value of public information also increases. Then, the other non-users actually have an incentive to acquire public information. By contrast, if some users deviate, the private value of public information decreases. Then, the other users also reverse their decision.}
+
+
+\textcolor{green}{もとの文章
+Such an equilibrium instability implies that coordination of  the agents' expectation is essential to achieve partial dissemination of public information.\footnote{Because of analytical simplicity, the present paper uses a mixed strategy as a solution concept for individual agents. However, even if we focus on a pure strategy, results so far are not affected. Note that if $ \Delta w_i(P) >0 $ for a given $ P $, some agents decide to purchase public information and hence $ P $ gradually increases. If $ T<\Phi(1) $, we have $ \Delta w_i(P) >0 $ for $ P $ sufficiently close to one. Then, $ P $ continues to increase until $ P $ becomes equal to one. A full-announcement equilibrium is stable. Similarly, if $ T>\Phi(0) $, we have $ \Delta w_i(P) <0 $ for $ P $ sufficiently close to zero. Then, there exists a stable no-announcement equilibrium. Also, it is easily conform that partial-announcement equilibrium is unstable. By definition, we have $ \Delta w_i(P_{partial})=0 $. Because $ \Delta w_i(P) $ is upward sloping, a small increase in $ P $ makes $ \Delta w_i(P) $ strictly positive, which generates the further purchases of public information. Then, $ P $ diverges from $ P_{partial} $.}}
+
+
+\section{Increasing Pricing Rules as Coordination Devices}\label{discussion}
+
+\textcolor{red}{%The previous section shows that under the constant pricing rule, the implementation of the partial-announcement rule is difficult. 
+This section proposes a pricing rule that implements the partial-announcement policy.}
+
+\textcolor{red}{The following effect of the strategic complementarities causes the multiplicity of equilibrium and makes the partial-announcement equilibrium unstable. If the number of information users is small, private value of public information is low and hence other agents have no incentives to acquire public information. By contrast, if the number of information users is large, private value of public information is high and hence other agents have an incentive to acquire public information.} 
+
+\textcolor{red}{If we design a pricing rule that overcomes this effect of the strategic complementarities, the multiplicity of equilibrium may be eliminated and the partial-announcement equilibrium may be stable. Then, the partial-announcement policy is implementable. Such a pricing rule should have the following properties. When the number of information users is small, the price of public information should be low enough to provide a strong incentive to acquire public information. By contrast, when the number of information users is large, the price of public information should be high enough to discourage acquisitions of public information. Thus, we consider a pricing rule $T=\Psi(P)$, where $\Psi(P)$ satisfies that
+\begin{align*}
+\Psi(P)
+\begin{cases}
+<\Phi(P) &\text{if } P < P_{\text{partial}} , \\
+=\Phi(P) &\text{if } P = P_{\text{partial}} , \\
+>\Phi(P) &\text{if }  P > P_{\text{partial}} .
+\end{cases}
+\end{align*}
+An example of $\Psi(P)$ is
+\begin{align*}
+	\Psi(P) = \Phi(P) + a (P-P_{\text{partial}}), \ \ \ a >0.
+\end{align*}
+}
+
+以下、もとの文書。このセクションの頭から、以下の文章が始まっていた
+
+We propose a solution by which the authorities guide the agents to the unique partial-announcement equilibrium. The cause of the coordination failure is that, owing to the strategic complementarities, $\Delta w_{i}(P)$ is upward sloping. To align the agents' beliefs, we employ another pricing rule that has a strategic \textit{substitution} effect. Assume that the fee sufficiently increases in the number of users. Formally, consider a pricing rule $T=\Psi(P)$, where $\Psi(P)$ satisfies that
+\begin{align*}
+\Psi(P)
+\begin{cases}
+<\Phi(P) &\text{if } P < P_{\text{partial}} , \\
+=\Phi(P) &\text{if } P = P_{\text{partial}} , \\
+>\Phi(P) &\text{if }  P > P_{\text{partial}} .
+\end{cases}
+\end{align*}
+We call it \textit{an increasing pricing rule}.\footnote{In a theoretical viewpoint, $\Psi(\cdot)$ does not need to be continuous. For example, an extreme rule that 
+\begin{align*}\Psi(P) = \begin{cases}0 \quad &\text{if} \quad P<P_{\text{partial}} \\ \Phi(P_{\text{partial})} \quad &\text{if} \quad P=P_{\text{partial}} \\ \infty \quad &\text{if} \quad P>P_{\text{partial}}\end{cases}
+\end{align*} 
+satisfies the condition for uniqueness of a partial-announcement equilibrium. However, such a rule may levy a huge payoff loss on all users because of slightly excess demand by accident. Therefore, as to avoid the loss, $\Psi(\cdot)$ should be continuous \color{red}at least around $ P = P_{\text{partial}} $.} 
+%However, under such a rule an even slightly excess demand by a small number of agent's misperception levies a huge payoff loss to all users. In case of that, in what follows we practically propose that $\Psi(\cdot)$ be continuous.} 
+The strategic substitution effect of $\Psi(P)$ counteracts the strategic complementarities of information acquisition, and makes $\Delta w_i(P)$ downward sloping. Then, the agents plausibly believe that $P = P_{\text{partial}}$ is realized, because the agents' best response function is
+\begin{align}
+R(P)
+\begin{cases}
+=1 &\text{if } P < P_\text{partial},\\
+\in[0,1] \quad &\text{if } P=P_\text{partial},\\
+=0 &\text{if } P > P_\text{partial}.
+\end{cases}\label{opt pi2}
+\end{align}
+Then, $P=P_\text{partial}$ is a unique equilibrium and hence stable (Figure \ref{fig:benefit3}). 
+
+\begin{figure}%[htbp]
+\centering
+\begin{small}
+\input{benefit5.tex}
+\end{small}
+\caption{Increasing pricing rule and stability of equilibrium}
+\label{fig:benefit3}
+\end{figure}
+
+\begin{prop}
+The authorities can implement a partial-announcement policy targeting $P=P_{\text{partial}}\in (0,1)$ by introducing the increasing pricing rule $T=\Psi(P)$ such that
+\begin{align*}
+\Psi(P)
+\begin{cases}
+<\Phi(P) &\text{if } P < P_{\text{partial}} , \\
+=\Phi(P) &\text{if } P = P_{\text{partial}} , \\
+>\Phi(P) &\text{if } P > P_{\text{partial}} .
+\end{cases}
+\end{align*}
+\label{prop3}
+\end{prop}
+
+\section{Welfare Implications}
+%To focus our analysis on feasibility of a partial-announcement policy, we have thus far omitted welfare implications. Thereby, we know that the authorities can achieve any degree of publicity by devising the methods of pricing. However, 
+To maximize social welfare, the authorities should disclose their information only to an optimal fraction of agents by setting $T$ at stage 0. This section studies the welfare implications of a partial announcement and optimal pricing.
+
+\subsection{Social welfare and the optimal degree of publicity}\label{a1}
+
+We define social welfare as an (normalized) average of individual payoff:
+\begin{align}
+W(a|\theta) \equiv \frac{1}{1-r} \int^{1}_{0}u_{i}di  = -\left( \int^{P}_{0}(a_{iu}-\theta)^{2}di + \int^{1}_{P}(a_{in}-\theta)^{2}di\right). \label{social welfare}
+\end{align}
+Substituting equilibrium actions (result \ref{resu1}) into \eqref{social welfare} yields the following equilibrium social welfare:
+\begin{align*}
+E[W(a|\theta)] = - P\frac{ \alpha + (1-rP)^{2}\beta}{[\alpha + (1-rP)\beta]^{2}} - (1-P) \frac{1}{\beta}.
+\end{align*}
+Then, if $\alpha/\beta < 3r-1$, the optimal fraction of user $P^*$ is
+\begin{align}
+\frac{\partial E(W)}{\partial P}=\frac{3r(1-r)\alpha(\alpha + \beta)}{[\alpha + (1-rP)\beta]^{3}}\left( \frac{\alpha + \beta}{3r\beta} - P \right)=0 \ \Leftrightarrow \ P^{*}=\frac{\alpha + \beta}{3r\beta} \in (0,1), \label{optimal ratio}
+\end{align}
+and if $\alpha/\beta \ge 3r-1$, $P^\ast=1$. This indicates that, if the relative precision of public information is sufficiently low, it is socially desirable that a partial set of agents use public information.\footnote{This result is identical with the main theorem of \citet{corna08:optim} in page 728.}
+
+%A partial announcement has two effects. First, it limits the number of users. This effect lowers total precision of information in this economy, and it decreases social welfare. Second, it restricts the number of agents who can coordinate through the public information. This effect alleviates the overreaction problem, and it increases social welfare. If public information is sufficiently precise ($\alpha/\beta \ge 3r-1$), then the second effect is dominated by the first effect. Therefore, $P^{*}=1$ maximizes social welfare. On the other hand, if public information has a sufficiently low precision ($\alpha/\beta < 3r-1$), we need to consider tradeoff of the two effects. Then, there exists a socially optimal partial announcement ratio $P^{*}=(\alpha + \beta)/(3r\beta)\in (0,1)$.
+\begin{resu}
+The socially optimal degree of publicity is defined as $P^{*} = \min \left\{1,(\alpha + \beta)/(3r\beta)\right\}$.
+\label{resu2}
+\end{resu}
+
+
+
+\subsection{Optimal usage fee}\label{a2}
+In this subsection, we determine the socially optimal pricing rules that achieve $P^{*}$. First, we consider the case where $\alpha/\beta\ge 3r-1$, and hence $P^{*}=1$. Then, the authorities can maximize social welfare by setting any $T^{*} < \Phi(0)=\alpha /[\beta\left (\alpha +  \beta \right)] $.\footnote{$T<\Phi(0)$ is a sufficient condition because, from $\Phi'(P)>0$, if the cost $T$ is smaller than $\Phi(0)$, then it is always optimal for agents to use $y$. $T^{*}<0$ can be understood as subsidies for promotion of using public information.} Next, we examine the case where $\alpha/\beta<3r-1$, and hence $P^{*}=(\alpha + \beta)/(3r\beta)$. Then, by substituting $P^{*}$ into $\Phi(P)$, we have $T^{*}=9\alpha/[4\beta(\alpha + \beta)]$. 
+
+\begin{prop}\label{result ratio}
+Given $\alpha$, $\beta$, and $ r $. If the authority defines the usage fee of public information as
+\begin{align}
+T^{*}
+\begin{cases}
+=\frac{9\alpha}{4\beta(\alpha + \beta)},& \text{if } \alpha/\beta<3r-1, \\
+< \frac{\alpha}{\beta\left (\alpha +  \beta \right) } , &\text{if } \alpha/\beta\ge 3r-1,
+\end{cases}
+\end{align}
+then $P^{*}$ is equilibrium.
+\label{prop4}
+\end{prop}
+
+Combining Propositions \ref{prop3} and \ref{prop4} and Result \ref{resu2}, the authorities can achieve a socially optimal partial-announcement equilibrium using the increasing pricing rule $T=\Psi^{*}(P)$ such that $\Psi^{*}(P) \gtrless \Phi(P)$ if $P\lessgtr P^{*}$, and $\Psi^{*}(P^{*})=T^{*}$.
+
+\paragraph{Comparative statics}
+We examine properties of the optimal usage fee $T^{*}$ with respect to the precision of public information $\alpha$ and private information $\beta$, and with respect to the degree of strategic complementarity $r$. The following corollary is derived from Proposition \ref{prop4}.
+
+\begin{coro}
+Assume $\alpha/\beta<3r-1$. Then,
+\begin{align*}
+\frac{\partial T^{*}}{\partial \alpha}>0, \quad \frac{\partial T^{*}}{\partial \beta}<0.%, \quad \frac{\partial T^{*}}{\partial r}=0.
+\end{align*}
+\end{coro}
+
+
+Assume that quality of the authorities' research improves and that they can provide public information with higher precision. The optimal publicity $P^*=(\alpha + \beta)/(3r\beta)$ increases because the excess coordination problem becomes less serious. Then, the authorities should \textit{increase} usage fees to \textit{strengthen} the agent's incentive to acquire public information. At a first glance, such an optimal pricing strategy may seem strange because suppliers who want to increase quantity sell at a lower price under ordinary economic circumstances. This counterintuitive result emerges from the strategic complementarities on information acquisition. The agent's benefit of acquiring public information rises as the precision of public information improves, and thereby, the number of public information users excessively increases.\footnote{See the left panel of Figure \ref{fig:benefit3}.} To offset the incentive to acquire public information, the authorities must raise the usage fee.
+
+If the quality of the agents' private information rises, the optimal fraction of public information users decreases. Then, in contrast to the above case, the authorities %who face an upward-sloping demand curve 
+should lower the usage fees of public information to encourage the incentive of acquiring public information.
+
+Note that the optimal usage fee is independent of the degree of strategic complementarity: $ \partial T^{*} / \partial r=0$. The higher degree of strategic complementarity has two opposite effects. On one hand, the optimal degree of publicity decreases because the excess coordination problem becomes more serious. This effect decreases the optimal usage fee. On the other hand, private benefit of acquiring public information rises because the value of public information as a coordination device rises. This effect makes the optimal usage fee higher. In our model, these two effects cancel one another.
+
+%the curve of \textcolor{blue}{private benefit of acquiring public information} shifts upward because the private value of public information rises. This effect makes the optimal usage fee higher. In our model, these two effects cancel one another.}
+
+\section{Conclusion}
+We have analyzed implementability and the welfare effect of a partial-announcement policy by selling public information. A partial-announcement policy is a solution for alleviating the over coordination problem generated by strategic complementarities in action. However, the strategic complementarities themselves may disturb the implementation of a partial announcement if the authorities sell public information at certain prices. Nevertheless, we find that a partial announcement equilibrium is implementable under some increasing pricing rules that counteract the strategic complementarity of information acquisition. 
+Moreover, we characterize the socially optimal usage fee of public information. If the quality of public (private) information improves (worsens), the socially optimal degree of publicity increases. Then, in contrast to ordinary economic circumstances, the authorities should increase the usage fee of public information.% to disseminate the public information to the more agents.
+
+%the authorities should increase the usage fee of public information in spite of rising the socially optimal publicity.
+
+%the socially optimal publicity raises. However, % in spite of rising the socially optimal publicity.
+
+%, but . %These somewhat counterintuitive results originate from the strategic complementarities regarding public information acquisition.
+
+There are still some open questions. In our model, the accuracy of private information is exogenous. If private information acquisition is endogenous as in \citet{colombo}, \citet{cfp}, and \citet{ui13}, then its accuracy depends on the properties of its acquisition cost function, the accuracy of public information, and the degree of strategic complementarities. In this case, the optimal pricing rule on a public announcement might change. This subject is left for future research.
+
+%\section{Conclusion}
+%The paper has analyzed implementability and the welfare effect of a partial-announcement policy by selling public information. %\textcolor{blue}{Our main contribution in the literature is the characterization of the socially optimal pricing of public information acquisition. Specifically,}
+%We obtain the following results.  %A model-based analysis of a public announcement by selling data provides some fruitful policy implications. 
+%First, we discover a way to implement a partial announcement policy by selling data. A partial-announcement policy is a solution for alleviating the over coordination problem generated by strategic complementarities in action. However, %such strategic complementarities transform information acquisition into strategic complements; therefore, any pricing rule that keeps the usage fee constant leads to multiple equilibria. Hence, 
+%the strategic complementarities themselves may disturb the implementation of a partial announcement if the authorities sell public information at certain prices. Nevertheless, %there is a simple solution to the problem. W
+%we show that a partial announcement equilibrium can be unique under some increasing pricing rules that counteract the strategic complementarity of information acquisition; hence, a partial announcement policy is implementable. Second, we characterize the socially optimal usage fee of public information. If the quality of \textcolor{blue}{public information relative to private information improves}, the socially optimal publicity raises, but the authorities should increase the usage fee of public information. 
+%The optimal usage fee is independent of the degree of strategic complementarity. 
+%These somewhat counterintuitive results originate from %the upward-sloping demand curve for public information caused by 
+%the strategic complementarities regarding public information acquisition.
+
+%There are still some open questions. In our model, the accuracy of private information is exogenous. If private information acquisition is endogenous as in \citet{colombo}, \citet{cfp}, and \citet{ui13}, then its accuracy depends on the properties of its acquisition cost function, the accuracy of public information, and the degree of strategic complementarities. In this case, the optimal pricing rule on a public announcement might change. This subject is left for future research.
+
+\begin{thebibliography}{xxx}
+
+%\harvarditem[Adam]{Adam}{2007}{adam07}
+%Adam, K. (2007) ``Optimal Monetary Policy with Imperfect Common Knowledge," {\it Journal of Monetary Economics}, Vol. 54, pp. 267--301.
+
+%\harvarditem[Allen et al.]{Allen et al.}{2006}{allen}
+%Allen, F., S.~Morris and H. S.~Shin (2006) ``Beauty Contests and Iterated Expectations in Asset Markets,'' {\it Review of Financial Studies}, Vol. 19, No. 3, pp. 719--752.
+
+%\harvarditem[Angeletos and La'O]{Angeletos and La'O}{2008}{angel08}
+%Angeletos, G.-M. and J.~La'O (2008) ``Dispersed Information over the Business Cycle: Optimal Fiscal and Monetary Policy,'' mimeo.
+
+\harvarditem[Angeletos and Pavan]{Angeletos and Pavan}{2004}{angel04:trans}
+Angeletos, G. M. and A. Pavan (2004) ``Transparency of Information and Coordination in Economies with Investment Complementarities", \textit{American Economic Review} 94, 91--98.
+
+\harvarditem[Angeletos and Pavan]{Angeletos and Pavan}{2007}{angel07:effic}
+--- and --- (2007) ``Efficient Use of Information and Social Value of Information", \textit{Econometrica}, 75, 1103--1142.
+  
+%\harvarditem[Angeletos and Pavan]{Angeletos and Pavan}{2009}{angel09}
+%----- and ----- (2009) ``Policy with Dispersed Information,'' {\it Journal of the European Economic Association}, Vol. 7, No. 1, pp. 11--60.
+
+%\harvarditem[Amato and Shin]{Amato and Shin}{2003}{amato03}
+%Amato, J. D. and H.~S.~Shin (2003) ``Public and Private Information in Monetary Policy Models," Discussion Paper, Bank of International Settlements and LSE.
+  
+\harvarditem[Arato and Nakamura]{Arato and nakamura}{2011}{an2010}
+Arato, H. and T. Nakamura (2011) ``The Benefit of Mixing Private Noise into Public Information in Beauty Contest Games", \textit{B.E. Journal of Theoretical Economics}. doi: 10.2202/1935--1704.1694
+  
+\harvarditem[Arato and Nakamura]{Arato and nakamura}{2013}{an2012}
+--- and --- (2013) ``Endogenous Alleviation of Overreaction Problem by Aggregate Information Announcement", \textit{Japanese Economic Review} 64, 319--336.
+
+  
+%\harvarditem[Chen et al.]{Chen et al.}{2012}{chen12}
+%Chen, Q., T. Lewis and  Y. Zhang (2012) ``Clarity vs. Publicity in Disclosure of Public Information," SSRN Woking Paper Series, http://ssrn.com/abstract=2005984.
+
+\harvarditem[Colombo and Femminis]{Colombo and Femminis}{2008}{colombo}
+Colombo, L. and G. Femminis (2008) ``Social Value of Information with Costly Information Acquisition", \textit{Economics Letters} 100(2), 196--199.
+
+\harvarditem[Colombo et al.]{Colombo, Femminis and Paven}{2014}{cfp}
+---, --- and A. Pavan (2014) ``Information Acquisition and Welfare", \textit{Review of Economic Studies} 81(4), 1438--1483.
+
+\harvarditem[Cornand and Heinemann]{Cornand and Heinemann}{2008}{corna08:optim}
+Cornand, C. and F. Heinemann (2008) ``Optimal degree of public information dissemination", \textit{Economic Journal} 118, 718--742.
+
+%\harvarditem[Crowe]{Crowe}{2008}{crowe}
+%Crowe (2008) ``Testing the transparency benefits of inflation targeting: Evidence from private sector forecasts,'' {\it Journal of Monetary Economics}, Vol. 57, pp. 226--232.
+
+\harvarditem[Dewan and Myatt]{Dewan and Myatt}{2008}{dm08}
+Dewan, T. and D. P. Myatt (2008) ``The Qualities of Leadership: Direction, Communication, and Obfuscation", \textit{American Political Science Review} 102, 351--368.
+
+\harvarditem[Dewan and Myatt]{Dewan and Myatt}{2012}{dm09}
+--- and --- (2012) ``On the Rhetorical Strategies of Leaders: Speaking Clearly, Standing Back, and Stepping Down", \textit{Journal of Theoretical Politics} 24, 431--460.
+
+%\harvarditem[Dincer and Eichengreen]{Dincer and Eichengreen}{2007}{DE07}
+%Dincer, N. N. and B. Eichengreen(2007), ``Central bank transparency: where, why, and with what efects?" NBER Working Paper 13003.
+
+%\harvarditem[FRB]{FRB}{2012}{FRB}
+%FRB (2012) ``Economic Projection of Federal Reserve Board Members and Federal Reserve Bank Presidents, January 2012," http://www.federalreserve.gov/newsevents/press/monetary/20120125b.htm.
+
+%\harvarditem[Heinemann and Illing]{Heinemann and Illing}{2002}{heine02:specu}
+%Heinemann, F. and G. Illing (2002) ``Speculative Attacks: Unique Equilibrium and Transparency,'' {\it  Journal of International Economics},Vol. 58, No. 2, pp. 429--450.
+  
+\harvarditem[Hellwig]{Hellwig}{2002}{hellw02}
+Hellwig, C. (2002) ``Public Announcements, Adjustment Delays and the Business Cycle", Working Paper, UCLA.
+  
+%\harvarditem[Hellwig]{Hellwig}{2005}{hellw05:heter}
+%----- (2005) ``Heterogeneous information and the welfare effects of public information disclosures,'' working paper, UCLA.
+
+  
+\harvarditem[Hellwig and Veldkamp]{hellwig and Veldkamp}{2009}{hv09}
+--- and L. Veldkamp (2009) ``Knowing What Others Know: Coordination Motives in Information Acquisition", \textit{Review of Economic Studies} 76, 223--251.
+  
+\harvarditem[James and Lawler]{James and Lawler}{2011}{JL11}
+James, J. and P. Lawler (2011) ``Optimal Policy Intervention and the Social Value of Public Information", \textit{American Economic Review} 101, 1561--1574.
+  
+\harvarditem[James and Lawler]{James and Lawler}{2012a}{JL12a}
+--- and --- (2012a) ``Heterogeneous Information Quality; Strategic Complementarities and Optimal Policy Design", \textit{Journal of Economic Behavior and Organization} 83, 342--352.
+  
+\harvarditem[James and Lawler]{James and Lawler}{2012b}{JL12b}
+--- and --- (2012b) ``Strategic Complementarity, Stabilization Policy, and the Optimal Degree of Publicity", \textit{Journal of Money, Credit and Banking} 44, 551--572.
+
+%\harvarditem[Lindner]{Lindner}{2006}{lindner06}
+%Lindner, A.  (2006) ``Does Transparency of Central Banks Produce Multiple Equilibria on Currency Markets?," {\it Scandinavian Journal of Economics}, Vol. 108, No. 1, pp. 1--14.
+
+%\harvarditem[Lorenzoni]{Lorenzoni}{2009}{loren09}
+%Lorenzoni, G. (2009) ``Optimal Monetary Policy with Uncertain Fundamentals and Dispersed Information,'' {\it Review of Economic Studies}, Vol. 77, No. 1, pp. 305--338.
+
+%\harvarditem[Mackowiak and Wiederholt]{Mackowiak and Wiederholt}{2009}{macko09}
+%Mackowiak, B. and M.~Wiederholt (2009) ``Optimal Sticky Prices under Rational Inattention,'' {\it American Economic Review}, Vol. 99, No. 3, pp. 769--803.
+
+\harvarditem[Milgrom and Roberts]{Milgrom and Roberts}{1990}{milgr1990:ratio}
+Milgrom, P. and J. Roberts (1990) ``Rationalizability, Learning and Equilibrium in Games with Strategic Complementarities", \textit{Econometrica} 58, 1255--1277.
+
+%\harvarditem[Morris and Shin]{Morris and Shin}{1998}{morri98:curre}
+%Morris, S. and H.~S. Shin (1998) ``Unique equilibrium in a model of self-fulfilling currency attacks,'' {\it  American Economic Review}, Vol. 88, No. 3, pp. 587--597.
+
+%\harvarditem[Morris and Shin]{Morris and Shin}{2001}{morri01:gg}
+%----- and ----- (2001) ``Global Games: Theory and Applications,'' Cowles Foundation Discussion Paper, No. 1275R, Yale University.
+
+\harvarditem[Morris and Shin]{Morris and Shin}{2002}{morri02:socia}
+Morris, S. and H. S. Shin (2002) ``Social Value of Public Information", \textit{American Economic Review} 92, 1521--1534.
+ 
+\harvarditem[Morris and Shin]{Morris and Shin}{2007}{morri07:opcommu}
+--- and --- (2007) ``Optimal Communication", \textit{Journal of the European Economic Association} 5, 594--602.
+
+%\harvarditem[Morris et al.]{Morris et al.}{2006}{tong}
+%-----, -----, and H. Tong (2006) ``Social Value of Public Information: Morris and Shin (2002) Is Actually Pro-Transparency, Not Con: Reply,'' {\it American Economic Review}, Vol. 96, No. 1, pp. 453--455.
+
+\harvarditem[Myatt and Wallace]{Myatt and Wallace}{2012}{myatt11:endo}
+Myatt, D. P. and C. Wallace (2012) ``Endogenous Information Acquisition in Coordination Games", \textit{Review of Economic Studies} 79, 340--374.
+
+\harvarditem[Myatt and Wallace]{Myatt and Wallace}{2014}{myatt10:sourc}
+--- and --- (2014) ``Central Bank Communication Design in a Lucas-Phelps Economy", \textit{Journal of Monetary Economics} 63, 64--79.
+  
+\harvarditem[Svensson]{Svensson}{2006}{svensson}
+Svensson, L. E. (2006) ``Social Value of Public Information: Comment: Morris and Shin (2002) Is Actually Pro-transparency, Not Con", \textit{American Economic Review} 96, 453--455.
+  
+%\harvarditem[Ui]{Ui}{2003}{ui03}
+%Ui, T. (2003) ``A Note on the Lucas Model: Iterated Expectations and the Neutrality of Money," Working Paper, Yokohama National University.
+  
+\harvarditem[Ui]{Ui}{2013}{ui13}
+Ui, T. (2013) ``Welfare Effect of Information Acquisition Costs", Working Paper, Hitotsubashi University.
+  
+\harvarditem[Ui]{Ui}{2014}{ui14}
+--- (2014) ``The social value of public information with convex costs of information acquisition", \textit{Economics Letters} 125(2), 249--252.
+  
+\harvarditem[Ui and Yoshizawa]{Ui and Yoshizawa}{2015}{uy13}
+--- and Y. Yoshizawa (2015) ``Characterizing the Social Value of Information", \textit{Journal of Economic Theory} 158(B), 507--535.
+
+\harvarditem[Vives]{Vives}{1990}{vives1990:nashe}
+Vives, X. (1990) ``Nash Equilibrium with Strategic Complementarities", \textit{Journal of Mathematical Economics} 19, 305--321.
+
+\end{thebibliography}
+
+\appendix
+
+\section*{Appendix A: Derivation of user's net benefit}
+
+The expected payoff of user can be calculated as  %$w_{iu}(P)$ 
+\begin{align}
+w_{iu}(P)&\equiv E[u_{iu}(a)|\theta]   \notag\\
+              &= E\bigg[ -(1-r) (a_{iu}-\theta)^{2} -  r \left\{ \int^{P}_{0}(a_{iu}-a_{ju})^{2}dj +\int^{1}_{P}(a_{iu}-a_{jn})^{2}dj - \bar{L}  \bigg\} \bigg| \theta \right] -T +\tau \notag\\
+              &= -  \frac{(1-rP)(1-\kappa)^{2}}{\alpha} - \frac{r(1-P) + (1+rP)\kappa^{2} }{\beta} + r\bar{L} - T +\tau. \label{ep:p}
+\end{align}
+Similarly, the expected payoff of non-user is   %$w_{in}(P)$
+\begin{align}
+w_{in}(P) \equiv  -\frac{rP(1-\kappa)^{2}}{\alpha} - \frac{[1+r(1-P)] + rP\kappa^{2}}{\beta} + r\bar{L} + \tau. \label{ep:u} 
+\end{align}
+Then, from \eqref{ep:p} and \eqref{ep:u}, we can obtain $\Delta w_i(P)$ as follows:
+%From \eqref{ep:p} and \eqref{ep:u}, agent $i$'s net benefit from receiving $y$ is %$\Delta w_i(P)$:
+\begin{align*}
+\Delta w_i(P)\equiv  w_{iu}(P) - w_{in}(P) = \frac{\alpha(\alpha+\beta)}{\beta\left[ \alpha + (1-rP) \beta \right]^{2} } -T \equiv \Phi(P) - T.%, 
+\end{align*}
+%where $\Phi(P)$ represents a gross benefit of acquiring $y$.
+
+\section*{Appendix B: Proof of Proposition 1}
+For any $T \in (\Phi(0), \Phi(1))$, there uniquely exists $P_{\text{partial}}\in (0,1)$ such that $\Phi(P_{\text{partial}})=T$.\footnote{Partial announcement does not occur when $T<\Phi(0)$ or $T>\Phi(1)$.} Then, for all agents, their best response function, $R(P)$, is
+\begin{align}
+R(P)
+\begin{cases}
+=0 &\text{if } P < P_\text{partial},\\
+\in[0,1] \quad &\text{if } P=P_\text{partial},\\
+=1 &\text{if } P > P_\text{partial}.
+\end{cases}\label{opt pi}
+\end{align}
+
+A mixed strategy profile $\{p_i\}$ is an equilibrium if, for all $i$, $p_i$ is a best response for the others' strategy profile $p_{-i}$. From the law of large numbers, $P = R(P)$ holds in a symmetric equilibrium.
+
+Figure \ref{fig:br1} represents the best response when $T \in (\Phi(0), \Phi(1))$. %$\Phi(0) < T < \Phi(1)$. 
+$p_i=0$ $(p_i=1)$ for all $i$ is an equilibrium, because agent $i$'s best response is $p_i=0$ $(p_i=1)$ for $p_{-i} = 0$ $(p_{-i}=1)$. Moreover, $p_i=P_{partial} \in (0,1)$ for all $i$, where $P_{partial}$ satisfies $\Phi(P_{partial})=T$, is also an equilibrium because $p_i = P_{partial}$ is a best response for $p_{-i} = P_{partial}$.  Hence, Proposition \ref{prop1} holds.
+
+\section*{Appendix C: Proof of Proposition 2}
+
+We define the stability of an equilibrium, following in the steps of \citet{milgr1990:ratio} and \citet{vives1990:nashe}. In what follows, we describe equilibrium by its outcome $P_l$ $(l=1,2,3),$ where $P_1=0, P_2=P_{partial}$, and $ P_3=1$, correspond to no-announcement, partial announcement, and full-announcement, respectively. A Cournot tatonnement in our game is defined as the process $\{P(t)\}$: $P(0) \in [0,1]$, $P(t) \in R(P(t-1))$, $t=1, 2, \cdots$. We define the stability of equilibrium as follows.
+
+\begin{defi}
+\begin{it}When there uniquely exists an equilibrium, it is stable. When there exist multiple equilibria, an equilibrium $P_l \in [0,1]$ is stable if there exists $P(0) \not= P_l$ such that the Cournot tatonnement starting at $P(0)$ converges to $P_l$.\end{it} 
+\end{defi}
+
+\begin{figure}%[htbp]
+\centering
+\includegraphics{br.eps}
+\caption{Best response dynamics and (in)stability of equilibrium}
+\label{fig:br1}
+\end{figure}
+
+Figure \ref{fig:br1} represents the best-response dynamics and equilibrium stability in our information acquisition game. When $P(0) \in [0, P_\text{partial})$, the best-response dynamics converges to $P_1(=0)$. When $P(0) \in (P_\text{partial}, 1]$, it converges to $P_3(=1)$. Therefore, Proposition \ref{prop2} holds.
+
+\end{document}
